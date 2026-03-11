@@ -4,8 +4,6 @@ import { useZakatCalculator } from "@/hooks/useZakatCalculator";
 import { StepWrapper } from "@/components/calculator/StepWrapper";
 import { AssetInput } from "@/components/calculator/AssetInput";
 import { ZakatSummary } from "@/components/calculator/ZakatSummary";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 export default function CalculatorPage() {
   const {
@@ -26,8 +24,8 @@ export default function CalculatorPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-10 text-center">
-        <p className="text-muted-foreground">
+      <div className="min-h-screen bg-[#eef7f2] flex items-center justify-center">
+        <p className="text-[#2d7a4f] text-lg font-medium">
           Fetching current gold & silver prices...
         </p>
       </div>
@@ -36,26 +34,27 @@ export default function CalculatorPage() {
 
   if (isError) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-10 text-center">
-        <p className="text-muted-foreground">
+      <div className="min-h-screen bg-[#eef7f2] flex flex-col items-center justify-center gap-4">
+        <p className="text-gray-500 text-lg">
           Could not fetch live prices. Using fallback values.
         </p>
-        <Button className="mt-4" onClick={nextStep}>
+        <button
+          onClick={nextStep}
+          className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-600 transition-colors"
+        >
           Continue Anyway
-        </Button>
+        </button>
       </div>
     );
   }
 
   if (result && currentStep === totalSteps) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-10">
-        <ZakatSummary
-          result={result}
-          nisabStandard={nisabStandard}
-          onReset={reset}
-        />
-      </div>
+      <ZakatSummary
+        result={result}
+        nisabStandard={nisabStandard}
+        onReset={reset}
+      />
     );
   }
 
@@ -66,17 +65,30 @@ export default function CalculatorPage() {
           currentStep={1}
           totalSteps={totalSteps}
           title="Cash & Bank Accounts"
-          description="Enter the total amount of money you have in cash, checking, and savings accounts."
+          description={
+            <>
+              Enter the total amount of money you have in <strong>cash</strong>,{" "}
+              <strong>checking</strong>, and <strong>savings accounts</strong>.
+            </>
+          }
+          onEnter={nextStep}
         >
           <AssetInput
             id="cash"
-            label="Cash & Bank Balances"
-            tooltip="Include all checking, savings, and cash on hand."
+            label="How much do you have in total?"
+            tooltip="Include cash on hand and all bank accounts."
             value={assets.cash}
             onChange={(val) => updateAssets({ cash: val })}
+            onEnter={nextStep}
           />
-          <div className="flex justify-end mt-6">
-            <Button onClick={nextStep}>Next</Button>
+          <div className="flex justify-between mt-6">
+            <div />
+            <button
+              onClick={nextStep}
+              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              Next →
+            </button>
           </div>
         </StepWrapper>
       )}
@@ -86,40 +98,61 @@ export default function CalculatorPage() {
           currentStep={2}
           totalSteps={totalSteps}
           title="Investments & Business"
-          description="Enter the value of your stocks, gold, silver, and business inventory."
+          description="Enter the value of your stocks, retirement accounts, gold, silver, and business inventory."
+          onEnter={nextStep}
         >
+          <AssetInput
+            id="stocks"
+            label="Stocks & Active Investments (USD)"
+            tooltip="Current market value of stocks, mutual funds, and crypto held as investments."
+            value={assets.stocks}
+            onChange={(val) => updateAssets({ stocks: val })}
+            onEnter={nextStep}
+          />
+          <AssetInput
+            id="retirementAccounts"
+            label="Retirement Accounts — 401k, IRA (USD)"
+            tooltip="We apply 60% of the balance as zakatable wealth — a middle-ground ruling accounting for early withdrawal penalties and taxes."
+            value={assets.retirementAccounts}
+            onChange={(val) => updateAssets({ retirementAccounts: val })}
+            onEnter={nextStep}
+          />
           <AssetInput
             id="gold"
             label="Gold (USD value)"
-            tooltip="Investment gold only. Personal jewelry is debated — include if unsure."
+            tooltip="Investment gold only. Personal jewelry ruling is debated — include if unsure."
             value={assets.gold}
             onChange={(val) => updateAssets({ gold: val })}
+            onEnter={nextStep}
           />
           <AssetInput
             id="silver"
             label="Silver (USD value)"
             value={assets.silver}
             onChange={(val) => updateAssets({ silver: val })}
-          />
-          <AssetInput
-            id="stocks"
-            label="Stocks & Investments"
-            tooltip="Current market value of stocks, mutual funds, and crypto."
-            value={assets.stocks}
-            onChange={(val) => updateAssets({ stocks: val })}
+            onEnter={nextStep}
           />
           <AssetInput
             id="businessInventory"
-            label="Business Inventory"
+            label="Business Inventory (USD)"
             tooltip="Market value of goods held for sale."
             value={assets.businessInventory}
             onChange={(val) => updateAssets({ businessInventory: val })}
+            onEnter={nextStep}
           />
           <div className="flex justify-between mt-6">
-            <Button variant="outline" onClick={prevStep}>
-              Back
-            </Button>
-            <Button onClick={nextStep}>Next</Button>
+            <button
+              onClick={prevStep}
+              className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2"
+            >
+              ← Previous
+            </button>
+            <button
+              onClick={nextStep}
+              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              Next →
+            </button>
           </div>
         </StepWrapper>
       )}
@@ -128,66 +161,79 @@ export default function CalculatorPage() {
         <StepWrapper
           currentStep={3}
           totalSteps={totalSteps}
-          title="Other Assets & Liabilities"
+          title="Debts & Other Assets"
           description="Enter any remaining assets and debts you owe."
+          onEnter={calculate}
         >
           <AssetInput
-            id="rentalIncome"
-            label="Rental Income"
-            tooltip="Net rental income received this year."
-            value={assets.rentalIncome}
-            onChange={(val) => updateAssets({ rentalIncome: val })}
-          />
-          <AssetInput
             id="moneyOwed"
-            label="Money Owed To You"
+            label="Money Owed To You (USD)"
             tooltip="Loans you have given out that are likely to be repaid."
             value={assets.moneyOwed}
             onChange={(val) => updateAssets({ moneyOwed: val })}
+            onEnter={calculate}
           />
           <AssetInput
             id="otherAssets"
-            label="Other Assets"
+            label="Other Assets (USD)"
             value={assets.otherAssets}
             onChange={(val) => updateAssets({ otherAssets: val })}
+            onEnter={calculate}
           />
           <AssetInput
             id="liabilities"
-            label="Debts & Liabilities"
+            label="Debts & Liabilities (USD)"
             tooltip="Money you owe others — loans, credit card balances, etc."
             value={assets.liabilities}
             onChange={(val) => updateAssets({ liabilities: val })}
+            onEnter={calculate}
           />
 
-          <Card className="p-4 mt-4 bg-muted">
-            <p className="text-sm font-medium mb-2">Nisab Standard</p>
+          <div className="mt-6 p-5 bg-gray-50 rounded-2xl border border-gray-100">
+            <p className="text-base font-bold text-gray-800 mb-3">
+              Nisab Standard
+            </p>
             <div className="flex gap-3">
-              <Button
-                size="sm"
-                variant={nisabStandard === "gold" ? "default" : "outline"}
+              <button
                 onClick={() => setNisabStandard("gold")}
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  nisabStandard === "gold"
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-400"
+                }`}
               >
                 Gold
-              </Button>
-              <Button
-                size="sm"
-                variant={nisabStandard === "silver" ? "default" : "outline"}
+              </button>
+              <button
                 onClick={() => setNisabStandard("silver")}
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  nisabStandard === "silver"
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-400"
+                }`}
               >
                 Silver
-              </Button>
+              </button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-gray-400 mt-2 leading-relaxed">
               Silver standard results in a lower threshold and is the more
               conservative choice.
             </p>
-          </Card>
+          </div>
 
           <div className="flex justify-between mt-6">
-            <Button variant="outline" onClick={prevStep}>
-              Back
-            </Button>
-            <Button onClick={calculate}>Calculate Zakat</Button>
+            <button
+              onClick={prevStep}
+              className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2"
+            >
+              ← Previous
+            </button>
+            <button
+              onClick={calculate}
+              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              Calculate Zakat →
+            </button>
           </div>
         </StepWrapper>
       )}

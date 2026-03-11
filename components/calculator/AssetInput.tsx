@@ -34,7 +34,7 @@ export function AssetInput({
           id={id}
           type="number"
           min={0}
-          value={value === 0 ? "" : value}
+          value={value || ""}
           placeholder="0.00"
           className="pl-7"
           onChange={(e) => onChange(parseFloat(e.target.value) || 0)}

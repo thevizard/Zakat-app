@@ -15,14 +15,17 @@ export function calculateZakat(
   nisabData: NisabData,
   nisabStandard: NisabStandard = "gold",
 ): ZakatResult {
-  // Total assets
+  // Retirement accounts: only 60% is considered zakatable
+  // as a middle-ground ruling accounting for penalties and taxes
+  const zakatableRetirement = assets.retirementAccounts * 0.6;
+
   const totalAssets =
     assets.cash +
     assets.gold +
     assets.silver +
     assets.stocks +
+    zakatableRetirement +
     assets.businessInventory +
-    assets.rentalIncome +
     assets.moneyOwed +
     assets.otherAssets;
 
@@ -35,10 +38,7 @@ export function calculateZakat(
       ? NISAB_GOLD_GRAMS * nisabData.goldPriceUSD
       : NISAB_SILVER_GRAMS * nisabData.silverPriceUSD;
 
-  // Does wealth meet nisab?
   const meetsNisab = zakatableWealth >= nisabThreshold;
-
-  // Zakat is only due if nisab is met
   const zakatDue = meetsNisab ? zakatableWealth * ZAKAT_RATE : 0;
 
   return {

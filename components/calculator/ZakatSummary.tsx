@@ -3,9 +3,10 @@
 import { ZakatResult, NisabStandard } from "@/types/zakat.types";
 
 interface ZakatSummaryProps {
-  result: ZakatResult;
-  nisabStandard: NisabStandard;
-  onReset: () => void;
+  result: ZakatResult
+  nisabStandard: NisabStandard
+  onReset: () => void
+  onBack: () => void
 }
 
 function formatCurrency(amount: number) {
@@ -19,6 +20,7 @@ export function ZakatSummary({
   result,
   nisabStandard,
   onReset,
+  onBack,
 }: ZakatSummaryProps) {
   return (
     <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center px-6 py-12">
@@ -127,6 +129,12 @@ export function ZakatSummary({
 
         {/* Buttons */}
         <div className="flex gap-3">
+          <button
+            onClick={onBack}
+            className="flex-1 bg-white text-gray-900 py-4 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors shadow-lg"
+          >
+            ← Back
+          </button>
           <button
             onClick={onReset}
             className="flex-1 bg-white text-gray-900 py-4 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors shadow-lg"

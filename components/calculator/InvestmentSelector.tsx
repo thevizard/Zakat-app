@@ -53,7 +53,7 @@ export function InvestmentSelector({
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500 mb-4">Select all that apply</p>
+      
       {INVESTMENT_OPTIONS.map((option) => {
         const isSelected = selected.includes(option.type);
         return (

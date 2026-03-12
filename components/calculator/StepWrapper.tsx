@@ -53,9 +53,9 @@ export function StepWrapper({
 
         {/* Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 step-enter">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">{title}</h1>
           {description && (
-            <p className="text-base text-gray-500 mb-8 leading-relaxed">
+            <p className="text-lg text-gray-500 mb-8 leading-relaxed">
               {description}
             </p>
           )}

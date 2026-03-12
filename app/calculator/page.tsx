@@ -69,6 +69,7 @@ export default function CalculatorPage() {
         result={result}
         nisabStandard={nisabStandard}
         onReset={reset}
+        onBack={prevStep}
       />
     );
   }

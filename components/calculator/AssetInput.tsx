@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface AssetInputProps {
   id: string;
   label: string;
@@ -17,12 +19,37 @@ export function AssetInput({
   onChange,
   onEnter,
 }: AssetInputProps) {
-  const formatted = value ? value.toLocaleString("en-US") : "";
+  const [display, setDisplay] = useState(
+    value ? value.toLocaleString("en-US") : "",
+  );
+
+  useEffect(() => {
+    if (value === 0) setDisplay("");
+  }, [value]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value.replace(/,/g, "");
-    const num = parseFloat(raw);
-    onChange(isNaN(num) ? 0 : num);
+    const raw = e.target.value;
+
+    // Allow digits, commas, and one decimal point
+    if (!/^[\d,]*\.?\d*$/.test(raw)) return;
+
+    setDisplay(raw);
+
+    const numeric = parseFloat(raw.replace(/,/g, ""));
+    onChange(isNaN(numeric) ? 0 : numeric);
+  }
+
+  function handleBlur() {
+    // On blur, format nicely if it's a valid number
+    const numeric = parseFloat(display.replace(/,/g, ""));
+    if (!isNaN(numeric)) {
+      setDisplay(
+        numeric.toLocaleString("en-US", {
+          minimumFractionDigits: display.includes(".") ? 2 : 0,
+          maximumFractionDigits: 2,
+        }),
+      );
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -43,10 +70,11 @@ export function AssetInput({
         <input
           id={id}
           type="text"
-          inputMode="numeric"
-          value={formatted}
+          inputMode="decimal"
+          value={display}
           placeholder="0"
           onChange={handleChange}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           className="flex-1 text-xl font-semibold text-gray-900 placeholder:text-gray-300 focus:outline-none bg-transparent"
           style={{ fontFamily: "var(--font-body), Open Sans, sans-serif" }}

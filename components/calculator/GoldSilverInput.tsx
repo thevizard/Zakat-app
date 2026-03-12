@@ -20,23 +20,41 @@ export function GoldSilverInput({
   onEnter,
 }: GoldSilverInputProps) {
   const [mode, setMode] = useState<"usd" | "grams">("usd");
-  const [grams, setGrams] = useState("");
+  const [display, setDisplay] = useState(
+    value ? value.toLocaleString("en-US") : "",
+  );
 
-  function handleGramsChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value.replace(/,/g, "");
-    setGrams(raw);
-    const g = parseFloat(raw);
-    if (!isNaN(g)) {
-      onChange(parseFloat((g * pricePerGram).toFixed(2)));
-    } else {
+  function switchMode(newMode: "usd" | "grams") {
+    setMode(newMode);
+    setDisplay("");
+    onChange(0);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value;
+    if (!/^[\d,]*\.?\d*$/.test(raw)) return;
+    setDisplay(raw);
+
+    const num = parseFloat(raw.replace(/,/g, ""));
+    if (isNaN(num)) {
       onChange(0);
+    } else {
+      onChange(
+        mode === "grams" ? parseFloat((num * pricePerGram).toFixed(2)) : num,
+      );
     }
   }
 
-  function handleUsdChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value.replace(/,/g, "");
-    const num = parseFloat(raw);
-    onChange(isNaN(num) ? 0 : num);
+  function handleBlur() {
+    const numeric = parseFloat(display.replace(/,/g, ""));
+    if (!isNaN(numeric)) {
+      setDisplay(
+        numeric.toLocaleString("en-US", {
+          minimumFractionDigits: display.includes(".") ? 2 : 0,
+          maximumFractionDigits: 2,
+        }),
+      );
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -46,16 +64,18 @@ export function GoldSilverInput({
     }
   }
 
-  const usdFormatted = value ? value.toLocaleString("en-US") : "";
+  const gramsEntered =
+    mode === "grams" && display !== ""
+      ? parseFloat(display.replace(/,/g, ""))
+      : null;
 
   return (
     <div className="mb-6">
       <p className="text-base font-bold text-gray-800 mb-3">{label}</p>
 
-      {/* Toggle */}
       <div className="flex gap-2 mb-3">
         <button
-          onClick={() => setMode("usd")}
+          onClick={() => switchMode("usd")}
           className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors ${
             mode === "usd"
               ? "bg-black text-white"
@@ -65,7 +85,7 @@ export function GoldSilverInput({
           USD Value
         </button>
         <button
-          onClick={() => setMode("grams")}
+          onClick={() => switchMode("grams")}
           className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors ${
             mode === "grams"
               ? "bg-black text-white"
@@ -76,45 +96,41 @@ export function GoldSilverInput({
         </button>
       </div>
 
-      {mode === "usd" ? (
-        <div className="flex items-center gap-3 bg-gray-100 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-[#2d7a4f] transition-all">
+      <div className="flex items-center gap-3 bg-gray-100 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-[#2d7a4f] transition-all">
+        {mode === "usd" && (
           <span className="text-xl font-medium text-gray-400">$</span>
-          <input
-            id={id}
-            type="text"
-            inputMode="numeric"
-            value={usdFormatted}
-            placeholder="0"
-            onChange={handleUsdChange}
-            onKeyDown={handleKeyDown}
-            className="flex-1 text-xl font-semibold text-gray-900 placeholder:text-gray-400 focus:outline-none bg-transparent"
-          />
-        </div>
-      ) : (
-        <div className="flex items-center gap-3 bg-gray-100 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-[#2d7a4f] transition-all">
-          <input
-            id={`${id}-grams`}
-            type="text"
-            inputMode="numeric"
-            value={grams}
-            placeholder="0"
-            onChange={handleGramsChange}
-            onKeyDown={handleKeyDown}
-            className="flex-1 text-xl font-semibold text-gray-900 placeholder:text-gray-400 focus:outline-none bg-transparent"
-          />
+        )}
+        <input
+          id={id}
+          type="text"
+          inputMode="decimal"
+          value={display}
+          placeholder="0"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          className="flex-1 text-xl font-semibold text-gray-900 placeholder:text-gray-400 focus:outline-none bg-transparent"
+        />
+        {mode === "grams" && (
           <span className="text-xl font-medium text-gray-400">g</span>
-        </div>
-      )}
+        )}
+      </div>
 
-      {mode === "grams" && value > 0 && (
-        <p className="text-sm text-gray-400 mt-2 ml-1">
-          ≈{" "}
-          <span className="text-[#2d7a4f] font-semibold">
-            ${value.toLocaleString("en-US")}
-          </span>{" "}
-          USD
-        </p>
-      )}
+      {mode === "grams" &&
+        gramsEntered !== null &&
+        !isNaN(gramsEntered) &&
+        gramsEntered > 0 && (
+          <p className="text-sm text-gray-400 mt-2 ml-1">
+            ≈{" "}
+            <span className="text-[#2d7a4f] font-semibold">
+              $
+              {(gramsEntered * pricePerGram).toLocaleString("en-US", {
+                maximumFractionDigits: 2,
+              })}
+            </span>{" "}
+            USD
+          </p>
+        )}
 
       <p className="text-xs text-gray-400 mt-2 ml-1">
         Current price: ${pricePerGram.toFixed(2)} per gram

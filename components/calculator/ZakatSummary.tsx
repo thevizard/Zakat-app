@@ -23,7 +23,7 @@ export function ZakatSummary({ result, nisabStandard, onReset, onBack, onEdit }:
   const [breakdownOpen, setBreakdownOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center px-6 py-12">
+    <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-[#68BA7F]/20 overflow-y-auto">
       <div className="w-full max-w-lg">
 
         {/* Header card */}
@@ -152,11 +152,11 @@ export function ZakatSummary({ result, nisabStandard, onReset, onBack, onEdit }:
             ← Back
           </button>
           <button
-            onClick={onReset}
-            className="flex-1 bg-white text-gray-900 py-4 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors shadow-lg"
-          >
-            Recalculate
-          </button>
+  onClick={onReset}
+  className="flex-1 bg-white text-gray-900 py-4 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors shadow-lg"
+>
+  Start Over
+</button>
           <button
             className="flex-1 bg-black text-white py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors shadow-lg"
           >

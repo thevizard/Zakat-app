@@ -10,6 +10,7 @@ interface CalculatorState {
   selectedInvestments: InvestmentType[]
   isEditing: boolean
   hasCompletedOnce: boolean
+  visitedSteps: string[]
   setStep: (step: number) => void
   setNisabStandard: (standard: NisabStandard) => void
   updateAssets: (updates: Partial<AssetInputs>) => void
@@ -18,6 +19,7 @@ interface CalculatorState {
   setSelectedInvestments: (types: InvestmentType[]) => void
   setIsEditing: (val: boolean) => void
   setHasCompletedOnce: (val: boolean) => void
+  addVisitedStep: (step: string) => void
   reset: () => void
 }
 
@@ -36,7 +38,7 @@ const defaultAssets: AssetInputs = {
   liabilities: 0,
 }
 
-export const useCalculatorStore = create<CalculatorState>((set, get) => ({
+export const useCalculatorStore = create<CalculatorState>((set) => ({
   currentStep: 1,
   nisabStandard: 'gold',
   assets: defaultAssets,
@@ -45,6 +47,7 @@ export const useCalculatorStore = create<CalculatorState>((set, get) => ({
   selectedInvestments: [],
   isEditing: false,
   hasCompletedOnce: false,
+  visitedSteps: ['cash'],
   setStep: (step) => set({ currentStep: step }),
   setNisabStandard: (standard) => set({ nisabStandard: standard }),
   updateAssets: (updates) =>
@@ -54,12 +57,18 @@ export const useCalculatorStore = create<CalculatorState>((set, get) => ({
   setSelectedInvestments: (types) => set({ selectedInvestments: types }),
   setIsEditing: (val) => set({ isEditing: val }),
   setHasCompletedOnce: (val) => set({ hasCompletedOnce: val }),
+  addVisitedStep: (step) => set((state) => ({
+    visitedSteps: state.visitedSteps.includes(step)
+      ? state.visitedSteps
+      : [...state.visitedSteps, step],
+  })),
   reset: () => set((state) => ({
-    currentStep: 1,
-    assets: defaultAssets,
-    result: null,
-    selectedInvestments: [],
-    isEditing: false,
-    hasCompletedOnce: state.hasCompletedOnce,
+      currentStep: 1,
+  assets: defaultAssets,
+  result: null,
+  selectedInvestments: [],
+  isEditing: false,
+  hasCompletedOnce: false,
+  visitedSteps: ['cash'],
   })),
 }))

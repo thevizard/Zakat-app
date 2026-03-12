@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
+import { useEffect } from 'react'
 
 interface StepWrapperProps {
-  currentStep: number;
-  totalSteps: number;
-  title: string;
-  description?: React.ReactNode;
-  children: React.ReactNode;
-  onEnter?: () => void;
-  tracker?: React.ReactNode;
+  currentStep: number
+  totalSteps: number
+  title: string
+  description?: React.ReactNode
+  children: React.ReactNode
+  onEnter?: () => void
+  tracker?: React.ReactNode
 }
 
 export function StepWrapper({
@@ -21,50 +21,29 @@ export function StepWrapper({
   onEnter,
   tracker,
 }: StepWrapperProps) {
-  const progress = (currentStep / totalSteps) * 100;
+  const progress = (currentStep / totalSteps) * 100
 
   useEffect(() => {
-    if (!onEnter) return;
+    if (!onEnter) return
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Enter") onEnter();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [onEnter]);
+      if (e.key === 'Enter') onEnter()
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onEnter])
 
   return (
-    <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center px-6 py-12">
+    <div className="flex-1 flex flex-col items-center justify-center px-8 py-10 bg-[#68BA7F]/20 overflow-y-auto">
       <div className="w-full max-w-lg">
-        {/* Progress bar sits right above the card */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-gray-500">
-            Step {currentStep} of {totalSteps}
-          </span>
-          <span className="text-sm font-semibold text-gray-500">
-            {Math.round(progress)}%
-          </span>
-        </div>
-        <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mb-4">
-          <div
-            className="h-2 bg-black rounded-full transition-all duration-700 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 step-enter">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">{title}</h1>
           {description && (
-            <p className="text-lg text-gray-500 mb-8 leading-relaxed">
-              {description}
-            </p>
+            <p className="text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
           )}
           <div>{children}</div>
         </div>
-
-        {/* Tracker below card */}
         {tracker && <div className="mt-4">{tracker}</div>}
       </div>
     </div>
-  );
+  )
 }

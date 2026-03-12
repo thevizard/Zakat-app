@@ -33,6 +33,8 @@ export function useZakatCalculator() {
 
   function nextStep() {
     if (store.currentStep < totalSteps) {
+      const nextStepName = steps[store.currentStep]
+      store.addVisitedStep(nextStepName)
       store.setStep(store.currentStep + 1)
     }
   }
@@ -43,23 +45,25 @@ export function useZakatCalculator() {
     }
   }
 
-function calculate() {
-  if (!nisabData) return
-  const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
-  store.setResult(result)
-  store.setIsEditing(false)
-  store.setHasCompletedOnce(true)
-  store.setStep(totalSteps)
-}
+  function calculate() {
+    if (!nisabData) return
+    const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+    store.setResult(result)
+    store.setIsEditing(false)
+    store.setHasCompletedOnce(true)
+    store.addVisitedStep('results')
+    store.setStep(totalSteps)
+  }
 
-function skipToEnd() {
-  if (!nisabData) return
-  const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
-  store.setResult(result)
-  store.setIsEditing(false)
-  store.setHasCompletedOnce(true)
-  store.setStep(totalSteps)
-}
+  function skipToEnd() {
+    if (!nisabData) return
+    const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+    store.setResult(result)
+    store.setIsEditing(false)
+    store.setHasCompletedOnce(true)
+    store.addVisitedStep('results')
+    store.setStep(totalSteps)
+  }
 
   function goToStep(stepName: string) {
     const index = steps.indexOf(stepName as Step)
@@ -80,12 +84,15 @@ function skipToEnd() {
     currentStep: store.currentStep,
     currentStepName,
     totalSteps,
+    steps,
     assets: store.assets,
     result: store.result,
     nisabData,
     nisabStandard: store.nisabStandard,
     selectedInvestments: store.selectedInvestments,
     isEditing: store.isEditing,
+    hasCompletedOnce: store.hasCompletedOnce,
+    visitedSteps: store.visitedSteps,
     isLoading,
     isError,
     nextStep,
@@ -98,6 +105,5 @@ function skipToEnd() {
     setNisabStandard: store.setNisabStandard,
     setSelectedInvestments: store.setSelectedInvestments,
     reset: store.reset,
-    hasCompletedOnce: store.hasCompletedOnce,
   }
 }

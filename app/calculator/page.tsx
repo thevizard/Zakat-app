@@ -10,6 +10,7 @@ import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
 export default function CalculatorPage() {
   const {
     currentStep,
+    currentStepName,
     totalSteps,
     assets,
     result,
@@ -53,7 +54,7 @@ export default function CalculatorPage() {
     );
   }
 
-  if (result && currentStep === totalSteps) {
+  if (currentStepName === "results" && result) {
     return (
       <ZakatSummary
         result={result}
@@ -63,12 +64,28 @@ export default function CalculatorPage() {
     );
   }
 
+  const navButtons = (onNext: () => void) => (
+    <div className="flex justify-between mt-6">
+      <button
+        onClick={prevStep}
+        className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
+      >
+        ← Previous
+      </button>
+      <button
+        onClick={onNext}
+        className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
+      >
+        Next →
+      </button>
+    </div>
+  );
+
   return (
     <>
-      {/* Step 1 — Cash */}
-      {currentStep === 1 && (
+      {currentStepName === "cash" && (
         <StepWrapper
-          currentStep={1}
+          currentStep={currentStep}
           totalSteps={totalSteps}
           title="Cash & Bank Accounts"
           description={
@@ -98,10 +115,9 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {/* Step 2 — Gold & Silver */}
-      {currentStep === 2 && (
+      {currentStepName === "goldsilver" && (
         <StepWrapper
-          currentStep={2}
+          currentStep={currentStep}
           totalSteps={totalSteps}
           title="Gold & Silver"
           description="Enter the current value of any gold or silver you own."
@@ -123,27 +139,13 @@ export default function CalculatorPage() {
             onChange={(val) => updateAssets({ silver: val })}
             onEnter={nextStep}
           />
-          <div className="flex justify-between mt-6">
-            <button
-              onClick={prevStep}
-              className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
-            >
-              ← Previous
-            </button>
-            <button
-              onClick={nextStep}
-              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Next →
-            </button>
-          </div>
+          {navButtons(nextStep)}
         </StepWrapper>
       )}
 
-      {/* Step 3 — Investment selector */}
-      {currentStep === 3 && (
+      {currentStepName === "investment-selector" && (
         <StepWrapper
-          currentStep={3}
+          currentStep={currentStep}
           totalSteps={totalSteps}
           title="Investments"
           description="Which of the following investments do you have? Select all that apply."
@@ -152,118 +154,121 @@ export default function CalculatorPage() {
             selected={selectedInvestments}
             onChange={setSelectedInvestments}
           />
-          <div className="flex justify-between mt-8">
-            <button
-              onClick={prevStep}
-              className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
-            >
-              ← Previous
-            </button>
-            <button
-              onClick={nextStep}
-              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Next →
-            </button>
-          </div>
+          {navButtons(nextStep)}
         </StepWrapper>
       )}
 
-      {/* Step 4 — Investment details based on selection */}
-      {currentStep === 4 && (
+      {currentStepName === "stocks" && (
         <StepWrapper
-          currentStep={4}
+          currentStep={currentStep}
           totalSteps={totalSteps}
-          title="Investment Details"
-          description="Enter the value of each investment you selected."
+          title="Shares & Stocks"
+          description="Enter the value of your stock investments."
           onEnter={nextStep}
         >
-          {selectedInvestments.includes("stocks") && (
-            <>
-              <AssetInput
-                id="stocks"
-                label="Active stocks & shares (USD)"
-                tooltip="Stocks bought with intention to sell within 12 months. Enter full market value."
-                value={assets.stocks}
-                onChange={(val) => updateAssets({ stocks: val })}
-                onEnter={nextStep}
-              />
-              <AssetInput
-                id="passiveStocks"
-                label="Passive stocks & shares (USD)"
-                tooltip="Long-term holdings. We apply 25% of market value as the zakatable portion."
-                value={assets.passiveStocks}
-                onChange={(val) => updateAssets({ passiveStocks: val })}
-                onEnter={nextStep}
-              />
-            </>
-          )}
-          {selectedInvestments.includes("crypto") && (
-            <AssetInput
-              id="crypto"
-              label="Cryptocurrency (USD value)"
-              tooltip="Enter the current total market value of all your crypto holdings."
-              value={assets.crypto}
-              onChange={(val) => updateAssets({ crypto: val })}
-              onEnter={nextStep}
-            />
-          )}
-          {selectedInvestments.includes("retirement") && (
-            <AssetInput
-              id="retirementAccounts"
-              label="Pension & retirement accounts (USD)"
-              tooltip="We apply 60% of the balance as zakatable — accounting for early withdrawal penalties and taxes."
-              value={assets.retirementAccounts}
-              onChange={(val) => updateAssets({ retirementAccounts: val })}
-              onEnter={nextStep}
-            />
-          )}
-          {selectedInvestments.includes("property") && (
-            <AssetInput
-              id="investmentProperty"
-              label="Investment property market value (USD)"
-              tooltip="Only include property purchased with the intention of resale. Your primary home is exempt."
-              value={assets.investmentProperty}
-              onChange={(val) => updateAssets({ investmentProperty: val })}
-              onEnter={nextStep}
-            />
-          )}
-          {selectedInvestments.includes("business") && (
-            <AssetInput
-              id="businessInventory"
-              label="Business inventory (USD)"
-              tooltip="Market value of goods and assets held for sale."
-              value={assets.businessInventory}
-              onChange={(val) => updateAssets({ businessInventory: val })}
-              onEnter={nextStep}
-            />
-          )}
-          {selectedInvestments.length === 0 && (
-            <p className="text-gray-400 text-base py-4">
-              No investments selected. Click Next to continue.
-            </p>
-          )}
-          <div className="flex justify-between mt-6">
-            <button
-              onClick={prevStep}
-              className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
-            >
-              ← Previous
-            </button>
-            <button
-              onClick={nextStep}
-              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Next →
-            </button>
-          </div>
+          <AssetInput
+            id="stocks"
+            label="Active stocks — intention to sell within 12 months"
+            tooltip="Treat this like cash. Enter the full market value."
+            value={assets.stocks}
+            onChange={(val) => updateAssets({ stocks: val })}
+            onEnter={nextStep}
+          />
+          <AssetInput
+            id="passiveStocks"
+            label="Passive stocks — long-term holdings"
+            tooltip="We apply 25% of the market value as the zakatable portion."
+            value={assets.passiveStocks}
+            onChange={(val) => updateAssets({ passiveStocks: val })}
+            onEnter={nextStep}
+          />
+          {navButtons(nextStep)}
         </StepWrapper>
       )}
 
-      {/* Step 5 — Debts & Other Assets */}
-      {currentStep === 5 && (
+      {currentStepName === "crypto" && (
         <StepWrapper
-          currentStep={5}
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          title="Cryptocurrencies"
+          description="Zakat is due on the current market value of your crypto."
+          onEnter={nextStep}
+        >
+          <AssetInput
+            id="crypto"
+            label="What is your total crypto portfolio worth?"
+            tooltip="Enter the current USD value of all your crypto holdings combined."
+            value={assets.crypto}
+            onChange={(val) => updateAssets({ crypto: val })}
+            onEnter={nextStep}
+          />
+          {navButtons(nextStep)}
+        </StepWrapper>
+      )}
+
+      {currentStepName === "retirement" && (
+        <StepWrapper
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          title="Pension & Retirement"
+          description="If you have access to these funds, Zakat is payable on them."
+          onEnter={nextStep}
+        >
+          <AssetInput
+            id="retirementAccounts"
+            label="What is the total value of your retirement accounts?"
+            tooltip="We apply 30% of the market value as zakatable — scholars including Sh. Joe Bradford have allowed this approximation to represent the zakatable assets within the company (cash, inventory, etc.). Enter your full portfolio value and we handle the rest."
+            value={assets.retirementAccounts}
+            onChange={(val) => updateAssets({ retirementAccounts: val })}
+            onEnter={nextStep}
+          />
+          {navButtons(nextStep)}
+        </StepWrapper>
+      )}
+
+      {currentStepName === "property" && (
+        <StepWrapper
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          title="Investment Property"
+          description="If you live in the property, Zakat is not due on it."
+          onEnter={nextStep}
+        >
+          <AssetInput
+            id="investmentProperty"
+            label="What is the market value of your investment property?"
+            tooltip="Only include property purchased with the intention of resale. Your primary home is exempt."
+            value={assets.investmentProperty}
+            onChange={(val) => updateAssets({ investmentProperty: val })}
+            onEnter={nextStep}
+          />
+          {navButtons(nextStep)}
+        </StepWrapper>
+      )}
+
+      {currentStepName === "business" && (
+        <StepWrapper
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          title="Business Inventory"
+          description="Enter the value of goods and assets held for sale."
+          onEnter={nextStep}
+        >
+          <AssetInput
+            id="businessInventory"
+            label="What is your business inventory worth?"
+            tooltip="Market value of all goods, products, and liquid business assets held for sale."
+            value={assets.businessInventory}
+            onChange={(val) => updateAssets({ businessInventory: val })}
+            onEnter={nextStep}
+          />
+          {navButtons(nextStep)}
+        </StepWrapper>
+      )}
+
+      {currentStepName === "debts" && (
+        <StepWrapper
+          currentStep={currentStep}
           totalSteps={totalSteps}
           title="Debts & Other Assets"
           description="Enter any remaining assets and debts you owe."

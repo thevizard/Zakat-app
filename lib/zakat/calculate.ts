@@ -16,10 +16,10 @@ export function calculateZakat(
   nisabStandard: NisabStandard = "gold",
 ): ZakatResult {
   // Retirement accounts: 60% zakatable as middle-ground ruling
-  const zakatableRetirement = assets.retirementAccounts * 0.6;
+  const zakatableRetirement = assets.retirementAccounts * 0.3;
 
   // Passive stocks: only zakatable assets portion (approx 25% of value)
-  const zakatablePassiveStocks = assets.passiveStocks * 0.25;
+  const zakatablePassiveStocks = assets.passiveStocks * 0.3;
 
   const totalAssets =
     assets.cash +

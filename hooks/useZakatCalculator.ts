@@ -12,6 +12,7 @@ type Step =
   | 'retirement'
   | 'property'
   | 'business'
+  | 'receivables'
   | 'debts'
   | 'results'
 
@@ -20,13 +21,14 @@ export function useZakatCalculator() {
   const { data: nisabData, isLoading, isError } = useNisab()
 
   const steps: Step[] = [
-    'cash',
-    'goldsilver',
-    'investment-selector',
-    ...store.selectedInvestments.map((i) => i as Step),
-    'debts',
-    'results',
-  ]
+  'cash',
+  'goldsilver',
+  'investment-selector',
+  ...store.selectedInvestments.map((i) => i as Step),
+  'receivables',
+  'debts',
+  'results',
+]
 
   const totalSteps = steps.length
   const currentStepName = steps[store.currentStep - 1]
@@ -66,11 +68,15 @@ export function useZakatCalculator() {
   }
 
   function goToStep(stepName: string) {
-    const index = steps.indexOf(stepName as Step)
-    if (index !== -1) {
-      store.setStep(index + 1)
+  const index = steps.indexOf(stepName as Step)
+  if (index !== -1) {
+    if (stepName === 'results' && nisabData) {
+      const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+      store.setResult(result)
     }
+    store.setStep(index + 1)
   }
+}
 
   function backToSummary() {
     if (!nisabData) return

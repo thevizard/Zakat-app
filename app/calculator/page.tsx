@@ -297,31 +297,37 @@ export default function CalculatorPage() {
             {navButtons(nextStep)}
           </StepWrapper>
         )}
-
+{currentStepName === 'receivables' && (
+  <StepWrapper
+    currentStep={currentStep}
+    totalSteps={totalSteps}
+    title="Money Owed to You"
+    description="Include any money that others owe you that is likely to be repaid."
+    onEnter={nextStep}
+    tracker={tracker}
+  >
+    <AssetInput
+      id="moneyOwed"
+      label="How much is owed to you in total?"
+      tooltip="Loans you have given out, IOUs, or any money you expect to receive back."
+      value={assets.moneyOwed}
+      onChange={(val) => updateAssets({ moneyOwed: val })}
+      onEnter={nextStep}
+    />
+    {navButtons(nextStep)}
+  </StepWrapper>
+)}
         {currentStepName === 'debts' && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
-            title="Debts & Other Assets"
-            description="Enter any remaining assets and debts you owe."
+            title="Liabilities"
+description="Enter any debts and liabilities you owe."
             onEnter={calculate}
             tracker={tracker}
           >
-            <AssetInput
-              id="moneyOwed"
-              label="Does anyone owe you money?"
-              tooltip="Loans you have given out that are likely to be repaid."
-              value={assets.moneyOwed}
-              onChange={(val) => updateAssets({ moneyOwed: val })}
-              onEnter={calculate}
-            />
-            <AssetInput
-              id="otherAssets"
-              label="Any other assets?"
-              value={assets.otherAssets}
-              onChange={(val) => updateAssets({ otherAssets: val })}
-              onEnter={calculate}
-            />
+            
+            
             <AssetInput
               id="liabilities"
               label="How much do you owe in total?"
@@ -331,30 +337,7 @@ export default function CalculatorPage() {
               onEnter={calculate}
             />
 
-            <div className="mt-6 p-5 bg-gray-50 rounded-2xl border border-gray-100">
-              <p className="text-base font-bold text-gray-800 mb-3">Nisab Standard</p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setNisabStandard('gold')}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                    nisabStandard === 'gold' ? 'bg-black text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
-                  }`}
-                >
-                  Gold
-                </button>
-                <button
-                  onClick={() => setNisabStandard('silver')}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                    nisabStandard === 'silver' ? 'bg-black text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
-                  }`}
-                >
-                  Silver
-                </button>
-              </div>
-              <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-                Silver standard results in a lower threshold and is the more conservative choice.
-              </p>
-            </div>
+            
 
             <div className="mt-6">
               <div className="flex justify-between">

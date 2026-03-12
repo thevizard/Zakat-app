@@ -40,8 +40,8 @@ export function CalculatorNav({
   }
 
   return (
-<div className="w-64 flex flex-col shrink-0 bg-white">      {/* Logo */}
-<div className="px-6 py-6 flex items-center">
+<div className="w-64 flex flex-col shrink-0" style={{ background: '#1DB954' }}>
+  <div className="px-6 py-6 flex items-center">
         <img src="/logo.png" alt="Zakatly" className="h-24 w-auto object-contain" />
       </div>
 
@@ -64,25 +64,24 @@ export function CalculatorNav({
                 ${isActive
                   ? 'bg-[#f0faf4] border-l-[3px] border-[#2d7a4f]'
                   : 'border-l-[3px] border-transparent'}
-                ${!isClickable ? 'opacity-30 cursor-default' : 'cursor-pointer hover:bg-gray-50'}
+${!isClickable ? 'opacity-60 cursor-default' : 'cursor-pointer hover:bg-white/30'}
                 ${stepId === 'results' && !isActive ? 'bg-[#f0faf4]/60' : ''}
               `}
             >
               {/* Dot */}
               <div className={`rounded-full shrink-0 transition-all
                 ${meta.sub ? 'w-1.5 h-1.5' : 'w-2.5 h-2.5'}
-                ${isActive ? 'bg-[#2d7a4f]' : status === 'visited' ? 'bg-[#68BA7F]' : 'bg-gray-300'}
+                ${isActive ? 'bg-white/50 border-l-[3px] border-[#1a3a2a]' : 'border-l-[3px] border-transparent'}
               `} />
 
               {/* Label */}
               <span className={`flex-1 transition-all
                 ${meta.sub ? 'text-base' : 'text-lg'}
-                ${isActive
-                  ? 'font-semibold text-[#2d7a4f]'
+              ${isActive
+                  ? 'font-semibold text-[#1a3a2a]'
                   : status === 'visited'
-                  ? 'font-normal text-gray-600'
-                  : 'font-normal text-gray-400'}
-              `}>
+                  ? 'font-normal text-white'
+: 'font-normal text-white'}              `}>
                 {meta.label}
               </span>
 

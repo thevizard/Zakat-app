@@ -8,12 +8,16 @@ interface CalculatorState {
   nisabData: NisabData | null
   result: ZakatResult | null
   selectedInvestments: InvestmentType[]
+  isEditing: boolean
+  hasCompletedOnce: boolean
   setStep: (step: number) => void
   setNisabStandard: (standard: NisabStandard) => void
   updateAssets: (updates: Partial<AssetInputs>) => void
   setNisabData: (data: NisabData) => void
   setResult: (result: ZakatResult) => void
   setSelectedInvestments: (types: InvestmentType[]) => void
+  setIsEditing: (val: boolean) => void
+  setHasCompletedOnce: (val: boolean) => void
   reset: () => void
 }
 
@@ -32,13 +36,15 @@ const defaultAssets: AssetInputs = {
   liabilities: 0,
 }
 
-export const useCalculatorStore = create<CalculatorState>((set) => ({
+export const useCalculatorStore = create<CalculatorState>((set, get) => ({
   currentStep: 1,
   nisabStandard: 'gold',
   assets: defaultAssets,
   nisabData: null,
   result: null,
   selectedInvestments: [],
+  isEditing: false,
+  hasCompletedOnce: false,
   setStep: (step) => set({ currentStep: step }),
   setNisabStandard: (standard) => set({ nisabStandard: standard }),
   updateAssets: (updates) =>
@@ -46,10 +52,14 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
   setNisabData: (data) => set({ nisabData: data }),
   setResult: (result) => set({ result }),
   setSelectedInvestments: (types) => set({ selectedInvestments: types }),
-  reset: () => set({
+  setIsEditing: (val) => set({ isEditing: val }),
+  setHasCompletedOnce: (val) => set({ hasCompletedOnce: val }),
+  reset: () => set((state) => ({
     currentStep: 1,
     assets: defaultAssets,
     result: null,
     selectedInvestments: [],
-  }),
+    isEditing: false,
+    hasCompletedOnce: state.hasCompletedOnce,
+  })),
 }))

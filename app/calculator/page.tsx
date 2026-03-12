@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { useZakatCalculator } from "@/hooks/useZakatCalculator";
-import { StepWrapper } from "@/components/calculator/StepWrapper";
-import { AssetInput } from "@/components/calculator/AssetInput";
-import { ZakatSummary } from "@/components/calculator/ZakatSummary";
-import { InvestmentSelector } from "@/components/calculator/InvestmentSelector";
-import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
-import { ZakatTracker } from "@/components/calculator/ZakatTracker";
+import { useZakatCalculator } from '@/hooks/useZakatCalculator'
+import { StepWrapper } from '@/components/calculator/StepWrapper'
+import { AssetInput } from '@/components/calculator/AssetInput'
+import { ZakatSummary } from '@/components/calculator/ZakatSummary'
+import { InvestmentSelector } from '@/components/calculator/InvestmentSelector'
+import { GoldSilverInput } from '@/components/calculator/GoldSilverInput'
+import { ZakatTracker } from '@/components/calculator/ZakatTracker'
 
 export default function CalculatorPage() {
   const {
@@ -18,16 +18,21 @@ export default function CalculatorPage() {
     nisabData,
     nisabStandard,
     selectedInvestments,
+    isEditing,
     isLoading,
     isError,
     nextStep,
     prevStep,
     calculate,
+    skipToEnd,
+    goToStep,
+    backToSummary,
     updateAssets,
     setNisabStandard,
     setSelectedInvestments,
     reset,
-  } = useZakatCalculator();
+    hasCompletedOnce,
+  } = useZakatCalculator()
 
   const tracker = (
     <ZakatTracker
@@ -35,75 +40,67 @@ export default function CalculatorPage() {
       nisabData={nisabData}
       nisabStandard={nisabStandard}
     />
-  );
+  )
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#68BA7F]/20 flex items-center justify-center">
-        <p className="text-[#2d7a4f] text-lg font-medium">
-          Fetching current gold & silver prices...
-        </p>
+        <p className="text-[#2d7a4f] text-lg font-medium">Fetching current gold & silver prices...</p>
       </div>
-    );
+    )
   }
 
   if (isError) {
     return (
       <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center gap-4">
-        <p className="text-gray-500 text-lg">
-          Could not fetch live prices. Using fallback values.
-        </p>
-        <button
-          onClick={nextStep}
-          className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-        >
+        <p className="text-gray-500 text-lg">Could not fetch live prices. Using fallback values.</p>
+        <button onClick={nextStep} className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
           Continue Anyway
         </button>
       </div>
-    );
+    )
   }
 
-  if (currentStepName === "results" && result) {
+  if (currentStepName === 'results' && result) {
     return (
       <ZakatSummary
         result={result}
         nisabStandard={nisabStandard}
         onReset={reset}
         onBack={prevStep}
+        onEdit={goToStep}
       />
-    );
+    )
   }
 
-  const navButtons = (onNext: () => void) => (
-    <div className="flex justify-between mt-6">
-      <button
-        onClick={prevStep}
-        className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
-      >
+const navButtons = (onNext: () => void) => (
+  <div className="mt-6">
+    <div className="flex justify-between">
+      <button onClick={prevStep} className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors">
         ← Previous
       </button>
-      <button
-        onClick={onNext}
-        className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-      >
+      <button onClick={onNext} className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
         Next →
       </button>
     </div>
-  );
+    {hasCompletedOnce && (
+      <div className="text-center mt-3">
+        <button onClick={skipToEnd} className="text-sm text-gray-400 hover:text-gray-600 underline transition-colors">
+          Skip all
+        </button>
+      </div>
+    )}
+  </div>
+)
 
   return (
     <>
-      {currentStepName === "cash" && (
+      {currentStepName === 'cash' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
           title="Cash & Bank Accounts"
-          description={
-            <>
-              Enter the total amount of money you have in <strong>cash</strong>,{" "}
-              <strong>checking</strong>, and <strong>savings accounts</strong>.
-            </>
-          }
+          description={<>Enter the total amount of money you have in <strong>cash</strong>, <strong>checking</strong>, and <strong>savings accounts</strong>.</>}
           onEnter={nextStep}
           tracker={tracker}
         >
@@ -115,18 +112,24 @@ export default function CalculatorPage() {
             onChange={(val) => updateAssets({ cash: val })}
             onEnter={nextStep}
           />
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={nextStep}
-              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Next →
-            </button>
-          </div>
+          <div className="mt-6">
+  <div className="flex justify-end">
+    <button onClick={nextStep} className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
+      Next →
+    </button>
+  </div>
+  {hasCompletedOnce && (
+    <div className="text-center mt-3">
+      <button onClick={skipToEnd} className="text-sm text-gray-400 hover:text-gray-600 underline transition-colors">
+        Skip all
+      </button>
+    </div>
+  )}
+</div>
         </StepWrapper>
       )}
 
-      {currentStepName === "goldsilver" && (
+      {currentStepName === 'goldsilver' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -155,7 +158,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "investment-selector" && (
+      {currentStepName === 'investment-selector' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -171,7 +174,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "stocks" && (
+      {currentStepName === 'stocks' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -200,7 +203,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "crypto" && (
+      {currentStepName === 'crypto' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -221,7 +224,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "retirement" && (
+      {currentStepName === 'retirement' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -242,7 +245,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "property" && (
+      {currentStepName === 'property' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -263,7 +266,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "business" && (
+      {currentStepName === 'business' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -284,7 +287,7 @@ export default function CalculatorPage() {
         </StepWrapper>
       )}
 
-      {currentStepName === "debts" && (
+      {currentStepName === 'debts' && (
         <StepWrapper
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -311,60 +314,54 @@ export default function CalculatorPage() {
           <AssetInput
             id="liabilities"
             label="How much do you owe in total?"
-            tooltip="Money you owe others — loans, credit card balances, etc."
+            tooltip="Money you owe others — loans, credit card balances, etc. Include full credit card balances."
             value={assets.liabilities}
             onChange={(val) => updateAssets({ liabilities: val })}
             onEnter={calculate}
           />
 
           <div className="mt-6 p-5 bg-gray-50 rounded-2xl border border-gray-100">
-            <p className="text-base font-bold text-gray-800 mb-3">
-              Nisab Standard
-            </p>
+            <p className="text-base font-bold text-gray-800 mb-3">Nisab Standard</p>
             <div className="flex gap-3">
               <button
-                onClick={() => setNisabStandard("gold")}
+                onClick={() => setNisabStandard('gold')}
                 className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                  nisabStandard === "gold"
-                    ? "bg-black text-white"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-400"
+                  nisabStandard === 'gold' ? 'bg-black text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
                 }`}
               >
                 Gold
               </button>
               <button
-                onClick={() => setNisabStandard("silver")}
+                onClick={() => setNisabStandard('silver')}
                 className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                  nisabStandard === "silver"
-                    ? "bg-black text-white"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-gray-400"
+                  nisabStandard === 'silver' ? 'bg-black text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
                 }`}
               >
                 Silver
               </button>
             </div>
             <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-              Silver standard results in a lower threshold and is the more
-              conservative choice.
+              Silver standard results in a lower threshold and is the more conservative choice.
             </p>
           </div>
 
           <div className="flex justify-between mt-6">
-            <button
-              onClick={prevStep}
-              className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
-            >
+            <button onClick={prevStep} className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors">
               ← Previous
             </button>
-            <button
-              onClick={calculate}
-              className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Calculate Zakat →
-            </button>
+            <div className="flex gap-3">
+              {isEditing && (
+                <button onClick={backToSummary} className="bg-[#2d7a4f] text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-[#245f3e] transition-colors">
+                  Back to Summary
+                </button>
+              )}
+              <button onClick={calculate} className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
+                Calculate Zakat →
+              </button>
+            </div>
           </div>
         </StepWrapper>
       )}
     </>
-  );
+  )
 }

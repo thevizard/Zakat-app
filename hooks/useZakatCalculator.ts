@@ -19,7 +19,6 @@ export function useZakatCalculator() {
   const store = useCalculatorStore()
   const { data: nisabData, isLoading, isError } = useNisab()
 
-  // Build dynamic step list based on selected investments
   const steps: Step[] = [
     'cash',
     'goldsilver',
@@ -44,15 +43,37 @@ export function useZakatCalculator() {
     }
   }
 
-  function calculate() {
+function calculate() {
+  if (!nisabData) return
+  const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+  store.setResult(result)
+  store.setIsEditing(false)
+  store.setHasCompletedOnce(true)
+  store.setStep(totalSteps)
+}
+
+function skipToEnd() {
+  if (!nisabData) return
+  const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+  store.setResult(result)
+  store.setIsEditing(false)
+  store.setHasCompletedOnce(true)
+  store.setStep(totalSteps)
+}
+
+  function goToStep(stepName: string) {
+    const index = steps.indexOf(stepName as Step)
+    if (index !== -1) {
+      store.setStep(index + 1)
+    }
+  }
+
+  function backToSummary() {
     if (!nisabData) return
     const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
     store.setResult(result)
+    store.setIsEditing(false)
     store.setStep(totalSteps)
-  }
-
-  function setSelectedInvestments(types: InvestmentType[]) {
-    store.setSelectedInvestments(types)
   }
 
   return {
@@ -64,14 +85,19 @@ export function useZakatCalculator() {
     nisabData,
     nisabStandard: store.nisabStandard,
     selectedInvestments: store.selectedInvestments,
+    isEditing: store.isEditing,
     isLoading,
     isError,
     nextStep,
     prevStep,
     calculate,
+    skipToEnd,
+    goToStep,
+    backToSummary,
     updateAssets: store.updateAssets,
     setNisabStandard: store.setNisabStandard,
-    setSelectedInvestments,
+    setSelectedInvestments: store.setSelectedInvestments,
     reset: store.reset,
+    hasCompletedOnce: store.hasCompletedOnce,
   }
 }

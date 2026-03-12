@@ -6,6 +6,7 @@ import { AssetInput } from "@/components/calculator/AssetInput";
 import { ZakatSummary } from "@/components/calculator/ZakatSummary";
 import { InvestmentSelector } from "@/components/calculator/InvestmentSelector";
 import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
+import { ZakatTracker } from "@/components/calculator/ZakatTracker";
 
 export default function CalculatorPage() {
   const {
@@ -27,6 +28,14 @@ export default function CalculatorPage() {
     setSelectedInvestments,
     reset,
   } = useZakatCalculator();
+
+  const tracker = (
+    <ZakatTracker
+      assets={assets}
+      nisabData={nisabData}
+      nisabStandard={nisabStandard}
+    />
+  );
 
   if (isLoading) {
     return (
@@ -95,6 +104,7 @@ export default function CalculatorPage() {
             </>
           }
           onEnter={nextStep}
+          tracker={tracker}
         >
           <AssetInput
             id="cash"
@@ -122,6 +132,7 @@ export default function CalculatorPage() {
           title="Gold & Silver"
           description="Enter the current value of any gold or silver you own."
           onEnter={nextStep}
+          tracker={tracker}
         >
           <GoldSilverInput
             id="gold"
@@ -149,6 +160,7 @@ export default function CalculatorPage() {
           totalSteps={totalSteps}
           title="Investments"
           description="Which of the following investments do you have? Select all that apply."
+          tracker={tracker}
         >
           <InvestmentSelector
             selected={selectedInvestments}
@@ -165,6 +177,7 @@ export default function CalculatorPage() {
           title="Shares & Stocks"
           description="Enter the value of your stock investments."
           onEnter={nextStep}
+          tracker={tracker}
         >
           <AssetInput
             id="stocks"
@@ -177,7 +190,7 @@ export default function CalculatorPage() {
           <AssetInput
             id="passiveStocks"
             label="Passive stocks — long-term holdings"
-            tooltip="We apply 25% of the market value as the zakatable portion."
+            tooltip="We apply 30% of the market value as the zakatable portion."
             value={assets.passiveStocks}
             onChange={(val) => updateAssets({ passiveStocks: val })}
             onEnter={nextStep}
@@ -193,6 +206,7 @@ export default function CalculatorPage() {
           title="Cryptocurrencies"
           description="Zakat is due on the current market value of your crypto."
           onEnter={nextStep}
+          tracker={tracker}
         >
           <AssetInput
             id="crypto"
@@ -213,11 +227,12 @@ export default function CalculatorPage() {
           title="Pension & Retirement"
           description="If you have access to these funds, Zakat is payable on them."
           onEnter={nextStep}
+          tracker={tracker}
         >
           <AssetInput
             id="retirementAccounts"
             label="What is the total value of your retirement accounts?"
-            tooltip="We apply 30% of the market value as zakatable — scholars including Sh. Joe Bradford have allowed this approximation to represent the zakatable assets within the company (cash, inventory, etc.). Enter your full portfolio value and we handle the rest."
+            tooltip="We apply 30% of the balance as zakatable — based on contemporary scholarly consensus including Sh. Joe Bradford. Only include funds you can withdraw, even if a penalty applies."
             value={assets.retirementAccounts}
             onChange={(val) => updateAssets({ retirementAccounts: val })}
             onEnter={nextStep}
@@ -233,6 +248,7 @@ export default function CalculatorPage() {
           title="Investment Property"
           description="If you live in the property, Zakat is not due on it."
           onEnter={nextStep}
+          tracker={tracker}
         >
           <AssetInput
             id="investmentProperty"
@@ -253,6 +269,7 @@ export default function CalculatorPage() {
           title="Business Inventory"
           description="Enter the value of goods and assets held for sale."
           onEnter={nextStep}
+          tracker={tracker}
         >
           <AssetInput
             id="businessInventory"
@@ -273,6 +290,7 @@ export default function CalculatorPage() {
           title="Debts & Other Assets"
           description="Enter any remaining assets and debts you owe."
           onEnter={calculate}
+          tracker={tracker}
         >
           <AssetInput
             id="moneyOwed"

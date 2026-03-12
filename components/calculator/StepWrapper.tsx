@@ -9,6 +9,7 @@ interface StepWrapperProps {
   description?: React.ReactNode;
   children: React.ReactNode;
   onEnter?: () => void;
+  tracker?: React.ReactNode;
 }
 
 export function StepWrapper({
@@ -18,6 +19,7 @@ export function StepWrapper({
   description,
   children,
   onEnter,
+  tracker,
 }: StepWrapperProps) {
   const progress = (currentStep / totalSteps) * 100;
 
@@ -32,7 +34,7 @@ export function StepWrapper({
 
   return (
     <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center px-6 py-12">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-lg">
         {/* Progress bar sits right above the card */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-gray-500">
@@ -42,7 +44,7 @@ export function StepWrapper({
             {Math.round(progress)}%
           </span>
         </div>
-        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-4">
+        <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mb-4">
           <div
             className="h-2 bg-black rounded-full transition-all duration-700 ease-out"
             style={{ width: `${progress}%` }}
@@ -57,8 +59,11 @@ export function StepWrapper({
               {description}
             </p>
           )}
-          <div className="step-enter">{children}</div>
+          <div>{children}</div>
         </div>
+
+        {/* Tracker below card */}
+        {tracker && <div className="mt-4">{tracker}</div>}
       </div>
     </div>
   );

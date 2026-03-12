@@ -1,12 +1,13 @@
 import { useCalculatorStore } from "@/store/calculatorStore";
 import { calculateZakat } from "@/lib/zakat/calculate";
 import { useNisab } from "@/hooks/useNisab";
+import { InvestmentType } from "@/types/zakat.types";
 
 export function useZakatCalculator() {
   const store = useCalculatorStore();
   const { data: nisabData, isLoading, isError } = useNisab();
 
-  const totalSteps = 4;
+  const totalSteps = 6;
 
   function nextStep() {
     if (store.currentStep < totalSteps) {
@@ -27,6 +28,10 @@ export function useZakatCalculator() {
     store.setStep(totalSteps);
   }
 
+  function setSelectedInvestments(types: InvestmentType[]) {
+    store.setSelectedInvestments(types);
+  }
+
   return {
     currentStep: store.currentStep,
     totalSteps,
@@ -34,6 +39,7 @@ export function useZakatCalculator() {
     result: store.result,
     nisabData,
     nisabStandard: store.nisabStandard,
+    selectedInvestments: store.selectedInvestments,
     isLoading,
     isError,
     nextStep,
@@ -41,6 +47,7 @@ export function useZakatCalculator() {
     calculate,
     updateAssets: store.updateAssets,
     setNisabStandard: store.setNisabStandard,
+    setSelectedInvestments,
     reset: store.reset,
   };
 }

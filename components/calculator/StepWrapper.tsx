@@ -31,7 +31,7 @@ export function StepWrapper({
   }, [onEnter]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-2xl">
         {/* Progress bar sits right above the card */}
         <div className="flex items-center justify-between mb-2">
@@ -50,7 +50,7 @@ export function StepWrapper({
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 step-enter">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
           {description && (
             <p className="text-base text-gray-500 mb-8 leading-relaxed">

@@ -5,6 +5,7 @@ import { StepWrapper } from "@/components/calculator/StepWrapper";
 import { AssetInput } from "@/components/calculator/AssetInput";
 import { ZakatSummary } from "@/components/calculator/ZakatSummary";
 import { InvestmentSelector } from "@/components/calculator/InvestmentSelector";
+import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
 
 export default function CalculatorPage() {
   const {
@@ -12,6 +13,7 @@ export default function CalculatorPage() {
     totalSteps,
     assets,
     result,
+    nisabData,
     nisabStandard,
     selectedInvestments,
     isLoading,
@@ -102,20 +104,21 @@ export default function CalculatorPage() {
           currentStep={2}
           totalSteps={totalSteps}
           title="Gold & Silver"
-          description="Enter the current USD value of any gold or silver you own."
+          description="Enter the current value of any gold or silver you own."
           onEnter={nextStep}
         >
-          <AssetInput
+          <GoldSilverInput
             id="gold"
-            label="How much is your gold worth?"
-            tooltip="Investment gold only. Personal jewelry is debated — include if unsure."
+            label="How much gold do you own?"
+            pricePerGram={nisabData?.goldPriceUSD ?? 85}
             value={assets.gold}
             onChange={(val) => updateAssets({ gold: val })}
             onEnter={nextStep}
           />
-          <AssetInput
+          <GoldSilverInput
             id="silver"
-            label="How much is your silver worth?"
+            label="How much silver do you own?"
+            pricePerGram={nisabData?.silverPriceUSD ?? 1.05}
             value={assets.silver}
             onChange={(val) => updateAssets({ silver: val })}
             onEnter={nextStep}

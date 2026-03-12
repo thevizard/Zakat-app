@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useZakatCalculator } from '@/hooks/useZakatCalculator'
-import { StepWrapper } from '@/components/calculator/StepWrapper'
-import { AssetInput } from '@/components/calculator/AssetInput'
-import { ZakatSummary } from '@/components/calculator/ZakatSummary'
-import { InvestmentSelector } from '@/components/calculator/InvestmentSelector'
-import { GoldSilverInput } from '@/components/calculator/GoldSilverInput'
-import { ZakatTracker } from '@/components/calculator/ZakatTracker'
-import { CalculatorNav } from '@/components/calculator/CalculatorNav'
+import { useZakatCalculator } from "@/hooks/useZakatCalculator";
+import { StepWrapper } from "@/components/calculator/StepWrapper";
+import { AssetInput } from "@/components/calculator/AssetInput";
+import { ZakatSummary } from "@/components/calculator/ZakatSummary";
+import { InvestmentSelector } from "@/components/calculator/InvestmentSelector";
+import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
+import { ZakatTracker } from "@/components/calculator/ZakatTracker";
+import { CalculatorNav } from "@/components/calculator/CalculatorNav";
 
 export default function CalculatorPage() {
   const {
@@ -35,7 +35,7 @@ export default function CalculatorPage() {
     setNisabStandard,
     setSelectedInvestments,
     reset,
-  } = useZakatCalculator()
+  } = useZakatCalculator();
 
   const tracker = (
     <ZakatTracker
@@ -43,28 +43,35 @@ export default function CalculatorPage() {
       nisabData={nisabData}
       nisabStandard={nisabStandard}
     />
-  )
+  );
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#68BA7F]/20 flex items-center justify-center">
-        <p className="text-[#2d7a4f] text-lg font-medium">Fetching current gold & silver prices...</p>
+        <p className="text-[#2d7a4f] text-lg font-medium">
+          Fetching current gold & silver prices...
+        </p>
       </div>
-    )
+    );
   }
 
   if (isError) {
     return (
       <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center gap-4">
-        <p className="text-gray-500 text-lg">Could not fetch live prices. Using fallback values.</p>
-        <button onClick={nextStep} className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
+        <p className="text-gray-500 text-lg">
+          Could not fetch live prices. Using fallback values.
+        </p>
+        <button
+          onClick={nextStep}
+          className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
+        >
           Continue Anyway
         </button>
       </div>
-    )
+    );
   }
 
-  if (currentStepName === 'results' && result) {
+  if (currentStepName === "results" && result) {
     return (
       <div className="flex min-h-screen">
         <CalculatorNav
@@ -83,22 +90,30 @@ export default function CalculatorPage() {
           onEdit={goToStep}
         />
       </div>
-    )
+    );
   }
 
   const navButtons = (onNext: () => void) => (
     <div className="mt-6">
       <div className="flex justify-between">
-        <button onClick={prevStep} className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors">
+        <button
+          onClick={prevStep}
+          className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
+        >
           ← Previous
         </button>
-        <button onClick={onNext} className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
+        <button
+          onClick={onNext}
+          className="text-white px-8 py-3.5 rounded-2xl text-base font-semibold transition-colors"
+          style={{ background: "#2d7a4f" }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#68BA7F")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "#2d7a4f")}
+        >
           Next →
         </button>
       </div>
-    
     </div>
-  )
+  );
 
   return (
     <div className="flex min-h-screen">
@@ -112,12 +127,18 @@ export default function CalculatorPage() {
       />
 
       <>
-        {currentStepName === 'cash' && (
+        {currentStepName === "cash" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
             title="Cash & Bank Accounts"
-            description={<>Enter the total amount of money you have in <strong>cash</strong>, <strong>checking</strong>, and <strong>savings accounts</strong>.</>}
+            description={
+              <>
+                Enter the total amount of money you have in{" "}
+                <strong>cash</strong>, <strong>checking</strong>, and{" "}
+                <strong>savings accounts</strong>.
+              </>
+            }
             onEnter={nextStep}
             tracker={tracker}
           >
@@ -131,16 +152,25 @@ export default function CalculatorPage() {
             />
             <div className="mt-6">
               <div className="flex justify-end">
-                <button onClick={nextStep} className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
+                <button
+                  onClick={nextStep}
+                  className="text-white px-8 py-3.5 rounded-2xl text-base font-semibold transition-colors"
+                  style={{ background: "#2d7a4f" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#68BA7F")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "#2d7a4f")
+                  }
+                >
                   Next →
                 </button>
               </div>
-              
             </div>
           </StepWrapper>
         )}
 
-        {currentStepName === 'goldsilver' && (
+        {currentStepName === "goldsilver" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -169,7 +199,7 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
 
-        {currentStepName === 'investment-selector' && (
+        {currentStepName === "investment-selector" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -185,7 +215,7 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
 
-        {currentStepName === 'stocks' && (
+        {currentStepName === "stocks" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -214,7 +244,7 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
 
-        {currentStepName === 'crypto' && (
+        {currentStepName === "crypto" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -235,7 +265,7 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
 
-        {currentStepName === 'retirement' && (
+        {currentStepName === "retirement" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -256,7 +286,7 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
 
-        {currentStepName === 'property' && (
+        {currentStepName === "property" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -277,7 +307,7 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
 
-        {currentStepName === 'business' && (
+        {currentStepName === "business" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
@@ -297,37 +327,35 @@ export default function CalculatorPage() {
             {navButtons(nextStep)}
           </StepWrapper>
         )}
-{currentStepName === 'receivables' && (
-  <StepWrapper
-    currentStep={currentStep}
-    totalSteps={totalSteps}
-    title="Money Owed to You"
-    description="Include any money that others owe you that is likely to be repaid."
-    onEnter={nextStep}
-    tracker={tracker}
-  >
-    <AssetInput
-      id="moneyOwed"
-      label="How much is owed to you in total?"
-      tooltip="Loans you have given out, IOUs, or any money you expect to receive back."
-      value={assets.moneyOwed}
-      onChange={(val) => updateAssets({ moneyOwed: val })}
-      onEnter={nextStep}
-    />
-    {navButtons(nextStep)}
-  </StepWrapper>
-)}
-        {currentStepName === 'debts' && (
+        {currentStepName === "receivables" && (
+          <StepWrapper
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            title="Money Owed to You"
+            description="Include any money that others owe you that is likely to be repaid."
+            onEnter={nextStep}
+            tracker={tracker}
+          >
+            <AssetInput
+              id="moneyOwed"
+              label="How much is owed to you in total?"
+              tooltip="Loans you have given out, IOUs, or any money you expect to receive back."
+              value={assets.moneyOwed}
+              onChange={(val) => updateAssets({ moneyOwed: val })}
+              onEnter={nextStep}
+            />
+            {navButtons(nextStep)}
+          </StepWrapper>
+        )}
+        {currentStepName === "debts" && (
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
             title="Liabilities"
-description="Enter any debts and liabilities you owe."
+            description="Enter any debts and liabilities you owe."
             onEnter={calculate}
             tracker={tracker}
           >
-            
-            
             <AssetInput
               id="liabilities"
               label="How much do you owe in total?"
@@ -337,22 +365,32 @@ description="Enter any debts and liabilities you owe."
               onEnter={calculate}
             />
 
-            
-
             <div className="mt-6">
               <div className="flex justify-between">
-                <button onClick={prevStep} className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={prevStep}
+                  className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
+                >
                   ← Previous
                 </button>
-                <button onClick={calculate} className="bg-black text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors">
+                <button
+                  onClick={calculate}
+                  className="text-white px-8 py-3.5 rounded-2xl text-base font-semibold transition-colors"
+                  style={{ background: "#2d7a4f" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#68BA7F")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "#2d7a4f")
+                  }
+                >
                   Calculate Zakat →
                 </button>
               </div>
-             
             </div>
           </StepWrapper>
         )}
       </>
     </div>
-  )
+  );
 }

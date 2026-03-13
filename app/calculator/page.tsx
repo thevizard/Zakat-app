@@ -269,7 +269,7 @@ export default function CalculatorPage() {
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
-            title="Pension & Retirement"
+            title="Retirement"
             description="If you have access to these funds, Zakat is payable on them."
             onEnter={nextStep}
             tracker={tracker}
@@ -319,7 +319,7 @@ export default function CalculatorPage() {
             <AssetInput
               id="businessInventory"
               label="What is your business inventory worth?"
-              tooltip="Market value of all goods, products, and liquid business assets held for sale."
+              tooltip="List the value of your sellable inventory, but exclude business equipment and real estate."
               value={assets.businessInventory}
               onChange={(val) => updateAssets({ businessInventory: val })}
               onEnter={nextStep}

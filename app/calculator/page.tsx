@@ -269,7 +269,7 @@ export default function CalculatorPage() {
           <StepWrapper
             currentStep={currentStep}
             totalSteps={totalSteps}
-            title="Retirement"
+            title="Pension & Retirement"
             description="If you have access to these funds, Zakat is payable on them."
             onEnter={nextStep}
             tracker={tracker}

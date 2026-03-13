@@ -8,6 +8,8 @@ import { InvestmentSelector } from "@/components/calculator/InvestmentSelector";
 import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
 import { ZakatTracker } from "@/components/calculator/ZakatTracker";
 import { CalculatorNav } from "@/components/calculator/CalculatorNav";
+import { StepTrail } from "@/components/calculator/StepTrail";
+import { TopNav } from "@/components/TopNav";
 
 export default function CalculatorPage() {
   const {
@@ -37,59 +39,52 @@ export default function CalculatorPage() {
     reset,
   } = useZakatCalculator();
 
-  const tracker = (
-    <ZakatTracker
-      assets={assets}
-      nisabData={nisabData}
-      nisabStandard={nisabStandard}
-    />
-  );
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#68BA7F]/20 flex items-center justify-center">
-        <p className="text-[#2d7a4f] text-lg font-medium">
-          Fetching current gold & silver prices...
-        </p>
-      </div>
+      <>
+        <TopNav />
+        <div className="min-h-screen pt-[72px] bg-[#68BA7F]/20 flex items-center justify-center">
+          <p className="text-[#2d7a4f] text-lg font-medium">
+            Fetching current gold & silver prices...
+          </p>
+        </div>
+      </>
     );
   }
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-[#68BA7F]/20 flex flex-col items-center justify-center gap-4">
-        <p className="text-gray-500 text-lg">
-          Could not fetch live prices. Using fallback values.
-        </p>
-        <button
-          onClick={nextStep}
-          className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
-        >
-          Continue Anyway
-        </button>
-      </div>
+      <>
+        <TopNav />
+        <div className="min-h-screen pt-[72px] bg-[#68BA7F]/20 flex flex-col items-center justify-center gap-4">
+          <p className="text-gray-500 text-lg">
+            Could not fetch live prices. Using fallback values.
+          </p>
+          <button
+            onClick={nextStep}
+            className="bg-black text-white px-8 py-4 rounded-2xl text-base font-semibold hover:bg-gray-800 transition-colors"
+          >
+            Continue Anyway
+          </button>
+        </div>
+      </>
     );
   }
 
   if (currentStepName === "results" && result) {
     return (
-      <div className="flex min-h-screen">
-        <CalculatorNav
-          steps={steps}
-          currentStepName={currentStepName}
-          visitedSteps={visitedSteps}
-          hasCompletedOnce={hasCompletedOnce}
-          selectedInvestments={selectedInvestments}
-          onGoToStep={goToStep}
-        />
-        <ZakatSummary
-          result={result}
-          nisabStandard={nisabStandard}
-          onReset={reset}
-          onBack={prevStep}
-          onEdit={goToStep}
-        />
-      </div>
+      <>
+        <TopNav />
+        <div className="pt-[72px]">
+          <ZakatSummary
+            result={result}
+            nisabStandard={nisabStandard}
+            onReset={reset}
+            onBack={prevStep}
+            onEdit={goToStep}
+          />
+        </div>
+      </>
     );
   }
 
@@ -116,16 +111,16 @@ export default function CalculatorPage() {
   );
 
   return (
-    <div className="flex min-h-screen">
-      <CalculatorNav
-        steps={steps}
+    <>
+    <TopNav />
+    <div className="min-h-screen pt-[72px] flex flex-col" style={{ background: '#f7fdf9' }}>
+      <StepTrail
         currentStepName={currentStepName}
         visitedSteps={visitedSteps}
-        hasCompletedOnce={hasCompletedOnce}
-        selectedInvestments={selectedInvestments}
         onGoToStep={goToStep}
       />
 
+      <div className="flex-1 flex flex-col">
       <>
         {currentStepName === "cash" && (
           <StepWrapper
@@ -140,7 +135,6 @@ export default function CalculatorPage() {
               </>
             }
             onEnter={nextStep}
-            tracker={tracker}
           >
             <AssetInput
               id="cash"
@@ -150,18 +144,19 @@ export default function CalculatorPage() {
               onChange={(val) => updateAssets({ cash: val })}
               onEnter={nextStep}
             />
-            <div className="mt-6">
+            <div className="mt-8">
               <div className="flex justify-end">
                 <button
                   onClick={nextStep}
-                  className="text-white px-8 py-3.5 rounded-2xl text-base font-semibold transition-colors"
-                  style={{ background: "#2d7a4f" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#68BA7F")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "#2d7a4f")
-                  }
+                  style={{
+                    background: '#2d7a4f', color: 'white',
+                    padding: '12px 32px', borderRadius: 50,
+                    fontSize: 15, fontWeight: 600, border: 'none',
+                    cursor: 'pointer', fontFamily: 'Open Sans, sans-serif',
+                    transition: 'background 0.2s',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#68BA7F")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#2d7a4f")}
                 >
                   Next →
                 </button>
@@ -177,7 +172,7 @@ export default function CalculatorPage() {
             title="Gold & Silver"
             description="Enter the current value of any gold or silver you own."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <GoldSilverInput
               id="gold"
@@ -205,7 +200,7 @@ export default function CalculatorPage() {
             totalSteps={totalSteps}
             title="Investments"
             description="Which of the following investments do you have? Select all that apply."
-            tracker={tracker}
+
           >
             <InvestmentSelector
               selected={selectedInvestments}
@@ -222,7 +217,7 @@ export default function CalculatorPage() {
             title="Shares & Stocks"
             description="Enter the value of your stock investments."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <AssetInput
               id="stocks"
@@ -251,7 +246,7 @@ export default function CalculatorPage() {
             title="Cryptocurrencies"
             description="Zakat is due on the current market value of your crypto."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <AssetInput
               id="crypto"
@@ -272,7 +267,7 @@ export default function CalculatorPage() {
             title="Pension & Retirement"
             description="If you have access to these funds, Zakat is payable on them."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <AssetInput
               id="retirementAccounts"
@@ -293,7 +288,7 @@ export default function CalculatorPage() {
             title="Investment Property"
             description="If you live in the property, Zakat is not due on it."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <AssetInput
               id="investmentProperty"
@@ -314,7 +309,7 @@ export default function CalculatorPage() {
             title="Business Inventory"
             description="Enter the value of goods and assets held for sale."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <AssetInput
               id="businessInventory"
@@ -334,7 +329,7 @@ export default function CalculatorPage() {
             title="Money Owed to You"
             description="Include any money that others owe you that is likely to be repaid."
             onEnter={nextStep}
-            tracker={tracker}
+
           >
             <AssetInput
               id="moneyOwed"
@@ -354,7 +349,7 @@ export default function CalculatorPage() {
             title="Liabilities"
             description="Enter any debts and liabilities you owe."
             onEnter={calculate}
-            tracker={tracker}
+
           >
             <AssetInput
               id="liabilities"
@@ -391,6 +386,22 @@ export default function CalculatorPage() {
           </StepWrapper>
         )}
       </>
+      </div>
+
+      {/* Sticky bottom tracker */}
+      <div style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40,
+        background: 'white', borderTop: '1px solid #e8f5ed',
+        boxShadow: '0 -4px 20px rgba(45,122,79,0.06)',
+        height: 72,
+      }}>
+        <ZakatTracker
+          assets={assets}
+          nisabData={nisabData}
+          nisabStandard={nisabStandard}
+        />
+      </div>
     </div>
+    </>
   );
 }

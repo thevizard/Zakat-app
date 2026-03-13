@@ -9,20 +9,14 @@ interface StepWrapperProps {
   description?: React.ReactNode
   children: React.ReactNode
   onEnter?: () => void
-  tracker?: React.ReactNode
 }
 
 export function StepWrapper({
-  currentStep,
-  totalSteps,
+  children,
   title,
   description,
-  children,
   onEnter,
-  tracker,
 }: StepWrapperProps) {
-  const progress = (currentStep / totalSteps) * 100
-
   useEffect(() => {
     if (!onEnter) return
     const handler = (e: KeyboardEvent) => {
@@ -33,23 +27,54 @@ export function StepWrapper({
   }, [onEnter])
 
   return (
-    <div className="flex-1 flex flex-col bg-white overflow-y-auto">
-      {/* Header bar */}
-      {/* Header bar */}
-      <div className="w-full bg-white px-8 py-4 shrink-0" >
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 py-10">
-        <div className="w-full max-w-lg">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 step-enter">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">{title}</h1>
-            {description && (
-              <p className="text-lg text-gray-500 mb-8 leading-relaxed">{description}</p>
-            )}
-            <div>{children}</div>
-          </div>
-          {tracker && <div className="mt-4">{tracker}</div>}
+    <div
+      className="flex-1 flex flex-col overflow-y-auto"
+      style={{ background: '#f7fdf9' }}
+    >
+      <div
+        className="flex-1 flex flex-col items-center justify-center px-6"
+        style={{ padding: '48px 24px 100px' }} // bottom padding for sticky tracker
+      >
+        <div
+          className="w-full step-enter"
+          style={{
+            maxWidth: 680,
+            background: 'white',
+            borderRadius: 24,
+            borderLeft: '4px solid #2d7a4f',
+            border: '1px solid #e0f0e8',
+            borderLeftWidth: 4,
+            borderLeftColor: '#2d7a4f',
+            boxShadow: '0 4px 32px rgba(45, 122, 79, 0.07)',
+            padding: '48px 48px 40px',
+          }}
+        >
+          <h1
+            style={{
+              fontSize: '2rem',
+              fontWeight: 700,
+              color: '#0f2419',
+              marginBottom: 8,
+              fontFamily: 'Open Sans, sans-serif',
+              lineHeight: 1.2,
+            }}
+          >
+            {title}
+          </h1>
+          {description && (
+            <p
+              style={{
+                fontSize: '1rem',
+                color: '#666',
+                marginBottom: 32,
+                lineHeight: 1.6,
+                fontFamily: 'Open Sans, sans-serif',
+              }}
+            >
+              {description}
+            </p>
+          )}
+          <div>{children}</div>
         </div>
       </div>
     </div>

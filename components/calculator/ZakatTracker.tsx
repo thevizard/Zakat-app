@@ -23,54 +23,75 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
   const result = calculateZakat(assets, nisabData, nisabStandard)
   const hasAssets = result.totalAssets > 0
 
+  const stats = [
+    {
+      label: 'Total Assets',
+      value: formatCurrency(result.totalAssets),
+      active: hasAssets,
+      color: '#0f2419',
+    },
+    {
+      label: 'Zakatable Wealth',
+      value: formatCurrency(result.zakatableWealth),
+      active: result.zakatableWealth > 0,
+      color: '#0f2419',
+    },
+    {
+      label: 'Zakat Due',
+      value: result.meetsNisab
+        ? formatCurrency(result.zakatDue)
+        : result.zakatableWealth > 0
+        ? 'Below Nisab'
+        : '$0',
+      active: result.meetsNisab,
+      color: result.meetsNisab ? '#2d7a4f' : result.zakatableWealth > 0 ? '#c07a00' : '#0f2419',
+    },
+  ]
+
   return (
-    <div className="w-full max-w-lg mx-auto mt-4">
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 px-6 py-4 flex items-center justify-between gap-4">
-
-        {/* Total Assets */}
-        <div className="flex-1 text-center">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
-            Total Assets
-          </p>
-          <p className={`text-xl font-bold transition-all duration-300 ${hasAssets ? 'text-gray-900' : 'text-gray-300'}`}>
-            {formatCurrency(result.totalAssets)}
-          </p>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 0,
+        height: '100%',
+        padding: '0 32px',
+      }}
+    >
+      {stats.map((stat, i) => (
+        <div key={stat.label} style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ textAlign: 'center', padding: '0 32px' }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#999',
+                textTransform: 'uppercase',
+                letterSpacing: 1,
+                fontFamily: 'Open Sans, sans-serif',
+                marginBottom: 3,
+              }}
+            >
+              {stat.label}
+            </div>
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: stat.active ? stat.color : '#ccc',
+                fontFamily: 'Open Sans, sans-serif',
+                transition: 'color 0.3s',
+              }}
+            >
+              {stat.value}
+            </div>
+          </div>
+          {i < stats.length - 1 && (
+            <div style={{ width: 1, height: 32, background: '#e8f5ed', flexShrink: 0 }} />
+          )}
         </div>
-
-        {/* Divider */}
-        <div className="w-px h-10 bg-gray-100" />
-
-        {/* Zakatable Wealth */}
-        <div className="flex-1 text-center">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
-            Zakatable
-          </p>
-          <p className={`text-xl font-bold transition-all duration-300 ${hasAssets ? 'text-gray-900' : 'text-gray-300'}`}>
-            {formatCurrency(result.zakatableWealth)}
-          </p>
-        </div>
-
-        {/* Divider */}
-        <div className="w-px h-10 bg-gray-100" />
-
-        {/* Zakat Due */}
-        <div className="flex-1 text-center">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
-            Zakat Due
-          </p>
-          <p className={`text-xl font-bold transition-all duration-300 ${
-            result.meetsNisab ? 'text-[#2d7a4f]' : result.zakatableWealth > 0 ? 'text-orange-400' : 'text-gray-300'
-          }`}>
-            {result.meetsNisab ? formatCurrency(result.zakatDue) : result.zakatableWealth > 0 ? 'Below Nisab' : '$0'}
-          </p>
-        </div>
-
-      </div>
-      {result.zakatableWealth > 0 && !result.meetsNisab && (
-        <p className="text-xs text-center text-gray-400 mt-2">
-          Nisab threshold: {formatCurrency(result.nisabThreshold)} — need {formatCurrency(result.nisabThreshold - result.zakatableWealth)} more
-        </p>
-      )}
+      ))}
     </div>
   )
 }

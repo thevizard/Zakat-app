@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { calculateNisabThresholds } from "@/lib/zakat/nisab";
 
 const TROY_OZ_TO_GRAMS = 31.1035;
-const FALLBACK_GOLD_PRICE = 96.5;  // USD per gram (~$3,000/oz)
+const FALLBACK_GOLD_PRICE = 161.9;  // USD per gram (~$5,035/oz)
 const FALLBACK_SILVER_PRICE = 1.04; // USD per gram (~$32/oz)
 
 export async function GET() {

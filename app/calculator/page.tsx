@@ -124,7 +124,7 @@ export default function CalculatorPage() {
       }}>
         <ZakatTracker
           assets={assets}
-          nisabData={nisabData}
+          nisabData={nisabData ?? null}
           nisabStandard={nisabStandard}
         />
       </div>

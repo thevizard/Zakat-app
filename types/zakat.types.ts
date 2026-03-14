@@ -25,6 +25,9 @@ export type NisabStandard = 'gold' | 'silver'
 export interface NisabData {
   goldPriceUSD: number
   silverPriceUSD: number
+  nisabGoldUSD: number
+  nisabSilverUSD: number
+  fetchedAt: string
 }
 
 export interface AssetBreakdownItem {

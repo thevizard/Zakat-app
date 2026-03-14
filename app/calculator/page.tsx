@@ -10,7 +10,6 @@ import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
 import { ZakatTracker } from "@/components/calculator/ZakatTracker";
 import { CalculatorNav } from "@/components/calculator/CalculatorNav";
 import { StepTrail } from "@/components/calculator/StepTrail";
-import { MultiAssetInput } from "@/components/calculator/MultiAssetInput";
 import { TopNav } from "@/components/TopNav";
 
 const GREEN = "#2d7a4f";
@@ -334,11 +333,13 @@ export default function CalculatorPage() {
             }
             onEnter={nextStep}
           >
-            <MultiAssetInput
-              legend="Cash & Bank Accounts"
+            <AssetInput
+              id="cash"
+              label="How much do you have in total?"
               tooltip="Include cash on hand and all bank accounts."
-              placeholder="e.g. Chase Checking"
+              value={assets.cash}
               onChange={(val) => updateAssets({ cash: val })}
+              onEnter={nextStep}
             />
             <div className="mt-8">
               <div className="flex justify-end">
@@ -415,17 +416,21 @@ export default function CalculatorPage() {
             onEnter={nextStep}
 
           >
-            <MultiAssetInput
-              legend="Active stocks — intention to sell within 12 months"
+            <AssetInput
+              id="stocks"
+              label="Active stocks — intention to sell within 12 months"
               tooltip="Treat this like cash. Enter the full market value."
-              placeholder="e.g. Fidelity, Robinhood"
+              value={assets.stocks}
               onChange={(val) => updateAssets({ stocks: val })}
+              onEnter={nextStep}
             />
-            <MultiAssetInput
-              legend="Passive stocks — long-term holdings"
+            <AssetInput
+              id="passiveStocks"
+              label="Passive stocks — long-term holdings"
               tooltip="We apply 30% of the market value as the zakatable portion."
-              placeholder="e.g. Vanguard 401k, Schwab"
+              value={assets.passiveStocks}
               onChange={(val) => updateAssets({ passiveStocks: val })}
+              onEnter={nextStep}
             />
             {navButtons(nextStep)}
           </StepWrapper>

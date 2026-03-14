@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useZakatCalculator } from "@/hooks/useZakatCalculator";
 import { StepWrapper } from "@/components/calculator/StepWrapper";
 import { AssetInput } from "@/components/calculator/AssetInput";
@@ -11,7 +12,184 @@ import { CalculatorNav } from "@/components/calculator/CalculatorNav";
 import { StepTrail } from "@/components/calculator/StepTrail";
 import { TopNav } from "@/components/TopNav";
 
+const GREEN = "#2d7a4f";
+const LIGHT_GREEN = "#68BA7F";
+const DARK = "#0f2419";
+
+const items = [
+  {
+    icon: "🏦",
+    title: "Bank & Cash",
+    desc: "Checking, savings balances & cash on hand",
+  },
+  {
+    icon: "📈",
+    title: "Investments",
+    desc: "Stocks, crypto, 401k/IRA — most recent statement",
+  },
+  {
+    icon: "🥇",
+    title: "Gold & Silver",
+    desc: "Weight or USD value of any gold/silver you own",
+  },
+  {
+    icon: "🤝",
+    title: "Money Owed To You",
+    desc: "Loans you've given out that are likely to be repaid",
+  },
+  {
+    icon: "💳",
+    title: "Short-Term Debts",
+    desc: "Credit card balances & loans due within the year",
+  },
+];
+
+function IntroPage({ onStart }: { onStart: () => void }) {
+  return (
+    <>
+      <TopNav />
+      <div
+        style={{
+          minHeight: "100vh",
+          paddingTop: 72,
+          background: "#f7fdf9",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "100px 24px 60px",
+        }}
+      >
+        <div style={{ maxWidth: 560, width: "100%" }}>
+
+          {/* Header */}
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: `${LIGHT_GREEN}22`,
+                border: `1px solid ${LIGHT_GREEN}44`,
+                borderRadius: 50,
+                padding: "6px 16px",
+                marginBottom: 20,
+              }}
+            >
+              <span style={{ fontSize: 13, color: LIGHT_GREEN, fontWeight: 600 }}>
+                Takes about 5 minutes
+              </span>
+            </div>
+            <h1
+              style={{
+                fontSize: "clamp(26px, 4vw, 36px)",
+                fontWeight: 700,
+                color: DARK,
+                lineHeight: 1.2,
+                marginBottom: 14,
+              }}
+            >
+              Before you begin
+            </h1>
+            <p
+              style={{
+                fontSize: 16,
+                color: "#666",
+                lineHeight: 1.7,
+                maxWidth: 420,
+                margin: "0 auto",
+              }}
+            >
+              Having a few numbers handy will help you get the most accurate result.
+              Don't worry — estimates are perfectly fine.
+            </p>
+          </div>
+
+          {/* Items */}
+          <div
+            style={{
+              background: "white",
+              borderRadius: 20,
+              border: "1px solid #e8f5ed",
+              overflow: "hidden",
+              marginBottom: 28,
+            }}
+          >
+            {items.map((item, i) => (
+              <div
+                key={item.title}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  padding: "16px 24px",
+                  borderBottom: i < items.length - 1 ? "1px solid #f0f7f3" : "none",
+                }}
+              >
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    background: `${LIGHT_GREEN}18`,
+                    borderRadius: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 22,
+                    flexShrink: 0,
+                  }}
+                >
+                  {item.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 2 }}>
+                    {item.title}
+                  </div>
+                  <div style={{ fontSize: 13, color: "#888", lineHeight: 1.5 }}>
+                    {item.desc}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <button
+            onClick={onStart}
+            style={{
+              width: "100%",
+              background: GREEN,
+              color: "white",
+              border: "none",
+              borderRadius: 16,
+              padding: "18px 24px",
+              fontSize: 16,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              transition: "background 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = LIGHT_GREEN)}
+            onMouseLeave={(e) => (e.currentTarget.style.background = GREEN)}
+          >
+            I'm ready — let's calculate
+            <span style={{ fontSize: 18 }}>→</span>
+          </button>
+
+          <p style={{ textAlign: "center", fontSize: 13, color: "#aaa", marginTop: 16 }}>
+            No account required. Your data never leaves your device.
+          </p>
+
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function CalculatorPage() {
+  const [started, setStarted] = useState(false);
   const {
     currentStep,
     currentStepName,
@@ -38,6 +216,10 @@ export default function CalculatorPage() {
     setSelectedInvestments,
     reset,
   } = useZakatCalculator();
+
+  if (!started) {
+    return <IntroPage onStart={() => setStarted(true)} />;
+  }
 
   if (isLoading) {
     return (

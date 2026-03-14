@@ -211,49 +211,6 @@ export default function LandingPage() {
             </a>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 16,
-              marginTop: 72,
-              maxWidth: 600,
-              margin: "72px auto 0",
-            }}
-          >
-            {[
-              { value: "2.5%", label: "Standard Zakat Rate" },
-              { value: "10K+", label: "Families Helped" },
-              { value: "$2M+", label: "Distributed in 2025" },
-            ].map((s) => (
-              <div
-                key={s.label}
-                style={{
-                  background: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 16,
-                  padding: "20px 16px",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                <div
-                  style={{ fontSize: 28, fontWeight: 700, color: LIGHT_GREEN }}
-                >
-                  {s.value}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "rgba(255,255,255,0.5)",
-                    marginTop: 4,
-                    fontFamily: "Open Sans, sans-serif",
-                  }}
-                >
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -702,7 +659,7 @@ export default function LandingPage() {
                 marginBottom: 12,
               }}
             >
-              Real Impact, Real Lives
+              Where It Goes
             </div>
             <h2
               style={{
@@ -711,7 +668,7 @@ export default function LandingPage() {
                 marginBottom: 16,
               }}
             >
-              See Where Your Zakat Goes
+              Your Zakat, Directed With Purpose
             </h2>
             <p
               style={{
@@ -721,8 +678,8 @@ export default function LandingPage() {
                 lineHeight: 1.7,
               }}
             >
-              100% of your Zakat reaches those who need it most. Every dollar
-              makes a difference.
+              Zakat is one of Islam's most powerful tools for change. Here are
+              the causes your contribution can support.
             </p>
           </AnimatedSection>
 
@@ -738,25 +695,25 @@ export default function LandingPage() {
               {
                 icon: "🍽️",
                 title: "Food Security",
-                stat: "1,200 families fed monthly",
+                stat: "Feeding families facing hunger",
                 delay: 0,
               },
               {
                 icon: "🏠",
                 title: "Shelter",
-                stat: "450 homes rebuilt",
+                stat: "Housing those without a safe home",
                 delay: 0.1,
               },
               {
                 icon: "🎓",
                 title: "Education",
-                stat: "3,800 students sponsored",
+                stat: "Keeping children in school",
                 delay: 0.2,
               },
               {
                 icon: "🏥",
                 title: "Healthcare",
-                stat: "8,500 treatments provided",
+                stat: "Delivering essential medical care",
                 delay: 0.3,
               },
             ].map((item) => (
@@ -793,147 +750,6 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <AnimatedSection>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 48,
-                alignItems: "center",
-                background: "#f8fdf9",
-                borderRadius: 24,
-                padding: 48,
-              }}
-            >
-              <div
-                style={{
-                  background: "#e8f5ee",
-                  borderRadius: 20,
-                  height: 320,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div style={{ textAlign: "center", color: LIGHT_GREEN }}>
-                  <div style={{ fontSize: 64 }}>🤲</div>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontFamily: "Open Sans, sans-serif",
-                      marginTop: 8,
-                      color: "#888",
-                    }}
-                  >
-                    Lives Changed
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div
-                  style={{
-                    display: "inline-block",
-                    background: `${LIGHT_GREEN}20`,
-                    borderRadius: 50,
-                    padding: "4px 14px",
-                    marginBottom: 16,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: GREEN,
-                      fontFamily: "Open Sans, sans-serif",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Success Story
-                  </span>
-                </div>
-                <h3
-                  style={{
-                    fontSize: 26,
-                    fontWeight: 700,
-                    marginBottom: 16,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  "Your Zakat Gave Us Hope"
-                </h3>
-                <p
-                  style={{
-                    fontSize: 15,
-                    color: "#666",
-                    lineHeight: 1.8,
-                    marginBottom: 16,
-                    fontFamily: "Open Sans, sans-serif",
-                  }}
-                >
-                  After losing everything in a devastating flood, Fatima and her
-                  three children had nowhere to turn. Through your generous
-                  Zakat contributions, we were able to provide them with
-                  shelter, food, and the resources to rebuild their lives.
-                </p>
-                <p
-                  style={{
-                    fontSize: 15,
-                    color: "#666",
-                    lineHeight: 1.8,
-                    fontFamily: "Open Sans, sans-serif",
-                  }}
-                >
-                  Today, Fatima runs a small tailoring business, her children
-                  are back in school, and they have a safe place to call home.
-                </p>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    marginTop: 20,
-                    background: `${LIGHT_GREEN}15`,
-                    borderRadius: 12,
-                    padding: "12px 16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      background: `${LIGHT_GREEN}30`,
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 18,
-                    }}
-                  >
-                    ❤️
-                  </div>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 700,
-                        fontFamily: "Open Sans, sans-serif",
-                      }}
-                    >
-                      Every contribution counts
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "#888",
-                        fontFamily: "Open Sans, sans-serif",
-                      }}
-                    >
-                      Your Zakat creates lasting change
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </AnimatedSection>
         </div>
       </section>
 
@@ -1197,12 +1013,13 @@ export default function LandingPage() {
           style={{
             maxWidth: 1100,
             margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr 1fr",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
             gap: 48,
           }}
         >
-          <div>
+          <div style={{ maxWidth: 340 }}>
             <img src="/logo.png" alt="Zakatly" style={{ height: 40, width: 'auto', objectFit: 'contain', marginBottom: 16, filter: 'brightness(0) invert(1)' }} />
             <p
               style={{
@@ -1216,62 +1033,16 @@ export default function LandingPage() {
               worldwide.
             </p>
           </div>
-          {[
-            {
-              title: "Quick Links",
-              links: [
-                "Calculate Zakat",
-                "About Zakat",
-                "Our Impact",
-                "Verified Recipients",
-              ],
-            },
-            {
-              title: "Resources",
-              links: [
-                "FAQs",
-                "Islamic Guidelines",
-                "Scholar Endorsements",
-                "Annual Reports",
-              ],
-            },
-            {
-              title: "Contact",
-              links: [
-                "support@zakatly.app",
-                "+1 (555) 123-4567",
-                "San Ramon, CA",
-              ],
-            },
-          ].map((col) => (
-            <div key={col.title}>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "white",
-                  marginBottom: 16,
-                  fontFamily: "Open Sans, sans-serif",
-                  letterSpacing: 0.5,
-                }}
-              >
-                {col.title}
-              </div>
-              {col.links.map((link) => (
-                <div
-                  key={link}
-                  style={{
-                    fontSize: 13,
-                    color: "rgba(255,255,255,0.4)",
-                    marginBottom: 10,
-                    fontFamily: "Open Sans, sans-serif",
-                  }}
-                >
-                  {link}
-                </div>
-              ))}
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "white", marginBottom: 16, fontFamily: "Open Sans, sans-serif", letterSpacing: 0.5 }}>
+              Contact
             </div>
-          ))}
+            {["support@zakatly.app", "San Ramon, CA"].map((link) => (
+              <div key={link} style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 10, fontFamily: "Open Sans, sans-serif" }}>
+                {link}
+              </div>
+            ))}
+          </div>
         </div>
         <div
           style={{
@@ -1284,22 +1055,10 @@ export default function LandingPage() {
             alignItems: "center",
           }}
         >
-          <span
-            style={{
-              fontSize: 13,
-              color: "rgba(255,255,255,0.3)",
-              fontFamily: "Open Sans, sans-serif",
-            }}
-          >
-            © 2025 Zakatly. All rights reserved.
+          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "Open Sans, sans-serif" }}>
+            © 2026 Zakatly. All rights reserved.
           </span>
-          <span
-            style={{
-              fontSize: 13,
-              color: "rgba(255,255,255,0.3)",
-              fontFamily: "Open Sans, sans-serif",
-            }}
-          >
+          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "Open Sans, sans-serif" }}>
             Made with ❤️ for the Ummah
           </span>
         </div>

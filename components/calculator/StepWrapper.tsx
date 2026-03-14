@@ -33,7 +33,7 @@ export function StepWrapper({
     >
       <div
         className="flex-1 flex flex-col items-center justify-center px-6"
-        style={{ padding: '48px 24px 100px' }} // bottom padding for sticky tracker
+        style={{ padding: '48px 24px' }}
       >
         <div
           className="w-full step-enter"

@@ -28,13 +28,13 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
       label: 'Total Assets',
       value: formatCurrency(result.totalAssets),
       active: hasAssets,
-      color: '#0f2419',
+      color: 'white',
     },
     {
       label: 'Zakatable Wealth',
       value: formatCurrency(result.zakatableWealth),
       active: result.zakatableWealth > 0,
-      color: '#0f2419',
+      color: 'white',
     },
     {
       label: 'Zakat Due',
@@ -44,7 +44,7 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
         ? 'Below Nisab'
         : '$0',
       active: result.meetsNisab,
-      color: result.meetsNisab ? '#2d7a4f' : result.zakatableWealth > 0 ? '#c07a00' : '#0f2419',
+      color: result.meetsNisab ? '#68BA7F' : result.zakatableWealth > 0 ? '#f0b429' : 'white',
     },
   ]
 
@@ -54,7 +54,6 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 0,
         height: '100%',
         padding: '0 32px',
       }}
@@ -66,9 +65,9 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
               style={{
                 fontSize: 11,
                 fontWeight: 600,
-                color: '#999',
+                color: 'rgba(255,255,255,0.45)',
                 textTransform: 'uppercase',
-                letterSpacing: 1,
+                letterSpacing: 1.5,
                 fontFamily: 'Open Sans, sans-serif',
                 marginBottom: 3,
               }}
@@ -79,7 +78,7 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
               style={{
                 fontSize: 18,
                 fontWeight: 700,
-                color: stat.active ? stat.color : '#ccc',
+                color: stat.active ? stat.color : 'rgba(255,255,255,0.2)',
                 fontFamily: 'Open Sans, sans-serif',
                 transition: 'color 0.3s',
               }}
@@ -88,7 +87,7 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
             </div>
           </div>
           {i < stats.length - 1 && (
-            <div style={{ width: 1, height: 32, background: '#e8f5ed', flexShrink: 0 }} />
+            <div style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />
           )}
         </div>
       ))}

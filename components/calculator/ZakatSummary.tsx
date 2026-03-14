@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { ZakatResult, NisabStandard } from '@/types/zakat.types'
+import { EmailReportModal } from './EmailReportModal'
 
 interface ZakatSummaryProps {
   result: ZakatResult
@@ -74,6 +75,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
   const [visible, setVisible] = useState(false)
   const [activeSlice, setActiveSlice] = useState<number | null>(null)
   const [heroInView, setHeroInView] = useState(true)
+  const [showEmailModal, setShowEmailModal] = useState(false)
   const heroRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
 
   return (
     <div style={{ fontFamily: 'Open Sans, sans-serif', color: '#0f2419' }}>
+      {showEmailModal && <EmailReportModal result={result} onClose={() => setShowEmailModal(false)} />}
 
       {/* ── STICKY COLLAPSED BAR ── */}
       <div style={{
@@ -129,16 +132,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
           padding: '14px 32px',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 32,
         }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#68BA7F', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>
-              {result.meetsNisab ? 'Zakat Due' : 'No Zakat Due'}
-            </div>
-            <div style={{ fontSize: 26, fontWeight: 700, color: 'white', lineHeight: 1 }}>
-              {result.meetsNisab ? formatCurrency(result.zakatDue) : formatCurrency(0)}
-            </div>
-          </div>
-          <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.15)' }} />
-          <div style={{ display: 'flex', gap: 28 }}>
+          <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
             {[
               { label: 'Total Assets',     value: formatCurrency(result.totalAssets) },
               { label: 'Zakatable Wealth', value: formatCurrency(result.zakatableWealth) },
@@ -148,6 +142,15 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                 <div style={{ fontSize: 16, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{s.value}</div>
               </div>
             ))}
+          </div>
+          <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.15)' }} />
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#68BA7F', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>
+              {result.meetsNisab ? 'Zakat Due' : 'No Zakat Due'}
+            </div>
+            <div style={{ fontSize: 26, fontWeight: 700, color: 'white', lineHeight: 1 }}>
+              {result.meetsNisab ? formatCurrency(result.zakatDue) : formatCurrency(0)}
+            </div>
           </div>
         </div>
       </div>
@@ -160,7 +163,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
       }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/mosque-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 13, 0.74)' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, transparent, white)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 90%, white 100%)' }} />
 
         <div style={{
           position: 'relative', zIndex: 1, textAlign: 'center',
@@ -417,6 +420,19 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
               borderRadius: 50, fontSize: F.actionBtn, fontWeight: 600, cursor: 'pointer',
             }}>
               Start Over
+            </button>
+            <button
+              onClick={() => setShowEmailModal(true)}
+              style={{
+                flex: 1, background: 'white', color: '#2d7a4f',
+                border: '1.5px solid #2d7a4f', padding: '16px 20px',
+                borderRadius: 50, fontSize: F.actionBtn, fontWeight: 600,
+                cursor: 'pointer', transition: 'background 0.2s, color 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#f0faf4' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'white' }}
+            >
+              ✉ Email Report
             </button>
             <button
               style={{

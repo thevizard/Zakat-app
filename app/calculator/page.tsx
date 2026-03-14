@@ -114,6 +114,21 @@ export default function CalculatorPage() {
     <>
     <TopNav />
     <div className="min-h-screen pt-[72px] flex flex-col" style={{ background: '#f7fdf9' }}>
+      {/* Tracker bar — directly below TopNav */}
+      <div style={{
+        background: '#1a3a2a',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 2px 16px rgba(0,0,0,0.18)',
+        height: 68,
+        flexShrink: 0,
+      }}>
+        <ZakatTracker
+          assets={assets}
+          nisabData={nisabData}
+          nisabStandard={nisabStandard}
+        />
+      </div>
+
       <StepTrail
         currentStepName={currentStepName}
         visitedSteps={visitedSteps}
@@ -388,19 +403,6 @@ export default function CalculatorPage() {
       </>
       </div>
 
-      {/* Sticky bottom tracker */}
-      <div style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40,
-        background: 'white', borderTop: '1px solid #e8f5ed',
-        boxShadow: '0 -4px 20px rgba(45,122,79,0.06)',
-        height: 72,
-      }}>
-        <ZakatTracker
-          assets={assets}
-          nisabData={nisabData}
-          nisabStandard={nisabStandard}
-        />
-      </div>
     </div>
     </>
   );

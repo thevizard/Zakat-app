@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { calculateNisabThresholds } from "@/lib/zakat/nisab";
 
-const FALLBACK_GOLD_PRICE = 85.0;
-const FALLBACK_SILVER_PRICE = 1.05;
+const TROY_OZ_TO_GRAMS = 31.1035;
+const FALLBACK_GOLD_PRICE = 96.5;  // USD per gram (~$3,000/oz)
+const FALLBACK_SILVER_PRICE = 1.04; // USD per gram (~$32/oz)
 
 export async function GET() {
   try {
@@ -25,8 +26,13 @@ export async function GET() {
     const goldData = await goldRes.json();
     const silverData = await silverRes.json();
 
-    const goldPrice = goldData?.[0]?.price ?? FALLBACK_GOLD_PRICE;
-    const silverPrice = silverData?.[0]?.price ?? FALLBACK_SILVER_PRICE;
+    // metals.live returns price per troy oz — convert to per gram
+    const goldPrice = goldData?.[0]?.price
+      ? goldData[0].price / TROY_OZ_TO_GRAMS
+      : FALLBACK_GOLD_PRICE;
+    const silverPrice = silverData?.[0]?.price
+      ? silverData[0].price / TROY_OZ_TO_GRAMS
+      : FALLBACK_SILVER_PRICE;
 
     const nisabData = calculateNisabThresholds(goldPrice, silverPrice);
     return NextResponse.json(nisabData);

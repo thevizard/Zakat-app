@@ -2,8 +2,6 @@ import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
 import { ZakatResult } from '@/types/zakat.types'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 function fmt(amount: number) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -167,6 +165,7 @@ function buildEmailHTML(result: ZakatResult): string {
 }
 
 export async function POST(req: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   try {
     const { email, result, pdfBase64 } = await req.json() as {
       email: string

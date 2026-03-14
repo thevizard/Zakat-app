@@ -40,7 +40,7 @@ const items = [
   {
     icon: "💳",
     title: "Short-Term Debts",
-    desc: "Credit card balances & loans due within the year",
+    desc: "Credit card balances & loans due in the next 30 days",
   },
 ];
 

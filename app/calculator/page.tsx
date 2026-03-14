@@ -188,6 +188,113 @@ function IntroPage({ onStart }: { onStart: () => void }) {
   );
 }
 
+const liabilityCategories = [
+  {
+    icon: "🏠",
+    title: "Housing",
+    desc: "Upcoming rent or mortgage payment",
+  },
+  {
+    icon: "🛡️",
+    title: "Insurance",
+    desc: "Upcoming home, auto, or medical insurance payment",
+  },
+  {
+    icon: "💡",
+    title: "Utilities",
+    desc: "Upcoming energy, water, and internet bills",
+  },
+  {
+    icon: "🚗",
+    title: "Transportation",
+    desc: "Upcoming car payment or lease",
+  },
+  {
+    icon: "💳",
+    title: "Credit Cards & Loans",
+    desc: "Minimum payment due on credit cards, personal or student loans",
+  },
+];
+
+function LiabilitiesExplainer() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          background: "none",
+          border: "none",
+          padding: 0,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          color: "#2d7a4f",
+          fontSize: 13,
+          fontWeight: 600,
+          fontFamily: "Open Sans, sans-serif",
+        }}
+      >
+        <span
+          style={{
+            display: "inline-block",
+            transition: "transform 0.2s",
+            transform: open ? "rotate(90deg)" : "rotate(0deg)",
+            fontSize: 11,
+          }}
+        >
+          ▶
+        </span>
+        What can I include as a liability?
+      </button>
+
+      {open && (
+        <div
+          style={{
+            marginTop: 12,
+            background: "#f7fdf9",
+            border: "1px solid #e0f0e8",
+            borderRadius: 16,
+            padding: "20px 20px 16px",
+          }}
+        >
+          {/* Categories */}
+          <p style={{ fontSize: 12, fontWeight: 700, color: "#2d7a4f", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 12 }}>
+            Examples of expenses
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+            {liabilityCategories.map((cat) => (
+              <div key={cat.title} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{cat.icon}</span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0f2419" }}>{cat.title}</div>
+                  <div style={{ fontSize: 13, color: "#666", lineHeight: 1.5 }}>{cat.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Rule */}
+          <div
+            style={{
+              borderTop: "1px solid #e0f0e8",
+              paddingTop: 14,
+            }}
+          >
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#0f2419", marginBottom: 6 }}>
+              Your next upcoming payment is what gets deducted
+            </p>
+            <p style={{ fontSize: 13, color: "#666", lineHeight: 1.6, margin: 0 }}>
+              Only deduct what is <strong>immediately due</strong> — meaning your next single payment, not the full outstanding balance. For example, if you pay car insurance monthly, deduct one month's premium, not the full year.
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CalculatorPage() {
   const [started, setStarted] = useState(false);
   const {
@@ -544,18 +651,17 @@ export default function CalculatorPage() {
             currentStep={currentStep}
             totalSteps={totalSteps}
             title="Liabilities"
-            description="Enter any debts and liabilities you owe."
+            description="Enter the total of your immediately due expenses and debts."
             onEnter={calculate}
-
           >
             <AssetInput
               id="liabilities"
               label="How much do you owe in total?"
-              tooltip="Money you owe others — loans, credit card balances, etc. Include full credit card balances."
               value={assets.liabilities}
               onChange={(val) => updateAssets({ liabilities: val })}
               onEnter={calculate}
             />
+            <LiabilitiesExplainer />
 
             <div className="mt-6">
               <div className="flex justify-between">

@@ -11,6 +11,18 @@ interface AssetInputProps {
   onEnter?: () => void;
 }
 
+// Safely evaluates simple addition/subtraction expressions like "4200 + 12000 - 500"
+function evalExpression(raw: string): number | null {
+  const cleaned = raw.replace(/,/g, "").trim();
+  if (!cleaned) return null;
+  // Only allow digits, spaces, dots, + and -
+  if (!/^[\d\s.+\-]+$/.test(cleaned)) return null;
+  const parts = cleaned.split(/(?=[+\-])/).map((p) => parseFloat(p.trim()));
+  if (parts.some(isNaN)) return null;
+  const result = parts.reduce((a, b) => a + b, 0);
+  return result < 0 ? 0 : result;
+}
+
 export function AssetInput({
   id,
   label,
@@ -22,6 +34,7 @@ export function AssetInput({
   const [display, setDisplay] = useState(
     value ? value.toLocaleString("en-US") : "",
   );
+  const [preview, setPreview] = useState<number | null>(null);
 
   useEffect(() => {
     if (value === 0) setDisplay("");
@@ -29,26 +42,30 @@ export function AssetInput({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value;
-
-    // Allow digits, commas, and one decimal point
-    if (!/^[\d,]*\.?\d*$/.test(raw)) return;
-
+    // Allow digits, commas, decimal, +, -, spaces
+    if (!/^[\d,.\s+\-]*$/.test(raw)) return;
     setDisplay(raw);
 
-    const numeric = parseFloat(raw.replace(/,/g, ""));
-    onChange(isNaN(numeric) ? 0 : numeric);
+    const hasOperator = /[+\-]/.test(raw.replace(/^-/, "")); // ignore leading minus
+    if (hasOperator) {
+      const result = evalExpression(raw);
+      setPreview(result);
+      if (result !== null) onChange(result);
+    } else {
+      setPreview(null);
+      const numeric = parseFloat(raw.replace(/,/g, ""));
+      onChange(isNaN(numeric) ? 0 : numeric);
+    }
   }
 
   function handleBlur() {
-    // On blur, format nicely if it's a valid number
-    const numeric = parseFloat(display.replace(/,/g, ""));
-    if (!isNaN(numeric)) {
+    const result = evalExpression(display);
+    if (result !== null) {
       setDisplay(
-        numeric.toLocaleString("en-US", {
-          minimumFractionDigits: display.includes(".") ? 2 : 0,
-          maximumFractionDigits: 2,
-        }),
+        result.toLocaleString("en-US", { maximumFractionDigits: 2 }),
       );
+      setPreview(null);
+      onChange(result);
     }
   }
 
@@ -80,6 +97,11 @@ export function AssetInput({
           style={{ fontFamily: "var(--font-body), Open Sans, sans-serif" }}
         />
       </div>
+      {preview !== null && (
+        <p className="text-sm font-semibold mt-2 ml-1" style={{ color: "#2d7a4f" }}>
+          = ${preview.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+        </p>
+      )}
       {tooltip && (
         <p className="text-sm text-gray-400 mt-2 ml-1 leading-relaxed">
           {tooltip}

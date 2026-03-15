@@ -4,6 +4,7 @@ import { AssetInputs, NisabData, NisabStandard, ZakatResult, InvestmentType } fr
 interface CalculatorState {
   currentStep: number
   nisabStandard: NisabStandard
+  passiveInvestmentRate: 0.3 | 1.0
   assets: AssetInputs
   nisabData: NisabData | null
   result: ZakatResult | null
@@ -13,6 +14,7 @@ interface CalculatorState {
   visitedSteps: string[]
   setStep: (step: number) => void
   setNisabStandard: (standard: NisabStandard) => void
+  setPassiveInvestmentRate: (rate: 0.3 | 1.0) => void
   updateAssets: (updates: Partial<AssetInputs>) => void
   setNisabData: (data: NisabData) => void
   setResult: (result: ZakatResult) => void
@@ -41,6 +43,7 @@ const defaultAssets: AssetInputs = {
 export const useCalculatorStore = create<CalculatorState>((set) => ({
   currentStep: 1,
   nisabStandard: 'gold',
+  passiveInvestmentRate: 0.3,
   assets: defaultAssets,
   nisabData: null,
   result: null,
@@ -50,6 +53,7 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
   visitedSteps: ['cash'],
   setStep: (step) => set({ currentStep: step }),
   setNisabStandard: (standard) => set({ nisabStandard: standard }),
+  setPassiveInvestmentRate: (rate) => set({ passiveInvestmentRate: rate }),
   updateAssets: (updates) =>
     set((state) => ({ assets: { ...state.assets, ...updates } })),
   setNisabData: (data) => set({ nisabData: data }),
@@ -62,13 +66,14 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
       ? state.visitedSteps
       : [...state.visitedSteps, step],
   })),
-  reset: () => set((state) => ({
-      currentStep: 1,
-  assets: defaultAssets,
-  result: null,
-  selectedInvestments: [],
-  isEditing: false,
-  hasCompletedOnce: false,
-  visitedSteps: ['cash'],
+  reset: () => set(() => ({
+    currentStep: 1,
+    passiveInvestmentRate: 0.3,
+    assets: defaultAssets,
+    result: null,
+    selectedInvestments: [],
+    isEditing: false,
+    hasCompletedOnce: false,
+    visitedSteps: ['cash'],
   })),
 }))

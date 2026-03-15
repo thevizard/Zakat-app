@@ -4,10 +4,11 @@ import { AssetInputs, NisabData, NisabStandard, ZakatResult, AssetBreakdownItem 
 export function calculateZakat(
   assets: AssetInputs,
   nisabData: NisabData,
-  nisabStandard: NisabStandard = 'gold'
+  nisabStandard: NisabStandard = 'gold',
+  passiveInvestmentRate: number = 0.3
 ): ZakatResult {
-  const zakatableRetirement = assets.retirementAccounts * 0.3
-  const zakatablePassiveStocks = assets.passiveStocks * 0.3
+  const zakatableRetirement = assets.retirementAccounts * passiveInvestmentRate
+  const zakatablePassiveStocks = assets.passiveStocks * passiveInvestmentRate
 
   const nisabThreshold =
     nisabStandard === 'gold'
@@ -62,7 +63,7 @@ export function calculateZakat(
       zakatDue: assets.stocks * rate,
     },
     {
-      label: 'Passive Stocks (30%)',
+      label: `Passive Stocks (${passiveInvestmentRate * 100}%)`,
       stepName: 'stocks',
       entered: assets.passiveStocks,
       zakatable: zakatablePassiveStocks,
@@ -76,7 +77,7 @@ export function calculateZakat(
       zakatDue: assets.crypto * rate,
     },
     {
-      label: 'Retirement Accounts (30%)',
+      label: `Retirement Accounts (${passiveInvestmentRate * 100}%)`,
       stepName: 'retirement',
       entered: assets.retirementAccounts,
       zakatable: zakatableRetirement,

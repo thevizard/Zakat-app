@@ -19,6 +19,7 @@ type Step =
 export function useZakatCalculator() {
   const store = useCalculatorStore()
   const { data: nisabData, isLoading, isError } = useNisab()
+  const passiveInvestmentRate = store.passiveInvestmentRate
 
   const steps: Step[] = [
   'cash',
@@ -49,7 +50,7 @@ export function useZakatCalculator() {
 
   function calculate() {
     if (!nisabData) return
-    const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+    const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
     store.setResult(result)
     store.setIsEditing(false)
     store.setHasCompletedOnce(true)
@@ -59,7 +60,7 @@ export function useZakatCalculator() {
 
   function skipToEnd() {
     if (!nisabData) return
-    const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+    const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
     store.setResult(result)
     store.setIsEditing(false)
     store.setHasCompletedOnce(true)
@@ -68,19 +69,19 @@ export function useZakatCalculator() {
   }
 
   function goToStep(stepName: string) {
-  const index = steps.indexOf(stepName as Step)
-  if (index !== -1) {
-    if (stepName === 'results' && nisabData) {
-      const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
-      store.setResult(result)
+    const index = steps.indexOf(stepName as Step)
+    if (index !== -1) {
+      if (stepName === 'results' && nisabData) {
+        const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
+        store.setResult(result)
+      }
+      store.setStep(index + 1)
     }
-    store.setStep(index + 1)
   }
-}
 
   function backToSummary() {
     if (!nisabData) return
-    const result = calculateZakat(store.assets, nisabData, store.nisabStandard)
+    const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
     store.setResult(result)
     store.setIsEditing(false)
     store.setStep(totalSteps)
@@ -95,6 +96,8 @@ export function useZakatCalculator() {
     result: store.result,
     nisabData,
     nisabStandard: store.nisabStandard,
+    passiveInvestmentRate,
+    setPassiveInvestmentRate: store.setPassiveInvestmentRate,
     selectedInvestments: store.selectedInvestments,
     isEditing: store.isEditing,
     hasCompletedOnce: store.hasCompletedOnce,

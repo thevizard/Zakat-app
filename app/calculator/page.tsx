@@ -295,6 +295,86 @@ function LiabilitiesExplainer() {
   );
 }
 
+function PassiveInvestmentToggle({
+  rate,
+  onChange,
+}: {
+  rate: 0.3 | 1.0
+  onChange: (rate: 0.3 | 1.0) => void
+}) {
+  return (
+    <div
+      style={{
+        background: "#f7fdf9",
+        border: "1px solid #e0f0e8",
+        borderRadius: 16,
+        padding: "16px 18px",
+        marginBottom: 8,
+      }}
+    >
+      {/* Scholarly basis */}
+      <p style={{ fontSize: 13, color: "#555", lineHeight: 1.6, marginBottom: 14 }}>
+        By default we apply <strong>30%</strong> of the market value as zakatable —
+        based on the methodology of{" "}
+        <a
+          href="https://joebradford.net/zakat-on-stocks-and-investments-a-complete-guide-for-brokerage-accounts/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#2d7a4f", fontWeight: 600, textDecoration: "underline" }}
+        >
+          Sh. Joe Bradford
+        </a>
+        , who calculates Zakat on the zakatable assets held by the underlying company rather than the full market value.
+      </p>
+
+      {/* Toggle */}
+      <div style={{ display: "flex", gap: 8, marginBottom: rate === 1.0 ? 12 : 0 }}>
+        <button
+          onClick={() => onChange(0.3)}
+          style={{
+            flex: 1,
+            padding: "9px 0",
+            borderRadius: 10,
+            border: rate === 0.3 ? "2px solid #2d7a4f" : "2px solid #e5e7eb",
+            background: rate === 0.3 ? "#2d7a4f" : "white",
+            color: rate === 0.3 ? "white" : "#666",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: "Open Sans, sans-serif",
+          }}
+        >
+          30% — Scholar method
+        </button>
+        <button
+          onClick={() => onChange(1.0)}
+          style={{
+            flex: 1,
+            padding: "9px 0",
+            borderRadius: 10,
+            border: rate === 1.0 ? "2px solid #2d7a4f" : "2px solid #e5e7eb",
+            background: rate === 1.0 ? "#2d7a4f" : "white",
+            color: rate === 1.0 ? "white" : "#666",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: "Open Sans, sans-serif",
+          }}
+        >
+          100% — Full value
+        </button>
+      </div>
+
+      {/* Disclaimer when 100% selected */}
+      {rate === 1.0 && (
+        <p style={{ fontSize: 12, color: "#888", lineHeight: 1.6, margin: 0 }}>
+          ⚠️ Paying on 100% is the more cautious approach and is valid. However, most contemporary scholars consider it an overpayment for passive investments. This is your choice and both are acceptable.
+        </p>
+      )}
+    </div>
+  )
+}
+
 export default function CalculatorPage() {
   const [started, setStarted] = useState(false);
   const {
@@ -306,6 +386,8 @@ export default function CalculatorPage() {
     result,
     nisabData,
     nisabStandard,
+    passiveInvestmentRate,
+    setPassiveInvestmentRate,
     selectedInvestments,
     isEditing,
     hasCompletedOnce,
@@ -534,10 +616,13 @@ export default function CalculatorPage() {
             <AssetInput
               id="passiveStocks"
               label="Passive stocks — long-term holdings"
-              tooltip="We apply 30% of the market value as the zakatable portion."
               value={assets.passiveStocks}
               onChange={(val) => updateAssets({ passiveStocks: val })}
               onEnter={nextStep}
+            />
+            <PassiveInvestmentToggle
+              rate={passiveInvestmentRate}
+              onChange={setPassiveInvestmentRate}
             />
             {navButtons(nextStep)}
           </StepWrapper>
@@ -576,10 +661,14 @@ export default function CalculatorPage() {
             <AssetInput
               id="retirementAccounts"
               label="What is the total value of your retirement accounts?"
-              tooltip="We apply 30% of the balance as zakatable — based on contemporary scholarly consensus including Sh. Joe Bradford. Only include funds you can withdraw, even if a penalty applies."
+              tooltip="Only include funds you can withdraw, even if a penalty applies."
               value={assets.retirementAccounts}
               onChange={(val) => updateAssets({ retirementAccounts: val })}
               onEnter={nextStep}
+            />
+            <PassiveInvestmentToggle
+              rate={passiveInvestmentRate}
+              onChange={setPassiveInvestmentRate}
             />
             {navButtons(nextStep)}
           </StepWrapper>

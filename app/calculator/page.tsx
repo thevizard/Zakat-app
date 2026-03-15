@@ -44,143 +44,140 @@ const items = [
   },
 ];
 
+const GOLD = "#c9a96e";
+
 function IntroPage({ onStart }: { onStart: () => void }) {
   return (
     <>
       <TopNav />
-      <div
-        style={{
-          minHeight: "100vh",
-          paddingTop: 72,
-          background: "#f7fdf9",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "100px 24px 60px",
-        }}
-      >
-        <div style={{ maxWidth: 560, width: "100%" }}>
+      <div style={{ minHeight: "100vh", paddingTop: 64, background: "#f2f7f4", fontFamily: "Open Sans, sans-serif" }}>
 
-          {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                background: `${LIGHT_GREEN}22`,
-                border: `1px solid ${LIGHT_GREEN}44`,
-                borderRadius: 50,
-                padding: "6px 16px",
-                marginBottom: 20,
-              }}
-            >
-              <span style={{ fontSize: 13, color: LIGHT_GREEN, fontWeight: 600 }}>
-                Takes about 5 minutes
-              </span>
+        {/* ── HERO ── */}
+        <div style={{ background: DARK, position: "relative", overflow: "hidden", padding: "clamp(56px,8vw,96px) 24px clamp(52px,7vw,88px)" }}>
+
+          {/* Gold top line */}
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${GOLD} 25%, ${GOLD} 75%, transparent)` }} />
+
+          {/* Islamic geometric SVG tile */}
+          <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.045, pointerEvents: "none" }} xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="islamic-geo" x="0" y="0" width="72" height="72" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="72" height="72" fill="none" />
+                {/* Outer square rotated 45° */}
+                <rect x="12" y="12" width="48" height="48" fill="none" stroke="white" strokeWidth="0.6" transform="rotate(45 36 36)" />
+                {/* Inner square */}
+                <rect x="20" y="20" width="32" height="32" fill="none" stroke="white" strokeWidth="0.4" />
+                {/* Center circle */}
+                <circle cx="36" cy="36" r="10" fill="none" stroke="white" strokeWidth="0.4" />
+                {/* Corner dots */}
+                <circle cx="0"  cy="0"  r="2.5" fill="white" />
+                <circle cx="72" cy="0"  r="2.5" fill="white" />
+                <circle cx="0"  cy="72" r="2.5" fill="white" />
+                <circle cx="72" cy="72" r="2.5" fill="white" />
+                {/* Mid-edge dots */}
+                <circle cx="36" cy="0"  r="1.2" fill="white" />
+                <circle cx="0"  cy="36" r="1.2" fill="white" />
+                <circle cx="72" cy="36" r="1.2" fill="white" />
+                <circle cx="36" cy="72" r="1.2" fill="white" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#islamic-geo)" />
+          </svg>
+
+          {/* Radial glow */}
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 100% at 50% 50%, rgba(45,122,79,0.22) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+          {/* Decorative star — right side */}
+          <svg style={{ position: "absolute", right: "5%", top: "50%", transform: "translateY(-50%)", opacity: 0.07, pointerEvents: "none" }} width="280" height="280" viewBox="0 0 100 100">
+            <polygon points="50,4 61,35 95,35 68,56 79,90 50,69 21,90 32,56 5,35 39,35" fill="none" stroke="white" strokeWidth="1.2" />
+            <polygon points="50,16 58,38 82,38 63,52 70,75 50,62 30,75 37,52 18,38 42,38" fill="none" stroke="white" strokeWidth="0.6" />
+            <circle cx="50" cy="50" r="14" fill="none" stroke="white" strokeWidth="0.5" />
+          </svg>
+
+          {/* Hero text */}
+          <div style={{ maxWidth: 620, margin: "0 auto", position: "relative", zIndex: 1 }}>
+            {/* Badge */}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.22)", borderRadius: 50, padding: "5px 16px 5px 8px", marginBottom: 36 }}>
+              <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(201,169,110,0.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD }} />
+              </div>
+              <span style={{ fontSize: 11, color: GOLD, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase" }}>Takes about 5 minutes</span>
             </div>
-            <h1
-              style={{
-                fontSize: "clamp(26px, 4vw, 36px)",
-                fontWeight: 700,
-                color: DARK,
-                lineHeight: 1.2,
-                marginBottom: 14,
-              }}
-            >
-              Before you begin
+
+            <h1 style={{ fontSize: "clamp(34px,5.5vw,58px)", fontWeight: 800, color: "white", lineHeight: 1.12, marginBottom: 22, letterSpacing: "-0.5px" }}>
+              Know what you owe.<br />
+              <span style={{ color: LIGHT_GREEN }}>Give with clarity.</span>
             </h1>
-            <p
-              style={{
-                fontSize: 16,
-                color: "#666",
-                lineHeight: 1.7,
-                maxWidth: 420,
-                margin: "0 auto",
-              }}
-            >
-              Having a few numbers handy will help you get the most accurate result.
-              Don't worry — estimates are perfectly fine.
+
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.52)", lineHeight: 1.85, maxWidth: 440 }}>
+              A few numbers is all it takes. Zakatly handles the calculation — built on contemporary scholarly guidance, not guesswork.
             </p>
           </div>
+        </div>
 
-          {/* Items */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: 20,
-              border: "1px solid #e8f5ed",
-              overflow: "hidden",
-              marginBottom: 28,
-            }}
-          >
+        {/* ── CHECKLIST ── */}
+        <div style={{ maxWidth: 620, margin: "0 auto", padding: "clamp(36px,5vw,56px) 24px 48px" }}>
+
+          {/* Section label */}
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 22 }}>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, #c8ddd0, transparent)" }} />
+            <span style={{ fontSize: 10, fontWeight: 800, color: "#7aaa8a", letterSpacing: "0.22em", textTransform: "uppercase", whiteSpace: "nowrap" }}>Have these ready</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(270deg, #c8ddd0, transparent)" }} />
+          </div>
+
+          {/* 2-column grid, last item spans full width */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 32 }}>
             {items.map((item, i) => (
-              <div
-                key={item.title}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 16,
-                  padding: "16px 24px",
-                  borderBottom: i < items.length - 1 ? "1px solid #f0f7f3" : "none",
-                }}
-              >
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    background: `${LIGHT_GREEN}18`,
-                    borderRadius: 12,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 22,
-                    flexShrink: 0,
-                  }}
-                >
-                  {item.icon}
+              <div key={item.title} style={{
+                background: "white",
+                borderRadius: 16,
+                padding: "18px 20px",
+                display: "flex", alignItems: "flex-start", gap: 14,
+                border: "1px solid #e2efe8",
+                boxShadow: "0 2px 16px rgba(15,36,25,0.05)",
+                gridColumn: i === items.length - 1 ? "span 2" : undefined,
+              }}>
+                {/* Number badge */}
+                <div style={{
+                  width: 34, height: 34, borderRadius: 10,
+                  background: DARK, flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: LIGHT_GREEN }}>{i + 1}</span>
                 </div>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: DARK, marginBottom: 2 }}>
-                    {item.title}
-                  </div>
-                  <div style={{ fontSize: 13, color: "#888", lineHeight: 1.5 }}>
-                    {item.desc}
-                  </div>
+                <div style={{ paddingTop: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: DARK, marginBottom: 4 }}>{item.title}</div>
+                  <div style={{ fontSize: 12, color: "#8a9e93", lineHeight: 1.55 }}>{item.desc}</div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* CTA */}
+          {/* CTA button */}
           <button
             onClick={onStart}
             style={{
-              width: "100%",
-              background: GREEN,
-              color: "white",
-              border: "none",
-              borderRadius: 16,
-              padding: "18px 24px",
-              fontSize: 16,
-              fontWeight: 700,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
+              width: "100%", background: GREEN, color: "white", border: "none",
+              borderRadius: 14, padding: "0 24px", height: 60,
+              fontSize: 16, fontWeight: 700, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
               transition: "background 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = LIGHT_GREEN)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = GREEN)}
+            onMouseEnter={e => (e.currentTarget.style.background = "#246040")}
+            onMouseLeave={e => (e.currentTarget.style.background = GREEN)}
           >
-            I'm ready — let's calculate
-            <span style={{ fontSize: 18 }}>→</span>
+            <span />
+            <span>I'm ready — let's calculate</span>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>→</div>
           </button>
 
-          <p style={{ textAlign: "center", fontSize: 13, color: "#aaa", marginTop: 16 }}>
-            No account required. Your data never leaves your device.
-          </p>
+          {/* Privacy note */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginTop: 18 }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#b0bfb6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span style={{ fontSize: 12, color: "#b0bfb6" }}>No account needed · Your data never leaves this device</span>
+          </div>
 
         </div>
       </div>

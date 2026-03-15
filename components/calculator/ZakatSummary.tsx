@@ -231,7 +231,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
 
           {/* Charts row */}
           {result.breakdown.length > 0 && (
-            <div className="summary-charts-grid">
+            <div className="summary-charts-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28 }}>
 
               {/* Donut */}
               <div style={CARD}>
@@ -325,7 +325,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                 <thead>
                   <tr style={{ borderBottom: '2px solid #e8f5ed' }}>
                     {['Asset / Liability', 'Value', 'Zakatable', 'Zakat @ 2.5%', ''].map((h, i) => (
-                      <th key={i} className={i === 1 ? 'summary-table-hide-mobile' : ''} style={{
+                      <th key={i} className={i === 1 ? 'summary-col-value' : ''} style={{
                         textAlign: i === 0 ? 'left' : 'right',
                         fontSize: F.tableHeader, fontWeight: 700,
                         color: i === 3 ? '#2d7a4f' : '#aaa',
@@ -342,7 +342,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                   {result.breakdown.map((item, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid #f0f8f3' }}>
                       <td style={{ padding: '18px 0', fontSize: F.tableRow, color: '#333' }}>{item.label}</td>
-                      <td className="summary-table-hide-mobile" style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#888' }}>{formatCurrency(item.entered)}</td>
+                      <td className="summary-col-value" style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#888' }}>{formatCurrency(item.entered)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, fontWeight: 600, color: '#333' }}>{formatCurrency(item.zakatable)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, fontWeight: 700, color: '#2d7a4f' }}>{formatCurrency(item.zakatable * 0.025)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right' }}>
@@ -365,7 +365,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                   {result.totalLiabilities > 0 && (
                     <tr style={{ borderBottom: '1px solid #f0f8f3' }}>
                       <td style={{ padding: '18px 0', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>Liabilities</td>
-                      <td className="summary-table-hide-mobile" style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>−{formatCurrency(result.totalLiabilities)}</td>
+                      <td className="summary-col-value" style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>−{formatCurrency(result.totalLiabilities)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>−{formatCurrency(result.totalLiabilities)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>deducted</td>
                       <td style={{ padding: '18px 0', textAlign: 'right' }}>
@@ -407,15 +407,15 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
           </div>
 
           {/* Action buttons */}
-          <div className="summary-action-btns">
-            <button onClick={onBack} className="btn-secondary" style={{
+          <div className="summary-action-btns" style={{ display: 'flex', gap: 14 }}>
+            <button onClick={onBack} className="summary-btn-secondary" style={{
               flex: 1, background: 'white', color: '#555',
               border: '1px solid #e0e0e0', padding: '16px 20px',
               borderRadius: 50, fontSize: F.actionBtn, fontWeight: 600, cursor: 'pointer',
             }}>
               ← Back
             </button>
-            <button onClick={onReset} className="btn-secondary" style={{
+            <button onClick={onReset} className="summary-btn-secondary" style={{
               flex: 1, background: 'white', color: '#555',
               border: '1px solid #e0e0e0', padding: '16px 20px',
               borderRadius: 50, fontSize: F.actionBtn, fontWeight: 600, cursor: 'pointer',
@@ -424,7 +424,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
             </button>
             <button
               onClick={() => setShowEmailModal(true)}
-              className="btn-secondary"
+              className="summary-btn-secondary"
               style={{
                 flex: 1, background: 'white', color: '#2d7a4f',
                 border: '1.5px solid #2d7a4f', padding: '16px 20px',
@@ -437,7 +437,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
               ✉ Email Report
             </button>
             <button
-              className="btn-primary"
+              className="summary-btn-primary"
               style={{
                 flex: 2, background: '#2d7a4f', color: 'white',
                 border: 'none', padding: '16px 20px',

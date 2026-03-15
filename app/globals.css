@@ -200,59 +200,32 @@
   }
 }
 
-/* ── Responsive: ZakatSummary charts grid ── */
-.summary-charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-@media (max-width: 700px) {
+/* ── Touch-device only: ZakatSummary layout overrides ──
+   (hover: none) and (pointer: coarse) = phones & tablets only.
+   Desktop browsers are never affected, even when resized small. ── */
+@media (hover: none) and (pointer: coarse) {
+  /* Charts: stack vertically on touch */
   .summary-charts-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
-}
 
-/* ── Responsive: ZakatSummary table ── */
-@media (max-width: 640px) {
-  .summary-table-hide-mobile {
+  /* Table: hide the "Value" column to prevent overflow */
+  .summary-col-value {
     display: none;
   }
-}
 
-/* ── Responsive: ZakatSummary action buttons ── */
-.summary-action-btns {
-  display: flex;
-  gap: 14px;
-}
-@media (max-width: 640px) {
+  /* Action buttons: secondary row + Donate full-width */
   .summary-action-btns {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 10px !important;
   }
-  .summary-action-btns .btn-secondary {
-    flex: 1 1 calc(33% - 8px);
-    font-size: 14px;
+  .summary-action-btns .summary-btn-secondary {
+    flex: 1 1 calc(33% - 8px) !important;
+    font-size: 14px !important;
     padding: 13px 10px !important;
   }
-  .summary-action-btns .btn-primary {
-    flex: 0 0 100%;
-    font-size: 15px;
-  }
-}
-
-/* ── Responsive: ZakatSummary sticky bar ── */
-.summary-sticky-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 14px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-}
-@media (max-width: 640px) {
-  .summary-sticky-inner {
-    padding: 10px 16px;
-    gap: 14px;
+  .summary-action-btns .summary-btn-primary {
+    flex: 0 0 100% !important;
+    font-size: 15px !important;
   }
 }

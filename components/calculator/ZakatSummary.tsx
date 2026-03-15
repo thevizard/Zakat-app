@@ -133,19 +133,22 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           gap: 'clamp(14px, 3vw, 32px)',
         }}>
-          <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
             {[
               { label: 'Total Assets',     value: formatCurrency(result.totalAssets) },
               { label: 'Zakatable Wealth', value: formatCurrency(result.zakatableWealth) },
-            ].map(s => (
-              <div key={s.label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', color: 'rgba(255,255,255,0.45)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
-                <div style={{ fontSize: 'clamp(13px, 2vw, 16px)', fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{s.value}</div>
-              </div>
+            ].map((s, i) => (
+              <>
+                <div key={s.label} style={{ textAlign: 'center', padding: '0 clamp(16px, 2.5vw, 32px)' }}>
+                  <div style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', color: 'rgba(255,255,255,0.45)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
+                  <div style={{ fontSize: 'clamp(13px, 2vw, 16px)', fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{s.value}</div>
+                </div>
+                {i === 0 && <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />}
+              </>
             ))}
           </div>
-          <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.15)' }} />
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.25)', flexShrink: 0 }} />
+          <div style={{ textAlign: 'center', padding: '0 clamp(16px, 2.5vw, 32px)' }}>
             <div style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', fontWeight: 700, color: '#68BA7F', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>
               {result.meetsNisab ? 'Zakat Due' : 'No Zakat Due'}
             </div>

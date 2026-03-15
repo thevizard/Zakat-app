@@ -31,9 +31,16 @@ export function EmailReportModal({ result, onClose }: EmailReportModalProps) {
   async function handleSend() {
     if (!email || !email.includes('@')) return
     setStatus('sending')
+    setErrorDetail('')
     try {
-      const { generateZakatPDF } = await import('@/lib/zakat/generatePDF')
-      const pdfBase64 = generateZakatPDF(result)
+      let pdfBase64 = ''
+      try {
+        const { generateZakatPDF } = await import('@/lib/zakat/generatePDF')
+        pdfBase64 = generateZakatPDF(result)
+      } catch (pdfErr) {
+        console.warn('PDF generation failed, sending without attachment:', pdfErr)
+        // continue without PDF rather than blocking the whole email
+      }
 
       const res = await fetch('/api/send-report', {
         method: 'POST',
@@ -47,7 +54,8 @@ export function EmailReportModal({ result, onClose }: EmailReportModalProps) {
         throw new Error('Failed')
       }
       setStatus('sent')
-    } catch {
+    } catch (err) {
+      console.error('Send report error:', err)
       setStatus('error')
     }
   }

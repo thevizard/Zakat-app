@@ -22,6 +22,7 @@ const DARK = '#0f2419'
 export function EmailReportModal({ result, onClose }: EmailReportModalProps) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [errorDetail, setErrorDetail] = useState('')
 
   const nextDue = new Date()
   nextDue.setFullYear(nextDue.getFullYear() + 1)
@@ -40,7 +41,11 @@ export function EmailReportModal({ result, onClose }: EmailReportModalProps) {
         body: JSON.stringify({ email, result, pdfBase64 }),
       })
 
-      if (!res.ok) throw new Error('Failed')
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        setErrorDetail(body?.detail?.message || body?.error || 'Unknown error')
+        throw new Error('Failed')
+      }
       setStatus('sent')
     } catch {
       setStatus('error')
@@ -155,7 +160,7 @@ export function EmailReportModal({ result, onClose }: EmailReportModalProps) {
 
             {status === 'error' && (
               <div style={{ fontSize: 13, color: '#c0392b', marginBottom: 8 }}>
-                Something went wrong. Please try again.
+                Something went wrong. {errorDetail && <span style={{ fontFamily: 'monospace' }}>({errorDetail})</span>}
               </div>
             )}
 

@@ -408,14 +408,14 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
 
           {/* Action buttons */}
           <div className="summary-action-btns">
-            <button onClick={onBack} style={{
+            <button onClick={onBack} className="btn-secondary" style={{
               flex: 1, background: 'white', color: '#555',
               border: '1px solid #e0e0e0', padding: '16px 20px',
               borderRadius: 50, fontSize: F.actionBtn, fontWeight: 600, cursor: 'pointer',
             }}>
               ← Back
             </button>
-            <button onClick={onReset} style={{
+            <button onClick={onReset} className="btn-secondary" style={{
               flex: 1, background: 'white', color: '#555',
               border: '1px solid #e0e0e0', padding: '16px 20px',
               borderRadius: 50, fontSize: F.actionBtn, fontWeight: 600, cursor: 'pointer',
@@ -424,6 +424,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
             </button>
             <button
               onClick={() => setShowEmailModal(true)}
+              className="btn-secondary"
               style={{
                 flex: 1, background: 'white', color: '#2d7a4f',
                 border: '1.5px solid #2d7a4f', padding: '16px 20px',
@@ -436,6 +437,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
               ✉ Email Report
             </button>
             <button
+              className="btn-primary"
               style={{
                 flex: 2, background: '#2d7a4f', color: 'white',
                 border: 'none', padding: '16px 20px',

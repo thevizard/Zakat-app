@@ -223,14 +223,20 @@
 .summary-action-btns {
   display: flex;
   gap: 14px;
-  flex-wrap: wrap;
 }
 @media (max-width: 640px) {
-  .summary-action-btns button {
-    flex: 1 1 calc(50% - 8px);
-    min-width: 120px;
+  .summary-action-btns {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .summary-action-btns .btn-secondary {
+    flex: 1 1 calc(33% - 8px);
     font-size: 14px;
-    padding: 13px 12px;
+    padding: 13px 10px !important;
+  }
+  .summary-action-btns .btn-primary {
+    flex: 0 0 100%;
+    font-size: 15px;
   }
 }
 

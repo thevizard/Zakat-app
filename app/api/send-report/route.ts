@@ -165,8 +165,11 @@ function buildEmailHTML(result: ZakatResult): string {
 }
 
 export async function POST(req: NextRequest) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
   try {
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json({ error: 'RESEND_API_KEY not configured' }, { status: 500 })
+    }
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const { email, result, pdfBase64 } = await req.json() as {
       email: string
       result: ZakatResult

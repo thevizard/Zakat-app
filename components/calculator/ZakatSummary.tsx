@@ -127,24 +127,29 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
         transition: 'transform 0.35s ease',
         boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
       }}>
-        <div className="summary-sticky-inner">
+        <div style={{
+          maxWidth: 960, margin: '0 auto',
+          padding: 'clamp(10px, 2vw, 14px) clamp(16px, 3vw, 32px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: 'clamp(14px, 3vw, 32px)',
+        }}>
           <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
             {[
               { label: 'Total Assets',     value: formatCurrency(result.totalAssets) },
               { label: 'Zakatable Wealth', value: formatCurrency(result.zakatableWealth) },
             ].map(s => (
               <div key={s.label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{s.value}</div>
+                <div style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', color: 'rgba(255,255,255,0.45)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 2 }}>{s.label}</div>
+                <div style={{ fontSize: 'clamp(13px, 2vw, 16px)', fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>{s.value}</div>
               </div>
             ))}
           </div>
           <div style={{ width: 1, height: 36, background: 'rgba(255,255,255,0.15)' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#68BA7F', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>
+            <div style={{ fontSize: 'clamp(9px, 1.5vw, 11px)', fontWeight: 700, color: '#68BA7F', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 2 }}>
               {result.meetsNisab ? 'Zakat Due' : 'No Zakat Due'}
             </div>
-            <div style={{ fontSize: 26, fontWeight: 700, color: 'white', lineHeight: 1 }}>
+            <div style={{ fontSize: 'clamp(18px, 3.5vw, 26px)', fontWeight: 700, color: 'white', lineHeight: 1 }}>
               {result.meetsNisab ? formatCurrency(result.zakatDue) : formatCurrency(0)}
             </div>
           </div>

@@ -164,6 +164,13 @@ function buildEmailHTML(result: ZakatResult): string {
 </html>`
 }
 
+export async function GET() {
+  return NextResponse.json({
+    hasApiKey: !!process.env.RESEND_API_KEY,
+    keyPrefix: process.env.RESEND_API_KEY?.slice(0, 8) ?? 'missing',
+  })
+}
+
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.RESEND_API_KEY) {

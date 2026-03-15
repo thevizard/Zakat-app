@@ -65,7 +65,7 @@ export function TopNav() {
               whiteSpace: 'nowrap',
             }}
           >
-            {isCalculator ? '← Home' : 'Calculate Zakat'}
+            {isCalculator ? 'Home' : 'Calculate Zakat'}
           </Link>
         </div>
 

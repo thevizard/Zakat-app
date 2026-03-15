@@ -50,24 +50,23 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
 
   return (
     <div
+      className="tracker-stat-pad"
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         height: '100%',
-        padding: '0 32px',
       }}
     >
       {stats.map((stat, i) => (
         <div key={stat.label} style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ textAlign: 'center', padding: '0 32px' }}>
+          <div className="tracker-stat-pad" style={{ textAlign: 'center' }}>
             <div
+              className="tracker-stat-label"
               style={{
-                fontSize: 11,
                 fontWeight: 600,
                 color: 'rgba(255,255,255,0.45)',
                 textTransform: 'uppercase',
-                letterSpacing: 1.5,
                 fontFamily: 'Open Sans, sans-serif',
                 marginBottom: 3,
               }}
@@ -75,8 +74,8 @@ export function ZakatTracker({ assets, nisabData, nisabStandard }: ZakatTrackerP
               {stat.label}
             </div>
             <div
+              className="tracker-stat-value"
               style={{
-                fontSize: 18,
                 fontWeight: 700,
                 color: stat.active ? stat.color : 'rgba(255,255,255,0.2)',
                 fontFamily: 'Open Sans, sans-serif',

@@ -36,7 +36,7 @@ export function StepWrapper({
         style={{ padding: '48px 24px' }}
       >
         <div
-          className="w-full step-enter"
+          className="w-full step-enter step-card"
           style={{
             maxWidth: 680,
             background: 'white',
@@ -46,12 +46,11 @@ export function StepWrapper({
             borderLeftWidth: 4,
             borderLeftColor: '#2d7a4f',
             boxShadow: '0 4px 32px rgba(45, 122, 79, 0.07)',
-            padding: '48px 48px 40px',
           }}
         >
           <h1
             style={{
-              fontSize: '2rem',
+              fontSize: 'clamp(1.4rem, 4vw, 2rem)',
               fontWeight: 700,
               color: '#0f2419',
               marginBottom: 8,

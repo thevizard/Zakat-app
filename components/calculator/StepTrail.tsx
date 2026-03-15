@@ -37,9 +37,10 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
               <button
                 onClick={() => isClickable && onGoToStep(group.steps[0])}
                 disabled={!isClickable && !isActive}
+                className="trail-dot-btn"
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                  padding: '14px 20px', background: 'none', border: 'none',
+                  background: 'none', border: 'none',
                   cursor: isClickable ? 'pointer' : 'default',
                 }}
               >
@@ -55,8 +56,8 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
                 }}>
                   {isVisited ? '✓' : i + 1}
                 </div>
-                <span style={{
-                  fontSize: 11, fontWeight: isActive ? 600 : 400,
+                <span className="trail-label" style={{
+                  fontWeight: isActive ? 600 : 400,
                   color: isActive ? '#0f2419' : isVisited ? '#2d7a4f' : '#bbb',
                   fontFamily: 'Open Sans, sans-serif', whiteSpace: 'nowrap',
                   letterSpacing: 0.2,
@@ -66,8 +67,8 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
               </button>
 
               {i < GROUPS.length - 1 && (
-                <div style={{
-                  width: 48, height: 1.5, borderRadius: 2,
+                <div className="trail-connector" style={{
+                  height: 1.5, borderRadius: 2,
                   background: isVisited ? '#2d7a4f' : '#e8e8e8',
                   transition: 'background 0.3s',
                   flexShrink: 0,

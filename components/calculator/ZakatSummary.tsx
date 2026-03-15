@@ -127,11 +127,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
         transition: 'transform 0.35s ease',
         boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
       }}>
-        <div style={{
-          maxWidth: 960, margin: '0 auto',
-          padding: '14px 32px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 32,
-        }}>
+        <div className="summary-sticky-inner">
           <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
             {[
               { label: 'Total Assets',     value: formatCurrency(result.totalAssets) },
@@ -230,7 +226,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
 
           {/* Charts row */}
           {result.breakdown.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28 }}>
+            <div className="summary-charts-grid">
 
               {/* Donut */}
               <div style={CARD}>
@@ -324,7 +320,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                 <thead>
                   <tr style={{ borderBottom: '2px solid #e8f5ed' }}>
                     {['Asset / Liability', 'Value', 'Zakatable', 'Zakat @ 2.5%', ''].map((h, i) => (
-                      <th key={i} style={{
+                      <th key={i} className={i === 1 ? 'summary-table-hide-mobile' : ''} style={{
                         textAlign: i === 0 ? 'left' : 'right',
                         fontSize: F.tableHeader, fontWeight: 700,
                         color: i === 3 ? '#2d7a4f' : '#aaa',
@@ -341,7 +337,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                   {result.breakdown.map((item, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid #f0f8f3' }}>
                       <td style={{ padding: '18px 0', fontSize: F.tableRow, color: '#333' }}>{item.label}</td>
-                      <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#888' }}>{formatCurrency(item.entered)}</td>
+                      <td className="summary-table-hide-mobile" style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#888' }}>{formatCurrency(item.entered)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, fontWeight: 600, color: '#333' }}>{formatCurrency(item.zakatable)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, fontWeight: 700, color: '#2d7a4f' }}>{formatCurrency(item.zakatable * 0.025)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right' }}>
@@ -364,7 +360,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
                   {result.totalLiabilities > 0 && (
                     <tr style={{ borderBottom: '1px solid #f0f8f3' }}>
                       <td style={{ padding: '18px 0', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>Liabilities</td>
-                      <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>−{formatCurrency(result.totalLiabilities)}</td>
+                      <td className="summary-table-hide-mobile" style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>−{formatCurrency(result.totalLiabilities)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>−{formatCurrency(result.totalLiabilities)}</td>
                       <td style={{ padding: '18px 0', textAlign: 'right', fontSize: F.tableRow, color: '#c0392b', fontWeight: 600 }}>deducted</td>
                       <td style={{ padding: '18px 0', textAlign: 'right' }}>
@@ -406,7 +402,7 @@ export function ZakatSummary({ result, onReset, onBack, onEdit }: ZakatSummaryPr
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', gap: 14 }}>
+          <div className="summary-action-btns">
             <button onClick={onBack} style={{
               flex: 1, background: 'white', color: '#555',
               border: '1px solid #e0e0e0', padding: '16px 20px',

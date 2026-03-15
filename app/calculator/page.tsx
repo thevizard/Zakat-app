@@ -464,13 +464,13 @@ export default function CalculatorPage() {
       <div className="flex justify-between">
         <button
           onClick={prevStep}
-          className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
+          className="calc-nav-btn border border-gray-200 text-gray-600 rounded-2xl font-semibold hover:bg-gray-50 transition-colors"
         >
           ← Previous
         </button>
         <button
           onClick={onNext}
-          className="text-white px-8 py-3.5 rounded-2xl text-base font-semibold transition-colors"
+          className="calc-nav-btn text-white rounded-2xl font-semibold transition-colors"
           style={{ background: "#2d7a4f" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#68BA7F")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#2d7a4f")}
@@ -534,10 +534,10 @@ export default function CalculatorPage() {
               <div className="flex justify-end">
                 <button
                   onClick={nextStep}
+                  className="calc-nav-btn"
                   style={{
                     background: '#2d7a4f', color: 'white',
-                    padding: '12px 32px', borderRadius: 50,
-                    fontSize: 15, fontWeight: 600, border: 'none',
+                    borderRadius: 50, fontWeight: 600, border: 'none',
                     cursor: 'pointer', fontFamily: 'Open Sans, sans-serif',
                     transition: 'background 0.2s',
                   }}
@@ -756,13 +756,13 @@ export default function CalculatorPage() {
               <div className="flex justify-between">
                 <button
                   onClick={prevStep}
-                  className="border border-gray-200 text-gray-600 px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-gray-50 transition-colors"
+                  className="calc-nav-btn border border-gray-200 text-gray-600 rounded-2xl font-semibold hover:bg-gray-50 transition-colors"
                 >
                   ← Previous
                 </button>
                 <button
                   onClick={calculate}
-                  className="text-white px-8 py-3.5 rounded-2xl text-base font-semibold transition-colors"
+                  className="calc-nav-btn text-white rounded-2xl font-semibold transition-colors"
                   style={{ background: "#2d7a4f" }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.background = "#68BA7F")

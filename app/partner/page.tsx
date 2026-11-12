@@ -13,10 +13,10 @@ const BORDER = '#E2E2D8'
 const CARD_BG = '#FFFFFF'
 
 export default function MosquePartnerPage() {
-  const [masjidName, setMasjidName] = useState('East Plano Islamic Center')
-  const [city, setCity] = useState('Plano, TX')
-  const [portalUrl, setPortalUrl] = useState('https://us.mohid.co/tx/dallas/epic/masjid/online/donation')
-  const [customMsg, setCustomMsg] = useState('100% of your Zakat stays in our local community to support families in need.')
+  const [masjidName, setMasjidName] = useState('')
+  const [city, setCity] = useState('')
+  const [portalUrl, setPortalUrl] = useState('')
+  const [customMsg, setCustomMsg] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [copiedLink, setCopiedLink] = useState(false)
 
@@ -129,6 +129,7 @@ export default function MosquePartnerPage() {
                   type="text"
                   value={masjidName}
                   onChange={(e) => setMasjidName(e.target.value)}
+                  placeholder="e.g. East Plano Islamic Center"
                   style={{
                     width: '100%',
                     padding: '11px 14px',
@@ -150,6 +151,7 @@ export default function MosquePartnerPage() {
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  placeholder="e.g. Plano, TX"
                   style={{
                     width: '100%',
                     padding: '11px 14px',
@@ -193,6 +195,7 @@ export default function MosquePartnerPage() {
                   rows={2}
                   value={customMsg}
                   onChange={(e) => setCustomMsg(e.target.value)}
+                  placeholder="e.g. 100% of your Zakat stays in our local community to support families in need."
                   style={{
                     width: '100%',
                     padding: '11px 14px',
@@ -353,7 +356,7 @@ export default function MosquePartnerPage() {
                 }}
               >
                 <div style={{ fontSize: 11, fontWeight: 800, color: FOREST, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4 }}>
-                  {masjidName} · {city}
+                  {masjidName || 'Your Mosque Name'} {city ? `· ${city}` : ''}
                 </div>
                 <h3 style={{ fontSize: 18, fontWeight: 900, color: TEXT_DARK, margin: '0 0 8px' }}>
                   Fulfill Your Zakat al-Mal
@@ -386,10 +389,10 @@ export default function MosquePartnerPage() {
         <div style={{ textAlign: 'center', border: '3px solid #1E3F20', borderRadius: 20, padding: '48px 36px', height: '90vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ display: 'inline-block', background: '#F2F5F2', padding: '6px 18px', borderRadius: 50, fontSize: 14, fontWeight: 800, color: '#1E3F20', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 16 }}>
-              {city} · Community Zakat Fund
+              {city ? `${city} · ` : ''}Community Zakat Fund
             </div>
             <h1 style={{ fontSize: 38, fontWeight: 900, margin: '0 0 12px', color: '#141414', lineHeight: 1.15 }}>
-              {masjidName}
+              {masjidName || 'Your Mosque Name'}
             </h1>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1E3F20', margin: '0 0 20px' }}>
               Calculate Your Zakat with Scholarly Precision

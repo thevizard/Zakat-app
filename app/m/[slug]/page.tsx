@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, use } from 'react'
+import { useEffect, useState, use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { TopNav } from '@/components/TopNav'
@@ -27,12 +27,37 @@ export default function MosqueLandingPage({
   const setSkipIntro = useCalculatorStore((s) => s.setSkipIntro)
 
   // Look up dynamic query params first, or fall back to seed masjid slug
-  const masjid: MosquePartner | null =
+  const initialMasjid: MosquePartner | null =
     parseCustomMasjid({
       name: searchParams.get('name'),
       city: searchParams.get('city'),
       portal: searchParams.get('portal'),
     }) || getMasjidBySlug(resolvedParams.slug)
+
+  const [masjid, setMasjid] = useState<MosquePartner | null>(initialMasjid)
+
+  useEffect(() => {
+    if (!masjid && typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('zakatly_saved_mosques')
+        if (stored) {
+          const list = JSON.parse(stored)
+          const found = list.find((m: any) => m.slug.toLowerCase() === resolvedParams.slug.toLowerCase())
+          if (found) {
+            setMasjid({
+              slug: found.slug,
+              name: found.name,
+              city: found.city,
+              portalUrl: found.portalUrl,
+              customMessage: found.customMsg,
+            })
+          }
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }, [masjid, resolvedParams.slug])
 
   useEffect(() => {
     if (masjid) {

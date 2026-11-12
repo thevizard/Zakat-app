@@ -12,13 +12,67 @@ const SUBTLE = '#6E6E6E'
 const BORDER = '#E2E2D8'
 const CARD_BG = '#FFFFFF'
 
+export interface SavedMosqueProfile {
+  slug: string
+  name: string
+  city: string
+  portalUrl: string
+  customMsg: string
+}
+
+const DEFAULT_SAVED_MOSQUES: SavedMosqueProfile[] = [
+  {
+    slug: 'srvic',
+    name: 'SRVIC',
+    city: 'San Ramon, CA',
+    portalUrl: 'https://givebutter.com/SRVIC',
+    customMsg: '100% of your Zakat stays in our local community to support families in need across San Ramon Valley.',
+  },
+  {
+    slug: 'epic',
+    name: 'East Plano Islamic Center (EPIC)',
+    city: 'Plano, TX',
+    portalUrl: 'https://us.mohid.co/tx/dallas/epic/masjid/online/donation',
+    customMsg: '100% of your Zakat stays in our local community to support families in need.',
+  },
+]
+
 export default function MosquePartnerPage() {
-  const [masjidName, setMasjidName] = useState('')
-  const [city, setCity] = useState('')
-  const [portalUrl, setPortalUrl] = useState('')
-  const [customMsg, setCustomMsg] = useState('')
+  const [savedMosques, setSavedMosques] = useState<SavedMosqueProfile[]>(DEFAULT_SAVED_MOSQUES)
+  const [activeSlug, setActiveSlug] = useState<string>('srvic')
+  const [masjidName, setMasjidName] = useState('SRVIC')
+  const [city, setCity] = useState('San Ramon, CA')
+  const [portalUrl, setPortalUrl] = useState('https://givebutter.com/SRVIC')
+  const [customMsg, setCustomMsg] = useState('100% of your Zakat stays in our local community to support families in need across San Ramon Valley.')
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [copiedLink, setCopiedLink] = useState(false)
+  const [copiedShort, setCopiedShort] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<string | null>(null)
+
+  // Load saved profiles from localStorage on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const stored = localStorage.getItem('zakatly_saved_mosques')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSavedMosques(parsed)
+          // Default to first profile (SRVIC)
+          const first = parsed[0]
+          setActiveSlug(first.slug)
+          setMasjidName(first.name)
+          setCity(first.city)
+          setPortalUrl(first.portalUrl)
+          setCustomMsg(first.customMsg || '')
+        }
+      } else {
+        localStorage.setItem('zakatly_saved_mosques', JSON.stringify(DEFAULT_SAVED_MOSQUES))
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
 
   // Auto-generate clean URL slug from mosque name
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.zakatly.app'
@@ -29,7 +83,73 @@ export default function MosquePartnerPage() {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '') || 'masjid'
 
+  const shortUrl = `${origin}/m/${autoSlug}`
   const shareUrl = `${origin}/m/${autoSlug}?name=${encodeURIComponent(masjidName)}&city=${encodeURIComponent(city)}&portal=${encodeURIComponent(portalUrl)}`
+
+  function handleSelectSavedProfile(m: SavedMosqueProfile) {
+    setActiveSlug(m.slug)
+    setMasjidName(m.name)
+    setCity(m.city)
+    setPortalUrl(m.portalUrl)
+    setCustomMsg(m.customMsg || '')
+    setSaveStatus(null)
+  }
+
+  function handleNewProfile() {
+    setActiveSlug('')
+    setMasjidName('')
+    setCity('')
+    setPortalUrl('')
+    setCustomMsg('')
+    setSaveStatus(null)
+  }
+
+  function handleSaveCurrentProfile() {
+    if (!masjidName.trim()) {
+      alert('Please enter a Mosque Name first.')
+      return
+    }
+    const slug = autoSlug
+    const updated: SavedMosqueProfile = {
+      slug,
+      name: masjidName.trim(),
+      city: city.trim(),
+      portalUrl: portalUrl.trim(),
+      customMsg: customMsg.trim(),
+    }
+
+    const filtered = savedMosques.filter((m) => m.slug !== slug)
+    const updatedList = [updated, ...filtered]
+    setSavedMosques(updatedList)
+    setActiveSlug(slug)
+
+    try {
+      localStorage.setItem('zakatly_saved_mosques', JSON.stringify(updatedList))
+    } catch (e) {
+      console.error(e)
+    }
+
+    setSaveStatus('Saved! ✓')
+    setTimeout(() => setSaveStatus(null), 3000)
+  }
+
+  function handleDeleteProfile(slug: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    const updatedList = savedMosques.filter((m) => m.slug !== slug)
+    setSavedMosques(updatedList)
+    try {
+      localStorage.setItem('zakatly_saved_mosques', JSON.stringify(updatedList))
+    } catch (err) {
+      console.error(err)
+    }
+    if (activeSlug === slug) {
+      if (updatedList.length > 0) {
+        handleSelectSavedProfile(updatedList[0])
+      } else {
+        handleNewProfile()
+      }
+    }
+  }
 
   useEffect(() => {
     QRCode.toDataURL(shareUrl, {
@@ -116,9 +236,79 @@ export default function MosquePartnerPage() {
             <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, color: TEXT_DARK }}>
               1. Enter Mosque Information
             </h2>
-            <p style={{ fontSize: 13, color: SUBTLE, marginBottom: 24, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 13, color: SUBTLE, marginBottom: 20, lineHeight: 1.5 }}>
               Enter your masjid name and existing donation links. Your custom link and printable flyer update instantly.
             </p>
+
+            {/* Saved Mosque Profiles Selector */}
+            <div style={{ marginBottom: 22, background: '#FAF9F5', border: `1px solid ${BORDER}`, borderRadius: 10, padding: '14px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 0.8, color: FOREST }}>
+                  Saved Mosque Profiles
+                </span>
+                <button
+                  type="button"
+                  onClick={handleNewProfile}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: FOREST,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    padding: 0,
+                  }}
+                >
+                  + Create New Profile
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {savedMosques.map((m) => {
+                  const isActive = activeSlug === m.slug
+                  return (
+                    <div
+                      key={m.slug}
+                      onClick={() => handleSelectSavedProfile(m)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        background: isActive ? FOREST : '#FFFFFF',
+                        color: isActive ? '#FFFFFF' : TEXT_DARK,
+                        border: `1px solid ${isActive ? FOREST : BORDER}`,
+                        borderRadius: 20,
+                        padding: '6px 14px',
+                        fontSize: 12.5,
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <span>{m.name || 'Unnamed'}</span>
+                      {savedMosques.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteProfile(m.slug, e)}
+                          title="Delete profile"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: isActive ? 'rgba(255,255,255,0.7)' : SUBTLE,
+                            fontSize: 14,
+                            cursor: 'pointer',
+                            padding: 0,
+                            lineHeight: 1,
+                          }}
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
@@ -209,6 +399,42 @@ export default function MosquePartnerPage() {
                   }}
                 />
               </div>
+
+              {/* Save Profile Button */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
+                <button
+                  type="button"
+                  onClick={handleSaveCurrentProfile}
+                  style={{
+                    flex: 1,
+                    background: FOREST,
+                    color: '#FFFFFF',
+                    border: 'none',
+                    padding: '12px 18px',
+                    borderRadius: 8,
+                    fontSize: 13.5,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
+                  <span>Save Mosque Profile</span>
+                </button>
+
+                {saveStatus && (
+                  <span style={{ fontSize: 13, fontWeight: 700, color: FOREST }}>
+                    {saveStatus}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -234,50 +460,117 @@ export default function MosquePartnerPage() {
               <div
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  background: '#F5F5F0',
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: 8,
-                  padding: '8px 12px',
-                  marginBottom: 14,
-                  gap: 8,
+                  flexDirection: 'column',
+                  gap: 12,
+                  marginBottom: 16,
                 }}
               >
-                <span
-                  style={{
-                    flex: 1,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: FOREST,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {shareUrl}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleCopy}
-                  style={{
-                    background: FOREST,
-                    color: '#FFFFFF',
-                    border: 'none',
-                    borderRadius: 6,
-                    padding: '8px 14px',
-                    fontSize: 12,
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {copiedLink ? 'Copied!' : 'Copy Link'}
-                </button>
+                {/* Short Clean Link */}
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 0.8, color: FOREST, marginBottom: 5 }}>
+                    Clean Short Link (Recommended)
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: '#F5F5F0',
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: 8,
+                      padding: '8px 12px',
+                      gap: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: FOREST,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {shortUrl}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(shortUrl)
+                        setCopiedShort(true)
+                        setTimeout(() => setCopiedShort(false), 2500)
+                      }}
+                      style={{
+                        background: FOREST,
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '8px 14px',
+                        fontSize: 12,
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {copiedShort ? 'Copied!' : 'Copy Short Link'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Portable Full Parameterized Link */}
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 0.8, color: SUBTLE, marginBottom: 5 }}>
+                    Portable Full Link
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: '#FFFFFF',
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: 8,
+                      padding: '8px 12px',
+                      gap: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: 12,
+                        fontWeight: 500,
+                        color: SUBTLE,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {shareUrl}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      style={{
+                        background: '#FFFFFF',
+                        border: `1px solid ${BORDER}`,
+                        color: TEXT_DARK,
+                        borderRadius: 6,
+                        padding: '7px 12px',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {copiedLink ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: 'flex', gap: 10 }}>
                 <a
-                  href={shareUrl}
+                  href={shortUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

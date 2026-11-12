@@ -26,20 +26,28 @@ export async function GET() {
     const goldData = await goldRes.json();
     const silverData = await silverRes.json();
 
+    const hasLiveGold = Boolean(goldData?.[0]?.price);
+    const hasLiveSilver = Boolean(silverData?.[0]?.price);
+
     // metals.live returns price per troy oz — convert to per gram
-    const goldPrice = goldData?.[0]?.price
+    const goldPrice = hasLiveGold
       ? goldData[0].price / TROY_OZ_TO_GRAMS
       : FALLBACK_GOLD_PRICE;
-    const silverPrice = silverData?.[0]?.price
+    const silverPrice = hasLiveSilver
       ? silverData[0].price / TROY_OZ_TO_GRAMS
       : FALLBACK_SILVER_PRICE;
 
-    const nisabData = calculateNisabThresholds(goldPrice, silverPrice);
+    const nisabData = calculateNisabThresholds(
+      goldPrice,
+      silverPrice,
+      !(hasLiveGold && hasLiveSilver)
+    );
     return NextResponse.json(nisabData);
   } catch {
     const nisabData = calculateNisabThresholds(
       FALLBACK_GOLD_PRICE,
       FALLBACK_SILVER_PRICE,
+      true
     );
     return NextResponse.json(nisabData);
   }

@@ -1,7 +1,7 @@
 import { useCalculatorStore } from '@/store/calculatorStore'
 import { calculateZakat } from '@/lib/zakat/calculate'
 import { useNisab } from '@/hooks/useNisab'
-import { InvestmentType } from '@/types/zakat.types'
+import { NisabStandard } from '@/types/zakat.types'
 
 type Step =
   | 'cash'
@@ -20,19 +20,31 @@ export function useZakatCalculator() {
   const store = useCalculatorStore()
   const { data: nisabData, isLoading, isError } = useNisab()
   const passiveInvestmentRate = store.passiveInvestmentRate
+  const retirementRate = store.retirementRate
 
   const steps: Step[] = [
-  'cash',
-  'goldsilver',
-  'investment-selector',
-  ...store.selectedInvestments.map((i) => i as Step),
-  'receivables',
-  'debts',
-  'results',
-]
+    'cash',
+    'goldsilver',
+    'investment-selector',
+    ...store.selectedInvestments.map((i) => i as Step),
+    'receivables',
+    'debts',
+    'results',
+  ]
 
   const totalSteps = steps.length
-  const currentStepName = steps[store.currentStep - 1]
+  const currentStepName = steps[store.currentStep - 1] ?? 'cash'
+
+  function computeResult(standard: NisabStandard = store.nisabStandard) {
+    if (!nisabData) return null
+    return calculateZakat(
+      store.assets,
+      nisabData,
+      standard,
+      passiveInvestmentRate,
+      retirementRate
+    )
+  }
 
   function nextStep() {
     if (store.currentStep < totalSteps) {
@@ -49,8 +61,8 @@ export function useZakatCalculator() {
   }
 
   function calculate() {
-    if (!nisabData) return
-    const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
+    const result = computeResult()
+    if (!result) return
     store.setResult(result)
     store.setIsEditing(false)
     store.setHasCompletedOnce(true)
@@ -59,32 +71,47 @@ export function useZakatCalculator() {
   }
 
   function skipToEnd() {
-    if (!nisabData) return
-    const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
-    store.setResult(result)
-    store.setIsEditing(false)
-    store.setHasCompletedOnce(true)
-    store.addVisitedStep('results')
-    store.setStep(totalSteps)
+    calculate()
   }
 
-  function goToStep(stepName: string) {
+  function goToStep(stepName: string, fromSummaryEdit: boolean = false) {
     const index = steps.indexOf(stepName as Step)
     if (index !== -1) {
-      if (stepName === 'results' && nisabData) {
-        const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
-        store.setResult(result)
+      if (stepName === 'results') {
+        const result = computeResult()
+        if (result) store.setResult(result)
+        store.setIsEditing(false)
+      } else if (fromSummaryEdit) {
+        store.setIsEditing(true)
       }
       store.setStep(index + 1)
     }
   }
 
+  function editFromSummary(stepName: string) {
+    goToStep(stepName, true)
+  }
+
   function backToSummary() {
-    if (!nisabData) return
-    const result = calculateZakat(store.assets, nisabData, store.nisabStandard, passiveInvestmentRate)
+    const result = computeResult()
+    if (!result) return
     store.setResult(result)
     store.setIsEditing(false)
     store.setStep(totalSteps)
+  }
+
+  function changeNisabStandard(standard: NisabStandard) {
+    store.setNisabStandard(standard)
+    if (nisabData && (store.result || currentStepName === 'results')) {
+      const updated = calculateZakat(
+        store.assets,
+        nisabData,
+        standard,
+        passiveInvestmentRate,
+        retirementRate
+      )
+      store.setResult(updated)
+    }
   }
 
   return {
@@ -93,15 +120,21 @@ export function useZakatCalculator() {
     totalSteps,
     steps,
     assets: store.assets,
+    metalMeta: store.metalMeta,
+    lineItems: store.lineItems,
     result: store.result,
     nisabData,
     nisabStandard: store.nisabStandard,
     passiveInvestmentRate,
     setPassiveInvestmentRate: store.setPassiveInvestmentRate,
+    retirementRate,
+    setRetirementRate: store.setRetirementRate,
     selectedInvestments: store.selectedInvestments,
     isEditing: store.isEditing,
     hasCompletedOnce: store.hasCompletedOnce,
     visitedSteps: store.visitedSteps,
+    skipIntro: store.skipIntro,
+    setSkipIntro: store.setSkipIntro,
     isLoading,
     isError,
     nextStep,
@@ -109,9 +142,12 @@ export function useZakatCalculator() {
     calculate,
     skipToEnd,
     goToStep,
+    editFromSummary,
     backToSummary,
     updateAssets: store.updateAssets,
-    setNisabStandard: store.setNisabStandard,
+    setMetalMeta: store.setMetalMeta,
+    setLineItems: store.setLineItems,
+    setNisabStandard: changeNisabStandard,
     setSelectedInvestments: store.setSelectedInvestments,
     reset: store.reset,
   }

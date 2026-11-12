@@ -20,7 +20,18 @@ export function StepWrapper({
   useEffect(() => {
     if (!onEnter) return
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') onEnter()
+      if (e.key !== 'Enter') return
+      const target = e.target as HTMLElement | null
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'BUTTON' ||
+          target.tagName === 'SELECT')
+      ) {
+        return
+      }
+      onEnter()
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
@@ -29,7 +40,7 @@ export function StepWrapper({
   return (
     <div
       className="flex-1 flex flex-col overflow-y-auto"
-      style={{ background: '#f7fdf9' }}
+      style={{ background: '#F5F5F0' }}
     >
       <div
         className="flex-1 flex flex-col items-center justify-center px-6"
@@ -39,22 +50,20 @@ export function StepWrapper({
           className="w-full step-enter step-card"
           style={{
             maxWidth: 680,
-            background: 'white',
-            borderRadius: 24,
-            borderLeft: '4px solid #2d7a4f',
-            border: '1px solid #e0f0e8',
-            borderLeftWidth: 4,
-            borderLeftColor: '#2d7a4f',
-            boxShadow: '0 4px 32px rgba(45, 122, 79, 0.07)',
+            background: '#FFFFFF',
+            borderRadius: 14,
+            border: '1px solid #E2E2D8',
+            borderLeft: '4px solid #1E3F20',
+            boxShadow: '0 4px 24px rgba(20, 20, 20, 0.04)',
           }}
         >
           <h1
             style={{
-              fontSize: 'clamp(1.4rem, 4vw, 2rem)',
-              fontWeight: 700,
-              color: '#0f2419',
+              fontSize: 'clamp(1.35rem, 3.5vw, 1.85rem)',
+              fontWeight: 800,
+              color: '#141414',
               marginBottom: 8,
-              fontFamily: 'Open Sans, sans-serif',
+              letterSpacing: '-0.5px',
               lineHeight: 1.2,
             }}
           >
@@ -63,11 +72,10 @@ export function StepWrapper({
           {description && (
             <p
               style={{
-                fontSize: '1rem',
-                color: '#666',
-                marginBottom: 32,
+                fontSize: '0.95rem',
+                color: '#6E6E6E',
+                marginBottom: 28,
                 lineHeight: 1.6,
-                fontFamily: 'Open Sans, sans-serif',
               }}
             >
               {description}

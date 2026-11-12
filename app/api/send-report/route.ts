@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
 import { ZakatResult } from '@/types/zakat.types'
+import { formatNextHawlDate } from '@/lib/zakat/nisab'
 
 function fmt(amount: number) {
   return new Intl.NumberFormat('en-US', {
@@ -12,9 +13,7 @@ function fmt(amount: number) {
 
 function buildEmailHTML(result: ZakatResult): string {
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-  const nextDue = new Date()
-  nextDue.setFullYear(nextDue.getFullYear() + 1)
-  const nextDueStr = nextDue.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+  const nextDueStr = formatNextHawlDate()
 
   const rowsHTML = result.breakdown.map((item, i) => `
     <tr style="background:${i % 2 === 0 ? '#ffffff' : '#f9fdfb'}">
@@ -62,27 +61,22 @@ function buildEmailHTML(result: ZakatResult): string {
         <tr>
           <td style="background:#2d7a4f;padding:36px 36px 32px;">
             <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;">
-              ${result.meetsNisab ? 'Zakat Due This Year' : 'Assessment Complete'}
+              Zakat Due This Year
             </div>
             <div style="font-size:48px;font-weight:700;color:white;line-height:1;">
-              ${result.meetsNisab ? fmt(result.zakatDue) : 'No Zakat Due'}
+              ${fmt(result.zakatDue)}
             </div>
-            ${result.meetsNisab
-              ? `<div style="font-size:15px;color:rgba(255,255,255,0.65);margin-top:10px;">2.5% of your zakatable wealth</div>`
-              : `<div style="font-size:14px;color:rgba(255,255,255,0.65);margin-top:10px;">${
-                  result.zakatableWealth === 0
-                    ? 'Your liabilities offset your zakatable assets.'
-                    : `Your zakatable wealth (${fmt(result.zakatableWealth)}) is below the nisab threshold.`
-                }</div>`
-            }
+            <div style="font-size:15px;color:rgba(255,255,255,0.65);margin-top:10px;">
+              ${result.zakatDue > 0 ? '2.5% of your net zakatable wealth' : 'Your liabilities offset your zakatable assets'}
+            </div>
 
             <!-- Stat pills -->
             <table cellpadding="0" cellspacing="0" style="margin-top:24px;">
               <tr>
                 ${[
                   { label: 'Total Assets', value: fmt(result.totalAssets) },
+                  { label: 'Total Liabilities', value: fmt(result.totalLiabilities) },
                   { label: 'Zakatable Wealth', value: fmt(result.zakatableWealth) },
-                  { label: 'Nisab Threshold', value: fmt(result.nisabThreshold) },
                 ].map(s => `
                   <td style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:50px;padding:8px 18px;margin-right:8px;text-align:center;">
                     <div style="font-size:11px;color:rgba(255,255,255,0.55);">${s.label}</div>
@@ -115,8 +109,8 @@ function buildEmailHTML(result: ZakatResult): string {
                   <td style="padding:14px 14px;font-size:14px;font-weight:700;color:#0f2419;">Net Zakatable Wealth</td>
                   <td></td>
                   <td style="padding:14px 14px;text-align:right;font-size:14px;font-weight:700;color:#0f2419;">${fmt(result.zakatableWealth)}</td>
-                  <td style="padding:14px 14px;text-align:right;font-size:14px;font-weight:700;color:${result.meetsNisab ? '#2d7a4f' : '#c0392b'};">
-                    ${result.meetsNisab ? fmt(result.zakatDue) : result.zakatableWealth === 0 ? 'Offset by liabilities' : 'Below nisab'}
+                  <td style="padding:14px 14px;text-align:right;font-size:14px;font-weight:700;color:#2d7a4f;">
+                    ${fmt(result.zakatDue)}
                   </td>
                 </tr>
               </tbody>
@@ -130,9 +124,9 @@ function buildEmailHTML(result: ZakatResult): string {
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#e8f5ed;border-radius:12px;border-left:4px solid #2d7a4f;overflow:hidden;">
               <tr>
                 <td style="padding:20px 24px;">
-                  <div style="font-size:15px;font-weight:700;color:#0f2419;margin-bottom:10px;">📅 Set Your Reminder for Next Year</div>
+                  <div style="font-size:15px;font-weight:700;color:#0f2419;margin-bottom:10px;">Set Your Reminder for Next Lunar Year (Hawl)</div>
                   <div style="font-size:14px;color:#3d6b50;line-height:1.7;margin-bottom:8px;">
-                    Zakat is due every lunar (Hijri) year. Your next assessment is due around <strong>${nextDueStr}</strong>.
+                    Zakat is due every lunar (Hijri) year (354 days). Your next assessment is due around <strong>${nextDueStr}</strong>.
                   </div>
                   <div style="font-size:14px;color:#3d6b50;line-height:1.7;margin-bottom:8px;">
                     We recommend calculating during <strong>Ramadan</strong> — the reward of giving is multiplied in the blessed month, and it is the tradition of many scholars and communities.
@@ -151,7 +145,7 @@ function buildEmailHTML(result: ZakatResult): string {
           <td style="padding:24px 36px;">
             <div style="font-size:12px;color:#aaa;line-height:1.7;border-top:1px solid #f0f0f0;padding-top:20px;">
               <strong style="color:#888;">Note:</strong> This is an estimate based on contemporary scholarly guidelines. Please consult a qualified Islamic scholar for your specific situation.<br><br>
-              Generated by <a href="https://zakatly.app" style="color:#2d7a4f;text-decoration:none;">Zakatly</a> — Made with ❤️ for the Ummah.
+              Generated by <a href="https://zakatly.app" style="color:#2d7a4f;text-decoration:none;">Zakatly</a> — Built for the global Muslim community.
             </div>
           </td>
         </tr>
@@ -162,13 +156,6 @@ function buildEmailHTML(result: ZakatResult): string {
 
 </body>
 </html>`
-}
-
-export async function GET() {
-  return NextResponse.json({
-    hasApiKey: !!process.env.RESEND_API_KEY,
-    keyPrefix: process.env.RESEND_API_KEY?.slice(0, 8) ?? 'missing',
-  })
 }
 
 export async function POST(req: NextRequest) {
@@ -183,17 +170,19 @@ export async function POST(req: NextRequest) {
       pdfBase64: string
     }
 
-    if (!email || !result) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    if (!email || !result || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: 'Missing or invalid required fields' }, { status: 400 })
     }
 
     const year = new Date().getFullYear()
-    const subject = result.meetsNisab
+    const subject = result.zakatDue > 0
       ? `Your Zakat Report ${year} — ${fmt(result.zakatDue)} Due`
-      : `Your Zakat Report ${year} — Assessment Complete`
+      : `Your Zakat Report ${year} — $0 Due (Liabilities Offset)`
 
-    const { error } = await resend.emails.send({
-      from: 'Zakatly <reports@zakatly.app>',
+    const configuredFrom = process.env.RESEND_FROM_EMAIL || 'Zakatly <reports@zakatly.app>'
+
+    let sendResult = await resend.emails.send({
+      from: configuredFrom,
       to: email,
       subject,
       html: buildEmailHTML(result),
@@ -205,9 +194,42 @@ export async function POST(req: NextRequest) {
         : [],
     })
 
-    if (error) {
-      console.error('Resend error:', JSON.stringify(error))
-      return NextResponse.json({ error: 'Failed to send email', detail: error }, { status: 500 })
+    // If custom domain is not yet verified in Resend, automatically fallback to onboarding@resend.dev
+    if (sendResult.error && (sendResult.error.message?.includes('not verified') || configuredFrom.includes('zakatly.app'))) {
+      console.warn('Domain not verified on Resend, attempting fallback to onboarding@resend.dev')
+      sendResult = await resend.emails.send({
+        from: 'Zakatly <onboarding@resend.dev>',
+        to: email,
+        subject,
+        html: buildEmailHTML(result),
+        attachments: pdfBase64
+          ? [{
+              filename: `Zakatly_Report_${year}.pdf`,
+              content: pdfBase64.split(',')[1],
+            }]
+          : [],
+      })
+    }
+
+    if (sendResult.error) {
+      console.error('Resend error:', JSON.stringify(sendResult.error))
+      const isDomainUnverified =
+        sendResult.error.message?.includes('not verified') ||
+        sendResult.error.message?.includes('verify a domain') ||
+        sendResult.error.message?.includes('testing emails')
+
+      const message = isDomainUnverified
+        ? 'Domain verification pending on resend.com/domains. You can download your PDF report directly below.'
+        : sendResult.error.message || 'Failed to send email'
+
+      return NextResponse.json(
+        {
+          error: message,
+          isDomainUnverified,
+          detail: sendResult.error,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json({ success: true })

@@ -2,73 +2,156 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useCalculatorStore } from '@/store/calculatorStore'
+import { ZakatlyLogo } from '@/components/ZakatlyLogo'
 
-const GREEN = '#2d7a4f'
+const FOREST = '#16351F'
+const INK = '#121614'
+const MUTED = '#5A625D'
+const HAIRLINE = '#E2DFD5'
 
 export function TopNav() {
   const pathname = usePathname()
   const isCalculator = pathname.startsWith('/calculator')
+  const isMosquePortal = pathname.startsWith('/m/')
+  const partnerMasjid = useCalculatorStore((s) => s.partnerMasjid)
+  const setPartnerMasjid = useCalculatorStore((s) => s.setPartnerMasjid)
+
+  // Only show marketing anchor links on the main landing page or /partner
+  const showMarketingLinks = !isCalculator && !isMosquePortal
 
   return (
     <nav
       style={{
         position: 'fixed',
-        top: 0, left: 0, right: 0,
+        top: 0,
+        left: 0,
+        right: 0,
         zIndex: 50,
-        background: 'rgba(255,255,255,0.97)',
-        backdropFilter: 'blur(8px)',
-        borderBottom: '1px solid rgba(0,0,0,0.06)',
+        background: 'rgba(247, 245, 239, 0.94)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderBottom: `1px solid ${HAIRLINE}`,
       }}
     >
-      <div style={{ padding: '0 16px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 1200, margin: '0 auto' }}>
+      <div
+        style={{
+          padding: '0 clamp(14px, 4vw, 28px)',
+          height: 68,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          maxWidth: 1200,
+          margin: '0 auto',
+          gap: 12,
+        }}
+      >
+        {/* Left side: Architectural Co-Brand Lockup */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 16px)', minWidth: 0 }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}>
+            <ZakatlyLogo variant="rub-al-ushr" height={34} />
+          </Link>
 
-        {/* Logo */}
-        <Link href="/" style={{ flexShrink: 0 }}>
-          <img
-            src="/logo.png"
-            alt="Zakatly"
-            style={{ height: 44, width: 'auto', objectFit: 'contain', display: 'block' }}
-          />
-        </Link>
+          {partnerMasjid && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                borderLeft: '1px solid #CFCBC0',
+                paddingLeft: 'clamp(10px, 2vw, 16px)',
+                minWidth: 0,
+              }}
+            >
+              <span
+                className="hidden md:inline"
+                style={{
+                  fontSize: 13,
+                  color: MUTED,
+                  fontWeight: 500,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                in partnership with
+              </span>
+              <span
+                style={{
+                  fontSize: 'clamp(12px, 2.5vw, 14px)',
+                  fontWeight: 800,
+                  color: FOREST,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: 'clamp(95px, 26vw, 280px)',
+                }}
+              >
+                {partnerMasjid.name}
+              </span>
+              {!isMosquePortal && (
+                <button
+                  type="button"
+                  onClick={() => setPartnerMasjid(null)}
+                  title="Remove mosque affiliation"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: MUTED,
+                    cursor: 'pointer',
+                    padding: '2px 4px',
+                    fontSize: 14,
+                    lineHeight: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    opacity: 0.65,
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.65')}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          )}
+        </div>
 
-        {/* Right side */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Nav links — hidden on mobile via Tailwind */}
-          <div className="hidden md:flex items-center" style={{ gap: 28, marginRight: 16 }}>
-            {!isCalculator && (
-              <>
-                <Link href="/#why" style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontFamily: 'Open Sans, sans-serif', whiteSpace: 'nowrap' }}>
-                  Why Zakat
-                </Link>
-                <Link href="/#how" style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontFamily: 'Open Sans, sans-serif', whiteSpace: 'nowrap' }}>
-                  How It Works
-                </Link>
-                <Link href="/#impact" style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontFamily: 'Open Sans, sans-serif', whiteSpace: 'nowrap' }}>
-                  Impact
-                </Link>
-              </>
-            )}
-          </div>
+        {/* Right side: Concise Navigation + Primary Action */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexShrink: 0 }}>
+          {showMarketingLinks && !partnerMasjid && (
+            <div className="hidden md:flex items-center">
+              <Link
+                href="/partner"
+                style={{
+                  fontSize: 14,
+                  color: pathname.startsWith('/partner') ? FOREST : MUTED,
+                  fontWeight: pathname.startsWith('/partner') ? 700 : 600,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                For Mosques
+              </Link>
+            </div>
+          )}
 
-          {/* CTA button — always visible */}
           <Link
             href={isCalculator ? '/' : '/calculator'}
             style={{
-              background: GREEN,
-              color: 'white',
-              padding: '9px 18px',
-              borderRadius: 50,
-              fontSize: 14,
-              fontWeight: 600,
+              background: isCalculator ? '#FFFFFF' : FOREST,
+              color: isCalculator ? INK : '#FFFFFF',
+              border: isCalculator ? `1px solid ${HAIRLINE}` : 'none',
+              padding: '9px clamp(12px, 3vw, 20px)',
+              borderRadius: 8,
+              fontSize: 'clamp(12.5px, 2.5vw, 14px)',
+              fontWeight: 700,
               textDecoration: 'none',
-              fontFamily: 'Open Sans, sans-serif',
               whiteSpace: 'nowrap',
+              letterSpacing: -0.2,
+              transition: 'opacity 0.2s',
             }}
           >
-            {isCalculator ? 'Home' : 'Calculate Zakat'}
+            {isCalculator ? 'Home' : 'Calculate Zakat →'}
           </Link>
         </div>
-
       </div>
     </nav>
   )

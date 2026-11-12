@@ -1,1069 +1,586 @@
-"use client";
-import { ClaudeTest } from "@/components/ClaudeTest";
-import { TopNav } from "@/components/TopNav";
-import { useState, useEffect, useRef } from "react";
+'use client'
 
-function useInView(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true);
-      },
-      { threshold },
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-  return { ref, inView };
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { TopNav } from '@/components/TopNav'
+import { ZakatlyLogo } from '@/components/ZakatlyLogo'
+import { useCalculatorStore } from '@/store/calculatorStore'
+import { InvestmentType } from '@/types/zakat.types'
+
+const FOREST = '#16351F'
+const DARK_SECTION = '#102417'
+const ALABASTER = '#F7F5EF'
+const STONE_SHADE = '#EAE6DC'
+const INK = '#121614'
+const MUTED = '#5A625D'
+const BRASS = '#C5A059'
+
+function fmt(n: number) {
+  return '$' + Math.round(n).toLocaleString('en-US')
 }
-
-function AnimatedSection({
-  children,
-  className = "",
-  delay = 0,
-  style = {},
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-  style?: React.CSSProperties;
-}) {
-  const { ref, inView } = useInView();
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-const GREEN = "#2d7a4f";
-const LIGHT_GREEN = "#68BA7F";
-const DARK = "#0f2419";
 
 export default function LandingPage() {
-  const [quickAssets, setQuickAssets] = useState({
-    cash: "",
-    gold: "",
-    investments: "",
-  });
-  const quickZakat =
-    ((parseFloat(quickAssets.cash) || 0) +
-      (parseFloat(quickAssets.gold) || 0) +
-      (parseFloat(quickAssets.investments) || 0)) *
-    0.025;
+  const router = useRouter()
+  const updateAssets = useCalculatorStore((s) => s.updateAssets)
+  const setSelectedInvestments = useCalculatorStore((s) => s.setSelectedInvestments)
+  const setSkipIntro = useCalculatorStore((s) => s.setSkipIntro)
+
+  const [simCash, setSimCash] = useState<number>(30000)
+  const [simStocks, setSimStocks] = useState<number>(100000)
+  const [simRetirement, setSimRetirement] = useState<number>(80000)
+
+  const grossPortfolio = simCash + simStocks + simRetirement
+  const naiveZakat = grossPortfolio * 0.025
+  const scholarlyZakatableBase = simCash + simStocks * 0.3 + simRetirement * 0.68
+  const scholarlyZakat = scholarlyZakatableBase * 0.025
+  const effectiveRate = grossPortfolio > 0 ? (scholarlyZakat / grossPortfolio) * 100 : 0
+
+  function handleContinueWithSimulatorValues() {
+    updateAssets({
+      cash: simCash,
+      passiveStocks: simStocks,
+      retirementAccounts: simRetirement,
+    })
+    const invTypes: InvestmentType[] = []
+    if (simStocks > 0) invTypes.push('passiveStocks')
+    if (simRetirement > 0) invTypes.push('retirement')
+    if (invTypes.length > 0) {
+      setSelectedInvestments(invTypes)
+    }
+    setSkipIntro(true)
+    router.push('/calculator')
+  }
 
   return (
-    <div style={{ fontFamily: 'Open Sans, sans-serif', color: DARK, overflowX: 'hidden' }}>
-      {/* NAV */}
+    <div
+      style={{
+        background: ALABASTER,
+        color: INK,
+        minHeight: '100vh',
+        overflowX: 'hidden',
+        fontFamily: 'Open Sans, -apple-system, BlinkMacSystemFont, sans-serif',
+      }}
+    >
       <TopNav />
 
-      {/* HERO */}
+      {/* ── SECTION 1 (SHADE: WARM ALABASTER): VISUAL HERO WITH ARCH PHOTOGRAPHY ── */}
       <section
         style={{
-          position: "relative",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
+          padding: 'clamp(108px, 12vw, 136px) clamp(16px, 4vw, 28px) clamp(64px, 8vw, 88px)',
+          maxWidth: 1200,
+          margin: '0 auto',
         }}
       >
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/mosque-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,30,18,0.55)' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 90%, white 100%)' }} />
-
         <div
           style={{
-            position: "relative",
-            zIndex: 1,
-            textAlign: "center",
-            padding: "120px 32px 80px",
-            maxWidth: 800,
-            margin: "0 auto",
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+            gap: 'clamp(36px, 5vw, 56px)',
+            alignItems: 'center',
           }}
         >
-          <div
-            style={{
-              display: "inline-block",
-              background: "rgba(104,186,127,0.2)",
-              border: "1px solid rgba(104,186,127,0.4)",
-              borderRadius: 50,
-              padding: "6px 18px",
-              marginBottom: 28,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 11,
-                letterSpacing: 3,
-                color: LIGHT_GREEN,
-                textTransform: "uppercase",
-                fontFamily: "Open Sans, sans-serif",
-              }}
-            >
-              Purify Your Wealth
-            </span>
-          </div>
-          <h1
-            style={{
-              fontSize: "clamp(40px, 6vw, 72px)",
-              fontWeight: 700,
-              color: "white",
-              lineHeight: 1.1,
-              marginBottom: 16,
-            }}
-          >
-            Fulfill Your Zakat
-          </h1>
-          <h2
-            style={{
-              fontSize: "clamp(36px, 5vw, 64px)",
-              fontWeight: 700,
-              color: LIGHT_GREEN,
-              lineHeight: 1.1,
-              marginBottom: 28,
-            }}
-          >
-            Transform Lives
-          </h2>
-          <p
-            style={{
-              fontSize: 18,
-              color: "rgba(255,255,255,0.7)",
-              lineHeight: 1.7,
-              maxWidth: 560,
-              margin: "0 auto 44px",
-              fontFamily: "Open Sans, sans-serif",
-            }}
-          >
-            Calculate your Zakat accurately and give with confidence. Every
-            contribution brings hope to those in need and blessings to your
-            wealth.
-          </p>
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <a
-              href="/calculator"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                background: LIGHT_GREEN,
-                color: "white",
-                padding: "16px 32px",
-                borderRadius: 50,
-                fontSize: 16,
-                fontWeight: 600,
-                textDecoration: "none",
-                fontFamily: "Open Sans, sans-serif",
-                boxShadow: "0 8px 32px rgba(104,186,127,0.4)",
-              }}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <rect x="2" y="3" width="20" height="14" rx="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
-              Calculate Your Zakat →
-            </a>
-            <a
-              href="#why"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                background: "rgba(255,255,255,0.1)",
-                color: "white",
-                padding: "16px 32px",
-                borderRadius: 50,
-                fontSize: 16,
-                fontWeight: 600,
-                textDecoration: "none",
-                fontFamily: "Open Sans, sans-serif",
-                border: "1px solid rgba(255,255,255,0.2)",
-              }}
-            >
-              Learn More
-            </a>
-          </div>
-
-        </div>
-      </section>
-
-      {/* WHY ZAKAT MATTERS */}
-      <section id="why" style={{ padding: "100px 32px", background: "white" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <AnimatedSection style={{ textAlign: "center", marginBottom: 64 }}>
+          {/* Left: Minimal, High-Impact Typography */}
+          <div>
             <div
               style={{
-                fontSize: 11,
-                letterSpacing: 3,
-                color: LIGHT_GREEN,
-                textTransform: "uppercase",
-                fontFamily: "Open Sans, sans-serif",
-                marginBottom: 12,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: STONE_SHADE,
+                padding: '6px 14px',
+                borderRadius: 100,
+                fontSize: 12,
+                fontWeight: 800,
+                letterSpacing: 1.2,
+                textTransform: 'uppercase',
+                color: FOREST,
+                marginBottom: 24,
               }}
             >
-              A Sacred Duty
+              100% Private · AAOIFI &amp; AMJA Aligned
             </div>
-            <h2
+
+            <h1
               style={{
-                fontSize: "clamp(32px, 4vw, 48px)",
-                fontWeight: 700,
-                marginBottom: 16,
+                fontSize: 'clamp(40px, 5.2vw, 64px)',
+                fontWeight: 800,
+                lineHeight: 1.05,
+                letterSpacing: '-1.8px',
+                margin: '0 0 20px',
               }}
             >
-              Why Zakat Matters
-            </h2>
-            <p
-              style={{
-                fontSize: 18,
-                color: "#666",
-                maxWidth: 600,
-                margin: "0 auto",
-                lineHeight: 1.7,
-                fontFamily: "Open Sans, sans-serif",
-              }}
-            >
-              More than charity, Zakat is a divine obligation that purifies
-              wealth, elevates souls, and transforms communities.
+              Not Everything You Own Is Taxed at 2.5%.
+            </h1>
+
+            <p style={{ fontSize: 19, color: MUTED, lineHeight: 1.6, margin: '0 0 36px', maxWidth: 480 }}>
+              Index funds, 401(k)s, and jewelry each have their own scholarly rate. Calculate your exact Zakat in 2 minutes—privately in your browser.
             </p>
-          </AnimatedSection>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(460px, 1fr))",
-              gap: 24,
-            }}
-          >
-            {[
-              {
-                icon: "🤲",
-                title: "Purification of Wealth",
-                desc: "Zakat purifies your wealth and soul, removing greed and fostering compassion for those in need.",
-                verse:
-                  "Take from their wealth a charity to purify them — Quran 9:103",
-                delay: 0,
-              },
-              {
-                icon: "⚖️",
-                title: "Social Justice",
-                desc: "A divine system ensuring wealth circulates fairly, preventing inequality and supporting the vulnerable.",
-                verse: "And establish prayer and give Zakat — Quran 2:43",
-                delay: 0.1,
-              },
-              {
-                icon: "🛡️",
-                title: "Protection & Barakah",
-                desc: "Giving Zakat protects your remaining wealth and brings divine blessings and growth.",
-                verse:
-                  "Allah destroys interest and gives increase for charities — Quran 2:276",
-                delay: 0.2,
-              },
-              {
-                icon: "🕌",
-                title: "Third Pillar of Islam",
-                desc: "One of the five fundamental pillars, making it an essential obligation for every eligible Muslim.",
-                verse: "Mentioned 82 times in the Quran alongside prayer",
-                delay: 0.3,
-              },
-            ].map((card) => (
-              <AnimatedSection key={card.title} delay={card.delay}>
-                <div
-                  style={{
-                    background: "#fafafa",
-                    borderRadius: 20,
-                    padding: 32,
-                    border: "1px solid #f0f0f0",
-                    height: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 52,
-                      height: 52,
-                      background: `${LIGHT_GREEN}20`,
-                      borderRadius: 14,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 24,
-                      marginBottom: 16,
-                    }}
-                  >
-                    {card.icon}
-                  </div>
-                  <h3
-                    style={{ fontSize: 20, fontWeight: 700, marginBottom: 10 }}
-                  >
-                    {card.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: 15,
-                      color: "#666",
-                      lineHeight: 1.7,
-                      marginBottom: 16,
-                      fontFamily: "Open Sans, sans-serif",
-                    }}
-                  >
-                    {card.desc}
-                  </p>
-                  <div
-                    style={{
-                      borderLeft: `3px solid ${LIGHT_GREEN}`,
-                      paddingLeft: 12,
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: 13,
-                        color: LIGHT_GREEN,
-                        fontStyle: "italic",
-                        fontFamily: "Open Sans, sans-serif",
-                        margin: 0,
-                      }}
-                    >
-                      {card.verse}
-                    </p>
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-
-          <AnimatedSection delay={0.2} style={{ marginTop: 48 }}>
-            <div
-              style={{
-                background: `linear-gradient(135deg, ${GREEN}, ${LIGHT_GREEN})`,
-                borderRadius: 24,
-                padding: "48px 40px",
-                textAlign: "center",
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: 28,
-                  fontWeight: 700,
-                  color: "white",
-                  marginBottom: 12,
-                }}
-              >
-                Your Zakat Can Change Everything
-              </h3>
-              <p
-                style={{
-                  fontSize: 16,
-                  color: "rgba(255,255,255,0.85)",
-                  fontFamily: "Open Sans, sans-serif",
-                  lineHeight: 1.7,
-                  maxWidth: 600,
-                  margin: "0 auto",
-                }}
-              >
-                Imagine a child getting their first meal of the day, a family
-                finding shelter, a student receiving education — all through
-                your generosity.
-              </p>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section
-        id="how"
-        style={{ padding: "100px 32px", background: "#f8fdf9" }}
-      >
-        <div
-          style={{
-            maxWidth: 1100,
-            margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 80,
-            alignItems: "center",
-          }}
-        >
-          <AnimatedSection>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: 3,
-                color: LIGHT_GREEN,
-                textTransform: "uppercase",
-                fontFamily: "Open Sans, sans-serif",
-                marginBottom: 12,
-              }}
-            >
-              Simple & Accurate
-            </div>
-            <h2
-              style={{
-                fontSize: "clamp(28px, 3.5vw, 44px)",
-                fontWeight: 700,
-                marginBottom: 20,
-                lineHeight: 1.2,
-              }}
-            >
-              Calculate Your Zakat in Minutes
-            </h2>
-            <p
-              style={{
-                fontSize: 16,
-                color: "#666",
-                lineHeight: 1.8,
-                marginBottom: 36,
-                fontFamily: "Open Sans, sans-serif",
-              }}
-            >
-              Our calculator follows authentic Islamic guidelines to help you
-              determine your exact Zakat obligation. Just enter your assets, and
-              we'll handle the rest.
-            </p>
-            {[
-              {
-                icon: "📋",
-                title: "Easy Input",
-                desc: "Add all your zakatable assets in one guided step-by-step flow",
-              },
-              {
-                icon: "⚡",
-                title: "Instant Results",
-                desc: "Get your Zakat amount calculated instantly with 2.5% precision",
-              },
-              {
-                icon: "💳",
-                title: "Direct Payment",
-                desc: "Pay your Zakat securely to verified charitable organizations",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                style={{ display: "flex", gap: 16, marginBottom: 24 }}
-              >
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    background: `${LIGHT_GREEN}20`,
-                    borderRadius: 12,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 20,
-                    flexShrink: 0,
-                  }}
-                >
-                  {item.icon}
-                </div>
-                <div>
-                  <div
-                    style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}
-                  >
-                    {item.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      color: "#888",
-                      fontFamily: "Open Sans, sans-serif",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {item.desc}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.2}>
-            <div
-              style={{
-                background: "white",
-                borderRadius: 24,
-                padding: 36,
-                boxShadow: "0 20px 60px rgba(0,0,0,0.1)",
-              }}
-            >
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  background: GREEN,
-                  borderRadius: 14,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 20,
-                }}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <line x1="8" y1="21" x2="16" y2="21" />
-                  <line x1="12" y1="17" x2="12" y2="21" />
-                </svg>
-              </div>
-              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>
-                Quick Calculator
-              </h3>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "#888",
-                  marginBottom: 24,
-                  fontFamily: "Open Sans, sans-serif",
-                }}
-              >
-                Enter your zakatable assets below
-              </p>
-              {[
-                { key: "cash", label: "Cash & Savings ($)" },
-                { key: "gold", label: "Gold & Silver ($)" },
-                { key: "investments", label: "Investments & Assets ($)" },
-              ].map((field) => (
-                <div key={field.key} style={{ marginBottom: 16 }}>
-                  <label
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#444",
-                      fontFamily: "Open Sans, sans-serif",
-                      display: "block",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {field.label}
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="0.00"
-                    value={quickAssets[field.key as keyof typeof quickAssets]}
-                    onChange={(e) =>
-                      setQuickAssets((prev) => ({
-                        ...prev,
-                        [field.key]: e.target.value,
-                      }))
-                    }
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      background: "#f5f5f5",
-                      border: "none",
-                      borderRadius: 12,
-                      fontSize: 15,
-                      fontFamily: "Open Sans, sans-serif",
-                      outline: "none",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                </div>
-              ))}
-              <div
-                style={{
-                  borderTop: "1px solid #f0f0f0",
-                  paddingTop: 16,
-                  marginTop: 8,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 20,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    fontFamily: "Open Sans, sans-serif",
-                  }}
-                >
-                  Your Zakat (2.5%)
-                </span>
-                <span style={{ fontSize: 24, fontWeight: 700, color: GREEN }}>
-                  $
-                  {quickZakat.toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-              <a
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <Link
                 href="/calculator"
                 style={{
-                  display: "block",
-                  textAlign: "center",
-                  background: GREEN,
-                  color: "white",
-                  padding: "16px",
-                  borderRadius: 14,
-                  fontSize: 15,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  fontFamily: "Open Sans, sans-serif",
+                  background: FOREST,
+                  color: '#FFFFFF',
+                  padding: '17px 34px',
+                  borderRadius: 8,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  textDecoration: 'none',
                 }}
               >
-                Continue to Full Calculator →
+                Start 2-Minute Assessment →
+              </Link>
+              <a
+                href="#rates"
+                style={{
+                  background: '#FFFFFF',
+                  color: INK,
+                  border: '1px solid #DCD8CE',
+                  padding: '17px 26px',
+                  borderRadius: 8,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                }}
+              >
+                See the 4 Rates
               </a>
             </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* IMPACT */}
-      <section
-        id="impact"
-        style={{ padding: "100px 32px", background: "white" }}
-      >
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <AnimatedSection style={{ textAlign: "center", marginBottom: 64 }}>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: 3,
-                color: LIGHT_GREEN,
-                textTransform: "uppercase",
-                fontFamily: "Open Sans, sans-serif",
-                marginBottom: 12,
-              }}
-            >
-              Where It Goes
-            </div>
-            <h2
-              style={{
-                fontSize: "clamp(32px, 4vw, 48px)",
-                fontWeight: 700,
-                marginBottom: 16,
-              }}
-            >
-              Your Zakat, Directed With Purpose
-            </h2>
-            <p
-              style={{
-                fontSize: 18,
-                color: "#666",
-                fontFamily: "Open Sans, sans-serif",
-                lineHeight: 1.7,
-              }}
-            >
-              Zakat is one of Islam's most powerful tools for change. Here are
-              the causes your contribution can support.
-            </p>
-          </AnimatedSection>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 20,
-              marginBottom: 64,
-            }}
-          >
-            {[
-              {
-                icon: "🍽️",
-                title: "Food Security",
-                stat: "Feeding families facing hunger",
-                delay: 0,
-              },
-              {
-                icon: "🏠",
-                title: "Shelter",
-                stat: "Housing those without a safe home",
-                delay: 0.1,
-              },
-              {
-                icon: "🎓",
-                title: "Education",
-                stat: "Keeping children in school",
-                delay: 0.2,
-              },
-              {
-                icon: "🏥",
-                title: "Healthcare",
-                stat: "Delivering essential medical care",
-                delay: 0.3,
-              },
-            ].map((item) => (
-              <AnimatedSection key={item.title} delay={item.delay}>
-                <div
-                  style={{
-                    background: "#fafafa",
-                    borderRadius: 20,
-                    padding: "28px 20px",
-                    textAlign: "center",
-                    border: "1px solid #f0f0f0",
-                  }}
-                >
-                  <div style={{ fontSize: 36, marginBottom: 12 }}>
-                    {item.icon}
-                  </div>
-                  <div
-                    style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}
-                  >
-                    {item.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: LIGHT_GREEN,
-                      fontWeight: 600,
-                      fontFamily: "Open Sans, sans-serif",
-                    }}
-                  >
-                    {item.stat}
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
           </div>
 
+          {/* Right: Documentary Impact Image + Floating Glass Summary Badge */}
+          <div style={{ position: 'relative' }}>
+            <div
+              style={{
+                borderRadius: 20,
+                overflow: 'hidden',
+                height: 'clamp(360px, 46vw, 460px)',
+                boxShadow: '0 24px 60px rgba(18, 22, 20, 0.12)',
+                position: 'relative',
+              }}
+            >
+              <img
+                src="/real-children-joy.jpg"
+                alt="Real 35mm film photograph of children smiling"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(to top, rgba(16,36,23,0.75) 0%, rgba(16,36,23,0.1) 55%, transparent 100%)',
+                }}
+              />
+
+              {/* Floating Overlay Card inside Image */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  borderRadius: 14,
+                  padding: '18px 22px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 12,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: MUTED }}>
+                    Sample $210,000 Portfolio
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: INK, marginTop: 2 }}>
+                    Generic Calculator: <span style={{ textDecoration: 'line-through', color: '#8A867E' }}>$5,250</span>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: FOREST }}>
+                    True Scholarly Zakat
+                  </div>
+                  <div style={{ fontSize: 26, fontWeight: 900, color: FOREST, lineHeight: 1.1 }}>
+                    $2,860 <span style={{ fontSize: 13, fontWeight: 700, color: MUTED }}>(1.36%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
-      <section style={{ padding: "100px 32px", background: "#f8fdf9" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <AnimatedSection style={{ textAlign: "center", marginBottom: 64 }}>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: 3,
-                color: LIGHT_GREEN,
-                textTransform: "uppercase",
-                fontFamily: "Open Sans, sans-serif",
-                marginBottom: 12,
-              }}
-            >
-              Why Choose Us
+      {/* ── SECTION 2 (SHADE: DEEP FOREST EMERALD): THE 4 RATES AT A GLANCE ── */}
+      <section id="rates" style={{ background: DARK_SECTION, color: '#FFFFFF', padding: 'clamp(64px, 8vw, 88px) clamp(16px, 4vw, 28px)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 48 }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: BRASS, letterSpacing: 1.6, textTransform: 'uppercase', marginBottom: 8 }}>
+                Scholarly Clarity in 10 Seconds
+              </div>
+              <h2 style={{ fontSize: 'clamp(30px, 3.8vw, 44px)', fontWeight: 800, letterSpacing: '-1px', margin: 0 }}>
+                Four Asset Types. Four Different Rules.
+              </h2>
             </div>
-            <h2
-              style={{
-                fontSize: "clamp(32px, 4vw, 48px)",
-                fontWeight: 700,
-                marginBottom: 16,
-              }}
-            >
-              Zakat Made Simple & Trustworthy
-            </h2>
-            <p
-              style={{
-                fontSize: 18,
-                color: "#666",
-                maxWidth: 600,
-                margin: "0 auto",
-                fontFamily: "Open Sans, sans-serif",
-                lineHeight: 1.7,
-              }}
-            >
-              We've designed every aspect of our platform to make fulfilling
-              your Zakat obligation as easy and meaningful as possible.
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.68)', margin: 0, maxWidth: 400 }}>
+              Zakat applies only to liquid, accessible wealth—never to factories, unvested taxes, or personal homes.
             </p>
-          </AnimatedSection>
+          </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 40,
-            }}
-          >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: 20 }}>
             {[
               {
-                icon: "🔒",
-                title: "100% Secure & Transparent",
-                desc: "Your donations are protected with bank-level security. Track every dollar to see exactly where it goes.",
-                delay: 0,
+                rate: '2.5%',
+                label: 'Cash & Precious Metals',
+                barPct: 100,
+                caption: '100% liquid balance held for one lunar year.',
               },
               {
-                icon: "🕐",
-                title: "Calculate Anytime",
-                desc: "Access our Zakat calculator 24/7 from anywhere. Get instant, accurate results based on current nisab values.",
-                delay: 0.1,
+                rate: '0.75%',
+                label: 'Passive Stocks & ETFs',
+                barPct: 30,
+                caption: 'Only 30% of corporate value is liquid cash & inventory.',
               },
               {
-                icon: "✅",
-                title: "Verified Recipients",
-                desc: "All beneficiaries are thoroughly verified to ensure your Zakat reaches those truly eligible.",
-                delay: 0.2,
+                rate: '2.5% Net',
+                label: '401(k) & Traditional IRA',
+                barPct: 68,
+                caption: 'Assessed only after deducting taxes & 10% penalty.',
               },
               {
-                icon: "📖",
-                title: "Scholar Approved",
-                desc: "Our calculations and distribution methods are reviewed and approved by Islamic scholars.",
-                delay: 0.3,
-              },
-              {
-                icon: "🌍",
-                title: "Global Reach",
-                desc: "Support communities worldwide or choose specific regions where your Zakat will make the biggest impact.",
-                delay: 0.4,
-              },
-              {
-                icon: "📱",
-                title: "Easy Payment Options",
-                desc: "Pay securely via credit card, bank transfer, or digital wallet. Get instant receipts for your records.",
-                delay: 0.5,
+                rate: '0%',
+                label: 'Primary Home & Cars',
+                barPct: 4,
+                caption: 'Personal living essentials are 100% exempt.',
               },
             ].map((item) => (
-              <AnimatedSection key={item.title} delay={item.delay}>
-                <div style={{ padding: "8px 0" }}>
-                  <div
-                    style={{
-                      width: 52,
-                      height: 52,
-                      background: `${LIGHT_GREEN}20`,
-                      borderRadius: 14,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 24,
-                      marginBottom: 16,
-                    }}
-                  >
-                    {item.icon}
+              <div
+                key={item.label}
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 16,
+                  padding: '28px 26px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  gap: 20,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 40, fontWeight: 900, color: BRASS, letterSpacing: '-1px', marginBottom: 6 }}>
+                    {item.rate}
                   </div>
-                  <h3
-                    style={{ fontSize: 17, fontWeight: 700, marginBottom: 8 }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      color: "#777",
-                      lineHeight: 1.7,
-                      fontFamily: "Open Sans, sans-serif",
-                      margin: 0,
-                    }}
-                  >
-                    {item.desc}
+                  <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 8 }}>
+                    {item.label}
+                  </div>
+                  <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5, margin: 0 }}>
+                    {item.caption}
                   </p>
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* FINAL CTA */}
-      <section
-        style={{
-          position: "relative",
-          padding: "100px 32px",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: `linear-gradient(135deg, ${DARK} 0%, #1a3a2a 100%)`,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "radial-gradient(circle at 70% 50%, rgba(104,186,127,0.15) 0%, transparent 60%)",
-          }}
-        />
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            maxWidth: 700,
-            margin: "0 auto",
-            textAlign: "center",
-          }}
-        >
-          <AnimatedSection>
-            <h2
-              style={{
-                fontSize: "clamp(32px, 4vw, 52px)",
-                fontWeight: 700,
-                color: "white",
-                marginBottom: 20,
-                lineHeight: 1.2,
-              }}
-            >
-              Don't Wait. Your Zakat is Due.
-            </h2>
-            <p
-              style={{
-                fontSize: 18,
-                color: "rgba(255,255,255,0.75)",
-                lineHeight: 1.7,
-                marginBottom: 40,
-                fontFamily: "Open Sans, sans-serif",
-              }}
-            >
-              Ramadan is the perfect time to fulfill this sacred obligation.
-              Calculate your Zakat now and bring blessings to your wealth while
-              transforming lives.
-            </p>
-            <a
-              href="/calculator"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 12,
-                background: "white",
-                color: GREEN,
-                padding: "18px 40px",
-                borderRadius: 50,
-                fontSize: 17,
-                fontWeight: 700,
-                textDecoration: "none",
-                fontFamily: "Open Sans, sans-serif",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-              }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <rect x="2" y="3" width="20" height="14" rx="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
-              Calculate My Zakat Now →
-            </a>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 32,
-                marginTop: 32,
-              }}
-            >
-              {[
-                "100% Transparent",
-                "Scholar Approved",
-                "Instant Calculation",
-              ].map((badge) => (
-                <div
-                  key={badge}
-                  style={{ display: "flex", alignItems: "center", gap: 8 }}
-                >
-                  <div
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: LIGHT_GREEN,
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: "rgba(255,255,255,0.6)",
-                      fontFamily: "Open Sans, sans-serif",
-                    }}
-                  >
-                    {badge}
-                  </span>
+                {/* Visual Zakatable Base Bar */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: 'rgba(255,255,255,0.55)', marginBottom: 6, fontWeight: 700 }}>
+                    <span>ZAKATABLE PORTION</span>
+                    <span>{item.barPct === 4 ? '0%' : `${item.barPct}%`}</span>
+                  </div>
+                  <div style={{ height: 6, background: 'rgba(255,255,255,0.12)', borderRadius: 100, overflow: 'hidden' }}>
+                    <div style={{ width: `${item.barPct}%`, height: '100%', background: BRASS, borderRadius: 100 }} />
+                  </div>
                 </div>
-              ))}
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{ background: "#0a1a0f", padding: "60px 32px" }}>
-        <div
-          style={{
-            maxWidth: 1100,
-            margin: "0 auto",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: 48,
-          }}
-        >
-          <div style={{ maxWidth: 340 }}>
-            <img src="/logo.png" alt="Zakatly" style={{ height: 40, width: 'auto', objectFit: 'contain', marginBottom: 16, filter: 'brightness(0) invert(1)' }} />
-            <p
-              style={{
-                fontSize: 14,
-                color: "rgba(255,255,255,0.4)",
-                lineHeight: 1.7,
-                fontFamily: "Open Sans, sans-serif",
-              }}
-            >
-              Making Zakat simple, transparent, and impactful for Muslims
-              worldwide.
-            </p>
-          </div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "white", marginBottom: 16, fontFamily: "Open Sans, sans-serif", letterSpacing: 0.5 }}>
-              Contact
-            </div>
-            {["support@zakatly.app", "San Ramon, CA"].map((link) => (
-              <div key={link} style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 10, fontFamily: "Open Sans, sans-serif" }}>
-                {link}
               </div>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ── SECTION 3 (SHADE: WARM TRAVERTINE STONE): INTERACTIVE VISUAL ESTIMATOR ── */}
+      <section id="estimator" style={{ background: STONE_SHADE, padding: 'clamp(64px, 8vw, 88px) clamp(16px, 4vw, 28px)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div
+            style={{
+              background: '#FFFFFF',
+              borderRadius: 20,
+              padding: 'clamp(26px, 5vw, 48px)',
+              boxShadow: '0 16px 40px rgba(18, 22, 20, 0.05)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
+              gap: 'clamp(32px, 5vw, 48px)',
+              alignItems: 'center',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: BRASS, textTransform: 'uppercase', letterSpacing: 1.4, marginBottom: 8 }}>
+                Live Simulator
+              </div>
+              <h3 style={{ fontSize: 'clamp(26px, 3.2vw, 32px)', fontWeight: 800, margin: '0 0 24px', letterSpacing: '-0.8px' }}>
+                See How Much You Save From Overpaying
+              </h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 700, marginBottom: 8 }}>
+                    <span>
+                      Cash &amp; Checking <span style={{ color: MUTED, fontWeight: 500 }}>(2.5%)</span>
+                    </span>
+                    <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 800 }}>{fmt(simCash)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={150000}
+                    step={5000}
+                    value={simCash}
+                    onChange={(e) => setSimCash(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: FOREST, cursor: 'pointer' }}
+                  />
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 700, marginBottom: 8 }}>
+                    <span>
+                      Index ETFs &amp; Stocks <span style={{ color: FOREST, fontWeight: 600 }}>(0.75% Eff.)</span>
+                    </span>
+                    <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 800 }}>{fmt(simStocks)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={300000}
+                    step={10000}
+                    value={simStocks}
+                    onChange={(e) => setSimStocks(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: FOREST, cursor: 'pointer' }}
+                  />
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 700, marginBottom: 8 }}>
+                    <span>
+                      401(k) &amp; IRA <span style={{ color: BRASS, fontWeight: 600 }}>(Net of Tax)</span>
+                    </span>
+                    <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 800 }}>{fmt(simRetirement)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={250000}
+                    step={10000}
+                    value={simRetirement}
+                    onChange={(e) => setSimRetirement(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: FOREST, cursor: 'pointer' }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Visual Result Box */}
+            <div
+              style={{
+                background: ALABASTER,
+                border: '1px solid #DFDCD2',
+                borderRadius: 16,
+                padding: 'clamp(24px, 4vw, 32px)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 22,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  borderBottom: '1px solid #DFDCD2',
+                  paddingBottom: 20,
+                  flexWrap: 'wrap',
+                  gap: 12,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: MUTED, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
+                    True Scholarly Zakat
+                  </div>
+                  <div style={{ fontSize: 'clamp(38px, 5vw, 48px)', fontWeight: 900, color: FOREST, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>
+                    {fmt(scholarlyZakat)}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: MUTED, textTransform: 'uppercase', marginBottom: 4 }}>
+                    Naive 2.5%
+                  </div>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: '#8A867E', textDecoration: 'line-through', fontVariantNumeric: 'tabular-nums' }}>
+                    {fmt(naiveZakat)}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 700 }}>
+                <span style={{ color: MUTED }}>Effective Rate on {fmt(grossPortfolio)}:</span>
+                <span style={{ color: INK }}>{effectiveRate.toFixed(2)}%</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleContinueWithSimulatorValues}
+                style={{
+                  width: '100%',
+                  background: FOREST,
+                  color: '#FFFFFF',
+                  border: 'none',
+                  textAlign: 'center',
+                  padding: '16px',
+                  borderRadius: 10,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                Continue With These Values in Calculator →
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 4 (SHADE: PURE WHITE): STILL-LIFE IMAGE + 3 TRUST PILLARS ── */}
+      <section style={{ background: '#FFFFFF', padding: 'clamp(64px, 8vw, 88px) clamp(16px, 4vw, 28px)' }}>
         <div
           style={{
-            maxWidth: 1100,
-            margin: "40px auto 0",
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-            paddingTop: 24,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            maxWidth: 1200,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 380px), 1fr))',
+            gap: 'clamp(36px, 5vw, 56px)',
+            alignItems: 'center',
           }}
         >
-          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "Open Sans, sans-serif" }}>
-            © 2026 Zakatly. All rights reserved.
-          </span>
-          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "Open Sans, sans-serif" }}>
-            Made with ❤️ for the Ummah
-          </span>
+          <div style={{ borderRadius: 20, overflow: 'hidden', height: 'clamp(300px, 40vw, 380px)', boxShadow: '0 16px 40px rgba(0,0,0,0.06)' }}>
+            <img
+              src="/real-school-learning.jpg"
+              alt="Real documentary photograph of children learning in a community classroom"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 800, color: BRASS, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>
+              Built for Trust
+            </div>
+            <h2 style={{ fontSize: 'clamp(30px, 3.6vw, 38px)', fontWeight: 800, margin: '0 0 28px', letterSpacing: '-1px', lineHeight: 1.15 }}>
+              Private by Default. Community First.
+            </h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 28 }}>
+              {[
+                {
+                  title: '0 Bytes Stored in the Cloud',
+                  desc: 'Your numbers never leave your browser tab. No accounts, no tracking.',
+                },
+                {
+                  title: 'Instant PDF & Email Receipt',
+                  desc: 'Download a clean itemized record generated directly on your device.',
+                },
+                {
+                  title: 'Co-Branded for Local Mosques',
+                  desc: 'Mosques get a custom link so congregants donate 100% directly.',
+                },
+              ].map((p) => (
+                <div key={p.title} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: '50%',
+                      background: '#EDF3EE',
+                      color: FOREST,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: 2,
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 17, fontWeight: 800, marginBottom: 2 }}>{p.title}</div>
+                    <div style={{ fontSize: 15, color: MUTED }}>{p.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              href="/partner"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: 15,
+                fontWeight: 800,
+                color: FOREST,
+                textDecoration: 'none',
+              }}
+            >
+              <span>Serve on a mosque board? Create your partner link</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 5 (SHADE: DEEP OBSIDIAN): MINIMALIST FOOTER ── */}
+      <footer
+        style={{
+          background: '#0E1210',
+          padding: '52px clamp(16px, 4vw, 28px)',
+          color: '#FFFFFF',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 24,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+            <ZakatlyLogo variant="rub-al-ushr" inverted height={32} />
+            <span style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.5)' }}>
+              Private, scholarly Zakat assessment.
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', alignItems: 'center' }}>
+            <Link href="/calculator" style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', fontWeight: 600 }}>
+              Calculator
+            </Link>
+            <a href="#rates" style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', fontWeight: 600 }}>
+              Asset Rates
+            </a>
+            <Link href="/partner" style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', fontWeight: 600 }}>
+              For Mosques
+            </Link>
+            <span style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.4)' }}>
+              © 2026 Zakatly
+            </span>
+          </div>
         </div>
       </footer>
-       
     </div>
-  );
+  )
 }

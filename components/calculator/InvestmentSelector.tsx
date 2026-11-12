@@ -28,11 +28,6 @@ const INVESTMENT_OPTIONS: {
     description: "401k, IRA, and pension funds",
   },
   {
-    type: "property",
-    label: "Investment Property",
-    description: "Property intended for resale",
-  },
-  {
     type: "business",
     label: "Business Inventory",
     description: "Goods and assets held for sale",

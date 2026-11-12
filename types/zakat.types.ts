@@ -22,12 +22,30 @@ export type InvestmentType =
 
 export type NisabStandard = 'gold' | 'silver'
 
+export type GoldKarat = 24 | 22 | 21 | 18 | 14
+
+export type PassiveStockRate = 0.3 | 1.0
+export type RetirementMethodRate = 0.6 | 0.3 | 1.0
+
+export interface MetalInputMeta {
+  mode: 'usd' | 'grams'
+  rawInput: string
+  karat?: GoldKarat
+}
+
+export interface LineItem {
+  id: string
+  label: string
+  amount: number
+}
+
 export interface NisabData {
   goldPriceUSD: number
   silverPriceUSD: number
   nisabGoldUSD: number
   nisabSilverUSD: number
   fetchedAt: string
+  isFallback?: boolean
 }
 
 export interface AssetBreakdownItem {

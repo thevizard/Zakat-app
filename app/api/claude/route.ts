@@ -1,12 +1,19 @@
 import { Anthropic } from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
 export async function POST(request: NextRequest) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "Test endpoint disabled in production" },
+      { status: 403 }
+    );
+  }
+
   try {
+    const client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+
     const { message } = await request.json();
 
     if (!message) {

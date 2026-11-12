@@ -18,7 +18,6 @@ const STEP_META: Record<string, { label: string; sub?: boolean }> = {
   stocks: { label: 'Shares & Stocks', sub: true },
   crypto: { label: 'Cryptocurrency', sub: true },
   retirement: { label: 'Retirement', sub: true },
-  property: { label: 'Investment Property', sub: true },
   business: { label: 'Business Inventory', sub: true },
   receivables: { label: 'Money Owed to You' },
   debts: { label: 'Liabilities' },

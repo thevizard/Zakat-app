@@ -3,7 +3,7 @@
 const GROUPS = [
   { id: 'cash', label: 'Cash & Bank', steps: ['cash'] },
   { id: 'goldsilver', label: 'Gold & Silver', steps: ['goldsilver'] },
-  { id: 'investments', label: 'Investments', steps: ['investment-selector', 'stocks', 'crypto', 'retirement', 'property', 'business'] },
+  { id: 'investments', label: 'Investments', steps: ['investment-selector', 'stocks', 'crypto', 'retirement', 'business'] },
   { id: 'receivables', label: 'Money Owed', steps: ['receivables'] },
   { id: 'debts', label: 'Liabilities', steps: ['debts'] },
 ]
@@ -19,14 +19,14 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
   const progress = currentGroupIndex <= 0 ? 0 : (currentGroupIndex / GROUPS.length) * 100
 
   return (
-    <div style={{ background: 'white', borderBottom: '1px solid #e8f5ed' }}>
+    <div style={{ background: '#FFFFFF', borderBottom: '1px solid #E2E2D8' }}>
       {/* Thin progress bar */}
-      <div style={{ height: 3, background: '#e8f5ed' }}>
-        <div style={{ height: '100%', width: `${progress}%`, background: '#2d7a4f', transition: 'width 0.5s ease' }} />
+      <div style={{ height: 2, background: '#EAEAE2' }}>
+        <div style={{ height: '100%', width: `${progress}%`, background: '#1E3F20', transition: 'width 0.4s ease' }} />
       </div>
 
       {/* Step dots */}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 32px', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 24px', overflowX: 'auto' }}>
         {GROUPS.map((group, i) => {
           const isActive = group.steps.includes(currentStepName)
           const isVisited = !isActive && group.steps.some(s => visitedSteps.includes(s))
@@ -35,6 +35,7 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
           return (
             <div key={group.id} style={{ display: 'flex', alignItems: 'center' }}>
               <button
+                type="button"
                 onClick={() => isClickable && onGoToStep(group.steps[0])}
                 disabled={!isClickable && !isActive}
                 className="trail-dot-btn"
@@ -45,22 +46,28 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
                 }}
               >
                 <div style={{
-                  width: 30, height: 30, borderRadius: '50%',
-                  background: isActive ? '#2d7a4f' : isVisited ? '#e8f5ed' : '#f4f4f4',
-                  border: isActive ? 'none' : isVisited ? '2px solid #2d7a4f' : '2px solid #e0e0e0',
+                  width: 28, height: 28, borderRadius: 6,
+                  background: isActive ? '#1E3F20' : isVisited ? '#EBEBE5' : '#F5F5F0',
+                  border: isActive ? 'none' : isVisited ? '1px solid #1E3F20' : '1px solid #DCDCD4',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12, fontWeight: 700,
-                  color: isActive ? 'white' : isVisited ? '#2d7a4f' : '#ccc',
-                  transition: 'all 0.3s',
+                  fontSize: 11, fontWeight: 700,
+                  color: isActive ? '#FFFFFF' : isVisited ? '#1E3F20' : '#8A8A8A',
+                  transition: 'all 0.2s',
                   flexShrink: 0,
                 }}>
-                  {isVisited ? '✓' : i + 1}
+                  {isVisited ? (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : (
+                    i + 1
+                  )}
                 </div>
                 <span className="trail-label" style={{
-                  fontWeight: isActive ? 600 : 400,
-                  color: isActive ? '#0f2419' : isVisited ? '#2d7a4f' : '#bbb',
-                  fontFamily: 'Open Sans, sans-serif', whiteSpace: 'nowrap',
-                  letterSpacing: 0.2,
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? '#141414' : isVisited ? '#1E3F20' : '#8A8A8A',
+                  whiteSpace: 'nowrap',
+                  letterSpacing: -0.2,
                 }}>
                   {group.label}
                 </span>
@@ -68,11 +75,11 @@ export function StepTrail({ currentStepName, visitedSteps, onGoToStep }: StepTra
 
               {i < GROUPS.length - 1 && (
                 <div className="trail-connector" style={{
-                  height: 1.5, borderRadius: 2,
-                  background: isVisited ? '#2d7a4f' : '#e8e8e8',
+                  height: 1,
+                  background: isVisited ? '#1E3F20' : '#E2E2D8',
                   transition: 'background 0.3s',
                   flexShrink: 0,
-                  marginBottom: 18, // align with dot center
+                  marginBottom: 16,
                 }} />
               )}
             </div>

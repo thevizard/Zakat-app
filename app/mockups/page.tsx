@@ -243,7 +243,7 @@ function ColorBlockedMockup(props: SharedProps) {
             </h1>
 
             <p style={{ fontSize: 19, color: MUTED, lineHeight: 1.6, margin: '0 0 36px', maxWidth: 480 }}>
-              Index funds, 401(k)s, and jewelry each have their own scholarly rate. Calculate your exact Zakat in 2 minutes—privately in your browser.
+              Index funds, 401(k)s, and jewelry each have their own scholarly rate. Calculate your exact Zakat privately in your browser.
             </p>
 
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
@@ -259,7 +259,7 @@ function ColorBlockedMockup(props: SharedProps) {
                   textDecoration: 'none',
                 }}
               >
-                Start 2-Minute Assessment →
+                Start Assessment →
               </Link>
             </div>
           </div>

@@ -261,21 +261,6 @@ function ColorBlockedMockup(props: SharedProps) {
               >
                 Start 2-Minute Assessment →
               </Link>
-              <a
-                href="#rates"
-                style={{
-                  background: '#FFFFFF',
-                  color: INK,
-                  border: '1px solid #DCD8CE',
-                  padding: '17px 26px',
-                  borderRadius: 8,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                }}
-              >
-                See the 4 Rates
-              </a>
             </div>
           </div>
 

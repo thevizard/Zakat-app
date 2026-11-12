@@ -37,7 +37,7 @@ export function TopNav() {
       <div
         style={{
           padding: '0 clamp(14px, 4vw, 28px)',
-          height: 68,
+          height: 72,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -49,7 +49,7 @@ export function TopNav() {
         {/* Left side: Architectural Co-Brand Lockup */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 16px)', minWidth: 0 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}>
-            <ZakatlyLogo variant="rub-al-ushr" height={34} />
+            <ZakatlyLogo variant="rub-al-ushr" height={42} />
           </Link>
 
           {partnerMasjid && (

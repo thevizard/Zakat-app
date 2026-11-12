@@ -13,7 +13,7 @@ interface ZakatlyLogoProps {
 export function ZakatlyLogo({
   variant = 'rub-al-ushr',
   inverted = false,
-  height = 38,
+  height = 42,
 }: ZakatlyLogoProps) {
   const primaryText = inverted ? '#FFFFFF' : '#121614'
   const forest = inverted ? '#255432' : '#183A21'
@@ -31,13 +31,13 @@ export function ZakatlyLogo({
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: Math.round(11 * scale),
+          gap: Math.round(12 * scale),
           userSelect: 'none',
         }}
       >
         <svg
-          width={Math.round(38 * scale)}
-          height={Math.round(38 * scale)}
+          width={Math.round(40 * scale)}
+          height={Math.round(40 * scale)}
           viewBox="0 0 40 40"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +84,7 @@ export function ZakatlyLogo({
         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
           <div
             style={{
-              fontSize: Math.round(22 * scale),
+              fontSize: Math.round(25 * scale),
               fontWeight: 800,
               letterSpacing: '-0.8px',
               color: primaryText,
@@ -96,12 +96,12 @@ export function ZakatlyLogo({
             <span
               style={{
                 display: 'inline-block',
-                width: Math.round(5 * scale),
-                height: Math.round(5 * scale),
+                width: Math.round(6 * scale),
+                height: Math.round(6 * scale),
                 background: brass,
                 transform: 'rotate(45deg)',
-                marginLeft: 4,
-                marginBottom: 2,
+                marginLeft: 5,
+                marginBottom: 3,
               }}
             />
           </div>

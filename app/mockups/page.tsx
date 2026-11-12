@@ -170,7 +170,7 @@ function ColorBlockedMockup(props: SharedProps) {
             justifyContent: 'space-between',
           }}
         >
-          <ZakatlyLogo variant="rub-al-ushr" height={42} />
+          <ZakatlyLogo variant="rub-al-ushr" height={48} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
             <a href="#rates" style={{ fontSize: 14, fontWeight: 600, color: MUTED, textDecoration: 'none' }}>
               Asset Rates
@@ -882,7 +882,7 @@ function MinimalGalleryMockup(props: SharedProps) {
     <div style={{ background: STONE_BG, color: INK, paddingBottom: 90 }}>
       {/* Header */}
       <header style={{ maxWidth: 1240, margin: '0 auto', padding: '24px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <ZakatlyLogo variant="rub-al-ushr" height={42} />
+        <ZakatlyLogo variant="rub-al-ushr" height={48} />
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
           <Link href="/partner" style={{ fontSize: 14, fontWeight: 600, color: MUTED, textDecoration: 'none' }}>
             For Mosques

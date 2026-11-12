@@ -13,7 +13,7 @@ interface ZakatlyLogoProps {
 export function ZakatlyLogo({
   variant = 'rub-al-ushr',
   inverted = false,
-  height = 42,
+  height = 50,
 }: ZakatlyLogoProps) {
   const primaryText = inverted ? '#FFFFFF' : '#121614'
   const forest = inverted ? '#255432' : '#183A21'
@@ -31,16 +31,17 @@ export function ZakatlyLogo({
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: Math.round(12 * scale),
+          gap: Math.round(13 * scale),
           userSelect: 'none',
         }}
       >
         <svg
-          width={Math.round(40 * scale)}
-          height={Math.round(40 * scale)}
+          width={Math.round(42 * scale)}
+          height={Math.round(42 * scale)}
           viewBox="0 0 40 40"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          style={{ flexShrink: 0 }}
         >
           {/* Outer rounded architectural square */}
           <rect
@@ -84,9 +85,9 @@ export function ZakatlyLogo({
         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
           <div
             style={{
-              fontSize: Math.round(25 * scale),
+              fontSize: Math.round(28 * scale),
               fontWeight: 800,
-              letterSpacing: '-0.8px',
+              letterSpacing: '-1.1px',
               color: primaryText,
               display: 'flex',
               alignItems: 'baseline',
@@ -96,12 +97,12 @@ export function ZakatlyLogo({
             <span
               style={{
                 display: 'inline-block',
-                width: Math.round(6 * scale),
-                height: Math.round(6 * scale),
+                width: Math.round(7 * scale),
+                height: Math.round(7 * scale),
                 background: brass,
                 transform: 'rotate(45deg)',
-                marginLeft: 5,
-                marginBottom: 3,
+                marginLeft: Math.round(5 * scale),
+                marginBottom: Math.round(3 * scale),
               }}
             />
           </div>

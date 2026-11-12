@@ -559,7 +559,7 @@ export default function LandingPage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
-            <ZakatlyLogo variant="rub-al-ushr" inverted height={38} />
+            <ZakatlyLogo variant="rub-al-ushr" inverted height={44} />
             <span style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.5)' }}>
               Private, scholarly Zakat assessment.
             </span>

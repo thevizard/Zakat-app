@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TopNav } from '@/components/TopNav'
@@ -35,6 +35,25 @@ export default function LandingPage() {
   const scholarlyZakatableBase = simCash + simStocks * 0.3 + simRetirement * 0.68
   const scholarlyZakat = scholarlyZakatableBase * 0.025
   const effectiveRate = grossPortfolio > 0 ? (scholarlyZakat / grossPortfolio) * 100 : 0
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed')
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    )
+
+    const elements = document.querySelectorAll('.reveal-on-scroll')
+    elements.forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [])
 
   function handleContinueWithSimulatorValues() {
     updateAssets({
@@ -83,6 +102,7 @@ export default function LandingPage() {
           {/* Left: Minimal, High-Impact Typography */}
           <div>
             <div
+              className="animate-hero-1"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -102,6 +122,7 @@ export default function LandingPage() {
             </div>
 
             <h1
+              className="animate-hero-2"
               style={{
                 fontSize: 'clamp(40px, 5.2vw, 64px)',
                 fontWeight: 800,
@@ -113,11 +134,14 @@ export default function LandingPage() {
               Not Everything You Own Is Taxed at 2.5%.
             </h1>
 
-            <p style={{ fontSize: 19, color: MUTED, lineHeight: 1.6, margin: '0 0 36px', maxWidth: 480 }}>
+            <p
+              className="animate-hero-3"
+              style={{ fontSize: 19, color: MUTED, lineHeight: 1.6, margin: '0 0 36px', maxWidth: 480 }}
+            >
               Index funds, 401(k)s, and jewelry each have their own scholarly rate. Calculate your exact Zakat in 2 minutes—privately in your browser.
             </p>
 
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+            <div className="animate-hero-4" style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <Link
                 href="/calculator"
                 style={{
@@ -151,7 +175,7 @@ export default function LandingPage() {
           </div>
 
           {/* Right: Documentary Impact Image + Floating Glass Summary Badge */}
-          <div style={{ position: 'relative' }}>
+          <div className="animate-hero-image" style={{ position: 'relative' }}>
             <div
               style={{
                 borderRadius: 20,
@@ -218,7 +242,7 @@ export default function LandingPage() {
       {/* ── SECTION 2 (SHADE: DEEP FOREST EMERALD): THE 4 RATES AT A GLANCE ── */}
       <section id="rates" style={{ background: DARK_SECTION, color: '#FFFFFF', padding: 'clamp(64px, 8vw, 88px) clamp(16px, 4vw, 28px)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 48 }}>
+          <div className="reveal-on-scroll" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20, marginBottom: 48 }}>
             <div>
               <div style={{ fontSize: 12, fontWeight: 800, color: BRASS, letterSpacing: 1.6, textTransform: 'uppercase', marginBottom: 8 }}>
                 Scholarly Clarity in 10 Seconds
@@ -258,9 +282,10 @@ export default function LandingPage() {
                 barPct: 4,
                 caption: 'Personal living essentials are 100% exempt.',
               },
-            ].map((item) => (
+            ].map((item, idx) => (
               <div
                 key={item.label}
+                className={`reveal-on-scroll rate-card-hover stagger-${idx + 1}`}
                 style={{
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -270,6 +295,7 @@ export default function LandingPage() {
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   gap: 20,
+                  cursor: 'default',
                 }}
               >
                 <div>
@@ -304,6 +330,7 @@ export default function LandingPage() {
       <section id="estimator" style={{ background: STONE_SHADE, padding: 'clamp(64px, 8vw, 88px) clamp(16px, 4vw, 28px)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div
+            className="reveal-on-scroll"
             style={{
               background: '#FFFFFF',
               borderRadius: 20,
@@ -461,7 +488,10 @@ export default function LandingPage() {
             alignItems: 'center',
           }}
         >
-          <div style={{ borderRadius: 20, overflow: 'hidden', height: 'clamp(300px, 40vw, 380px)', boxShadow: '0 16px 40px rgba(0,0,0,0.06)' }}>
+          <div
+            className="reveal-on-scroll"
+            style={{ borderRadius: 20, overflow: 'hidden', height: 'clamp(300px, 40vw, 380px)', boxShadow: '0 16px 40px rgba(0,0,0,0.06)' }}
+          >
             <img
               src="/real-school-learning.jpg"
               alt="Real documentary photograph of children learning in a community classroom"
@@ -469,7 +499,7 @@ export default function LandingPage() {
             />
           </div>
 
-          <div>
+          <div className="reveal-on-scroll stagger-2">
             <div style={{ fontSize: 12, fontWeight: 800, color: BRASS, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>
               Built for Trust
             </div>

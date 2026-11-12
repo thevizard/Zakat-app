@@ -244,40 +244,28 @@ export default function LandingPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: 20 }}>
             {[
               {
-                rule: 'Full Balance',
-                badge: '100% Counted · Standard 2.5%',
-                badgeBg: 'rgba(197, 160, 89, 0.16)',
-                badgeColor: BRASS,
-                label: 'Cash & Gold Savings',
-                caption: 'Counted on 100% of liquid surplus held for one lunar year. Direct 1/40th purification.',
-                footnote: 'Checking, savings, cash, and gold bars/coins.',
+                rate: '2.5%',
+                label: 'Cash & Precious Metals',
+                barPct: 100,
+                caption: '100% liquid balance held for one lunar year.',
               },
               {
-                rule: '~1/3rd Counted',
-                badge: 'Exempts Machinery & Real Estate',
-                badgeBg: 'rgba(84, 180, 110, 0.16)',
-                badgeColor: '#7ED897',
+                rate: '0.75%',
                 label: 'Passive Stocks & ETFs',
-                caption: 'You only pay on corporate liquid cash & inventory (~30%). Factories, warehouses, and equipment are 100% exempt.',
-                footnote: 'Effective ~0.75% rate on total index value.',
+                barPct: 30,
+                caption: 'Only 30% of corporate value is liquid cash & inventory.',
               },
               {
-                rule: 'Take-Home Value',
-                badge: 'Penalties & Taxes Deducted',
-                badgeBg: 'rgba(197, 160, 89, 0.16)',
-                badgeColor: BRASS,
+                rate: '2.5% Net',
                 label: '401(k) & Traditional IRA',
-                caption: 'Counted only on what you could actually withdraw today—deducting estimated income taxes and early penalty first.',
-                footnote: 'Never pay Zakat on money owed to the IRS.',
+                barPct: 68,
+                caption: 'Assessed only after deducting taxes & 10% penalty.',
               },
               {
-                rule: 'Never Counted',
-                badge: '100% Sacred Law Exemption',
-                badgeBg: 'rgba(255, 255, 255, 0.1)',
-                badgeColor: '#FFFFFF',
+                rate: '0%',
                 label: 'Primary Home & Cars',
-                caption: 'Personal living essentials, family vehicles, and everyday tools of trade owe zero Zakat in classical Islamic jurisprudence.',
-                footnote: 'Sacred law never taxes shelter or daily living.',
+                barPct: 4,
+                caption: 'Personal living essentials are 100% exempt.',
               },
             ].map((item, idx) => (
               <div
@@ -287,7 +275,7 @@ export default function LandingPage() {
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: 16,
-                  padding: '28px 24px',
+                  padding: '28px 26px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -296,45 +284,26 @@ export default function LandingPage() {
                 }}
               >
                 <div>
-                  <div
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      background: item.badgeBg,
-                      color: item.badgeColor,
-                      fontSize: 11,
-                      fontWeight: 800,
-                      letterSpacing: 0.8,
-                      textTransform: 'uppercase',
-                      padding: '4px 10px',
-                      borderRadius: 6,
-                      marginBottom: 14,
-                    }}
-                  >
-                    {item.badge}
+                  <div style={{ fontSize: 40, fontWeight: 900, color: BRASS, letterSpacing: '-1px', marginBottom: 6 }}>
+                    {item.rate}
                   </div>
-
-                  <div style={{ fontSize: 'clamp(26px, 3vw, 32px)', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.8px', marginBottom: 6 }}>
-                    {item.rule}
-                  </div>
-                  <div style={{ fontSize: 17, fontWeight: 800, color: BRASS, marginBottom: 10 }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 8 }}>
                     {item.label}
                   </div>
-                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.72)', lineHeight: 1.55, margin: 0 }}>
+                  <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5, margin: 0 }}>
                     {item.caption}
                   </p>
                 </div>
 
-                <div
-                  style={{
-                    borderTop: '1px solid rgba(255,255,255,0.08)',
-                    paddingTop: 12,
-                    fontSize: 12,
-                    color: 'rgba(255,255,255,0.48)',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {item.footnote}
+                {/* Visual Zakatable Base Bar */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: 'rgba(255,255,255,0.55)', marginBottom: 6, fontWeight: 700 }}>
+                    <span>ZAKATABLE PORTION</span>
+                    <span>{item.barPct === 4 ? '0%' : `${item.barPct}%`}</span>
+                  </div>
+                  <div style={{ height: 6, background: 'rgba(255,255,255,0.12)', borderRadius: 100, overflow: 'hidden' }}>
+                    <div style={{ width: `${item.barPct}%`, height: '100%', background: BRASS, borderRadius: 100 }} />
+                  </div>
                 </div>
               </div>
             ))}

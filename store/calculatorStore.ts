@@ -79,9 +79,9 @@ const defaultMetalMeta: { gold: MetalInputMeta; silver: MetalInputMeta } = {
 
 export const useCalculatorStore = create<CalculatorState>((set) => ({
   currentStep: 1,
-  madhhab: 'hanafi',
-  includeWornJewelry: true,
-  nisabStandard: 'silver',
+  madhhab: 'general',
+  includeWornJewelry: false,
+  nisabStandard: 'gold',
   passiveInvestmentRate: 0.3,
   retirementRate: 0.6,
   assets: defaultAssets,

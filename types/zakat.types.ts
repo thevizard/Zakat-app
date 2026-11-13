@@ -22,7 +22,7 @@ export type InvestmentType =
 
 export type NisabStandard = 'gold' | 'silver'
 
-export type Madhhab = 'hanafi' | 'shafii' | 'maliki_hanbali' | 'general'
+export type Madhhab = 'general' | 'hanafi' | 'shafii_maliki_hanbali'
 
 export type GoldKarat = 24 | 22 | 21 | 18 | 14
 

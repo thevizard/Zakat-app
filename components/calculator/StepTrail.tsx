@@ -14,10 +14,9 @@ const GROUPS = [
 ]
 
 const MADHHAB_LABELS: Record<Madhhab, string> = {
+  general: 'General / Standard',
   hanafi: 'Hanafi',
-  shafii: "Shafi'i",
-  maliki_hanbali: 'Maliki & Hanbali',
-  general: 'Standard (AMJA)',
+  shafii_maliki_hanbali: "Shafi'i, Maliki & Hanbali",
 }
 
 function fmt(amount: number) {
@@ -146,7 +145,7 @@ export function StepTrail({
                 gap: 4,
               }}
             >
-              {(['hanafi', 'shafii', 'maliki_hanbali', 'general'] as Madhhab[]).map((m) => {
+              {(['general', 'hanafi', 'shafii_maliki_hanbali'] as Madhhab[]).map((m) => {
                 const active = madhhab === m
                 return (
                   <button

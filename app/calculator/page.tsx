@@ -23,32 +23,31 @@ const CARD_BG = "#FFFFFF";
 const MADHHAB_OPTIONS: {
   id: Madhhab;
   name: string;
+  tag?: string;
+  regionHint?: string;
   summary: string;
   defaultsNote: string;
 }[] = [
   {
+    id: "general",
+    name: "General / Not Sure",
+    tag: "Recommended",
+    summary: "I just want the standard mainstream calculation. Personal jewelry worn daily is exempt.",
+    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% Long-Term ETFs · 60% Net 401(k)",
+  },
+  {
     id: "hanafi",
     name: "Hanafi",
-    summary: "Includes all gold & silver jewelry · Silver Nisab standard",
-    defaultsNote: "Jewelry Zakatable · Silver Nisab · 30% ETF Proxy · 60% Net 401(k)",
+    regionHint: "Common in South Asia, Turkey & Central Asia",
+    summary: "Counts all gold & silver jewelry (even worn daily) and uses the lower Silver threshold.",
+    defaultsNote: "All Jewelry Included · Silver Nisab · 30% Long-Term ETFs · 60% Net 401(k)",
   },
   {
-    id: "shafii",
-    name: "Shafi'i",
-    summary: "Worn personal jewelry exempt · Gold Nisab standard",
-    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% ETF Proxy · 60% Net 401(k)",
-  },
-  {
-    id: "maliki_hanbali",
-    name: "Maliki & Hanbali",
-    summary: "Worn personal jewelry exempt · Gold Nisab standard",
-    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% ETF Proxy · 60% Net 401(k)",
-  },
-  {
-    id: "general",
-    name: "Standard / General (AMJA)",
-    summary: "Contemporary North American consensus (AMJA & AAOIFI)",
-    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% ETF Proxy · 60% Net 401(k)",
+    id: "shafii_maliki_hanbali",
+    name: "Shafi'i, Maliki & Hanbali",
+    regionHint: "Common in the Arab World, Africa & SE Asia",
+    summary: "Personal jewelry worn regularly is exempt—only gold or silver kept as savings counts.",
+    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% Long-Term ETFs · 60% Net 401(k)",
   },
 ];
 
@@ -197,7 +196,7 @@ function IntroPage({
                   textTransform: "uppercase",
                 }}
               >
-                1. Select Your School of Thought (Fiqh)
+                1. Choose Your Calculation Preference
               </span>
               <span style={{ fontSize: 12, color: SUBTLE }}>
                 Auto-defaults all rulings (can be switched anytime)
@@ -206,8 +205,8 @@ function IntroPage({
 
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+                display: "flex",
+                flexDirection: "column",
                 gap: 10,
                 marginBottom: 14,
               }}
@@ -221,10 +220,10 @@ function IntroPage({
                     onClick={() => setMadhhab(opt.id)}
                     style={{
                       display: "flex",
-                      alignItems: "flex-start",
+                      alignItems: "center",
                       justifyContent: "space-between",
-                      gap: 10,
-                      padding: "14px 16px",
+                      gap: 14,
+                      padding: "14px 18px",
                       borderRadius: 12,
                       border: isSelected ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
                       background: isSelected ? "#F4F7F4" : "#FFFFFF",
@@ -236,22 +235,61 @@ function IntroPage({
                     <div>
                       <div
                         style={{
-                          fontSize: 15,
-                          fontWeight: 800,
-                          color: isSelected ? FOREST : TEXT_DARK,
-                          marginBottom: 3,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          flexWrap: "wrap",
+                          marginBottom: 4,
                         }}
                       >
-                        {opt.name}
+                        <span
+                          style={{
+                            fontSize: 15.5,
+                            fontWeight: 800,
+                            color: isSelected ? FOREST : TEXT_DARK,
+                          }}
+                        >
+                          {opt.name}
+                        </span>
+                        {opt.tag && (
+                          <span
+                            style={{
+                              background: FOREST,
+                              color: "#FFFFFF",
+                              fontSize: 10.5,
+                              fontWeight: 800,
+                              padding: "2px 8px",
+                              borderRadius: 100,
+                              textTransform: "uppercase",
+                              letterSpacing: 0.4,
+                            }}
+                          >
+                            {opt.tag}
+                          </span>
+                        )}
+                        {opt.regionHint && (
+                          <span
+                            style={{
+                              background: "#EFECE4",
+                              color: "#5A625D",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              padding: "2px 9px",
+                              borderRadius: 100,
+                            }}
+                          >
+                            {opt.regionHint}
+                          </span>
+                        )}
                       </div>
-                      <div style={{ fontSize: 12, color: SUBTLE, lineHeight: 1.45 }}>
+                      <div style={{ fontSize: 13, color: SUBTLE, lineHeight: 1.45 }}>
                         {opt.summary}
                       </div>
                     </div>
                     <div
                       style={{
-                        width: 20,
-                        height: 20,
+                        width: 22,
+                        height: 22,
                         borderRadius: "50%",
                         border: isSelected ? `2px solid ${FOREST}` : `2px solid #CFCFCF`,
                         background: isSelected ? FOREST : "transparent",
@@ -259,10 +297,9 @@ function IntroPage({
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: 800,
                         flexShrink: 0,
-                        marginTop: 2,
                       }}
                     >
                       {isSelected ? "✓" : ""}

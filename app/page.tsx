@@ -124,7 +124,7 @@ export default function LandingPage() {
             <h1
               className="animate-hero-2"
               style={{
-                fontSize: 'clamp(40px, 5.2vw, 64px)',
+                fontSize: 'clamp(38px, 4.6vw, 58px)',
                 fontWeight: 800,
                 lineHeight: 1.08,
                 letterSpacing: '-1.8px',
@@ -132,16 +132,7 @@ export default function LandingPage() {
               }}
             >
               Purify Your Wealth With{' '}
-              <span
-                style={{
-                  color: FOREST,
-                  background: 'linear-gradient(180deg, transparent 65%, rgba(197, 160, 89, 0.35) 65%)',
-                  padding: '0 4px',
-                  borderRadius: 4,
-                  boxDecorationBreak: 'clone',
-                  WebkitBoxDecorationBreak: 'clone',
-                }}
-              >
+              <span style={{ color: '#1F5C33' }}>
                 Scholarly Precision.
               </span>
             </h1>

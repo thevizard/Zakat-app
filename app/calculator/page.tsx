@@ -218,31 +218,41 @@ function IntroPage({
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 185px), 1fr))",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
                 gap: 10,
               }}
             >
-              {MADHHAB_OPTIONS.map((opt) => {
+              {MADHHAB_OPTIONS.map((opt, index) => {
                 const isSelected = madhhab === opt.id;
                 const isTooltipOpen = activeTooltipId === opt.id;
-                const isRightCard = opt.id === "shafii_maliki_hanbali";
+
+                // Tooltip positioning for 3-card single row:
+                // Left card aligns left, middle card centers, right card aligns right
+                const tooltipPosStyle: React.CSSProperties =
+                  index === 0
+                    ? { left: 0, right: "auto" }
+                    : index === 1
+                    ? { left: "50%", transform: "translateX(-50%)" }
+                    : { left: "auto", right: 0 };
 
                 return (
                   <div
                     key={opt.id}
                     data-tooltip-container="true"
-                    style={{ position: "relative" }}
+                    style={{ position: "relative", height: "100%" }}
                   >
                     <button
                       type="button"
                       onClick={() => setMadhhab(opt.id)}
                       style={{
                         width: "100%",
+                        height: "100%",
+                        minHeight: 56,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        gap: 8,
-                        padding: "13px 14px",
+                        gap: 6,
+                        padding: "10px 12px",
                         borderRadius: 12,
                         border: isSelected ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
                         background: isSelected ? "#F4F7F4" : "#FFFFFF",
@@ -251,15 +261,14 @@ function IntroPage({
                         transition: "all 0.15s ease",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0, flex: 1 }}>
                         <span
                           style={{
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: 800,
                             color: isSelected ? FOREST : TEXT_DARK,
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
+                            lineHeight: 1.25,
+                            wordBreak: "break-word",
                           }}
                         >
                           {opt.name}
@@ -281,8 +290,8 @@ function IntroPage({
                             }
                           }}
                           style={{
-                            width: 18,
-                            height: 18,
+                            width: 17,
+                            height: 17,
                             borderRadius: "50%",
                             background: isTooltipOpen
                               ? FOREST
@@ -290,7 +299,7 @@ function IntroPage({
                               ? "rgba(30,63,32,0.14)"
                               : "#EFECE4",
                             color: isTooltipOpen ? "#FFFFFF" : isSelected ? FOREST : SUBTLE,
-                            fontSize: 11,
+                            fontSize: 10,
                             fontWeight: 800,
                             display: "inline-flex",
                             alignItems: "center",
@@ -306,8 +315,8 @@ function IntroPage({
 
                       <div
                         style={{
-                          width: 20,
-                          height: 20,
+                          width: 18,
+                          height: 18,
                           borderRadius: "50%",
                           border: isSelected ? `2px solid ${FOREST}` : `2px solid #CFCFCF`,
                           background: isSelected ? FOREST : "transparent",
@@ -315,7 +324,7 @@ function IntroPage({
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: 800,
                           flexShrink: 0,
                         }}
@@ -330,8 +339,7 @@ function IntroPage({
                         style={{
                           position: "absolute",
                           bottom: "calc(100% + 10px)",
-                          left: isRightCard ? "auto" : 0,
-                          right: isRightCard ? 0 : "auto",
+                          ...tooltipPosStyle,
                           width: "min(320px, calc(100vw - 56px))",
                           zIndex: 50,
                           background: "#102417",

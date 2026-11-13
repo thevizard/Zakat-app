@@ -81,7 +81,7 @@ function IntroPage({
 }) {
   const madhhab = useCalculatorStore((s) => s.madhhab);
   const setMadhhab = useCalculatorStore((s) => s.setMadhhab);
-  const activeSchool = MADHHAB_OPTIONS.find((m) => m.id === madhhab) ?? MADHHAB_OPTIONS[0];
+  const [hoveredId, setHoveredId] = useState<Madhhab | null>(null);
 
   return (
     <>
@@ -154,7 +154,7 @@ function IntroPage({
               margin: "0 auto",
             }}
           >
-            Select the school of thought you follow below. We&apos;ll pre-configure all rulings across jewelry, Nisab, stocks, and retirement automatically.
+            Select the calculation preference you follow below. We&apos;ll pre-configure all rulings across jewelry, Nisab, stocks, and retirement automatically.
           </p>
         </div>
 
@@ -166,13 +166,13 @@ function IntroPage({
             padding: "0 24px 72px",
           }}
         >
-          {/* Step 1: Choose School of Thought */}
+          {/* Step 1: Choose School of Thought (Compact with Hover Tooltip) */}
           <div
             style={{
               background: CARD_BG,
               border: `1.5px solid ${BORDER}`,
               borderRadius: 16,
-              padding: "22px 22px 18px",
+              padding: "20px 22px",
               marginBottom: 28,
               boxShadow: "0 8px 24px rgba(20,20,20,0.03)",
             }}
@@ -199,130 +199,173 @@ function IntroPage({
                 1. Choose Your Calculation Preference
               </span>
               <span style={{ fontSize: 12, color: SUBTLE }}>
-                Auto-defaults all rulings (can be switched anytime)
+                Hover for details · Can be switched anytime
               </span>
             </div>
 
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 185px), 1fr))",
                 gap: 10,
-                marginBottom: 14,
               }}
             >
               {MADHHAB_OPTIONS.map((opt) => {
                 const isSelected = madhhab === opt.id;
+                const isHovered = hoveredId === opt.id;
                 return (
-                  <button
+                  <div
                     key={opt.id}
-                    type="button"
-                    onClick={() => setMadhhab(opt.id)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 14,
-                      padding: "14px 18px",
-                      borderRadius: 12,
-                      border: isSelected ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
-                      background: isSelected ? "#F4F7F4" : "#FFFFFF",
-                      textAlign: "left",
-                      cursor: "pointer",
-                      transition: "all 0.15s ease",
-                    }}
+                    style={{ position: "relative" }}
+                    onMouseEnter={() => setHoveredId(opt.id)}
+                    onMouseLeave={() => setHoveredId(null)}
                   >
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          flexWrap: "wrap",
-                          marginBottom: 4,
-                        }}
-                      >
+                    <button
+                      type="button"
+                      onClick={() => setMadhhab(opt.id)}
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 8,
+                        padding: "13px 14px",
+                        borderRadius: 12,
+                        border: isSelected ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                        background: isSelected ? "#F4F7F4" : "#FFFFFF",
+                        textAlign: "left",
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
                         <span
                           style={{
-                            fontSize: 15.5,
+                            fontSize: 14,
                             fontWeight: 800,
                             color: isSelected ? FOREST : TEXT_DARK,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
                           }}
                         >
                           {opt.name}
                         </span>
+                        <span
+                          style={{
+                            width: 16,
+                            height: 16,
+                            borderRadius: "50%",
+                            background: isSelected ? "rgba(30,63,32,0.12)" : "#EFECE4",
+                            color: isSelected ? FOREST : SUBTLE,
+                            fontSize: 10,
+                            fontWeight: 800,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          i
+                        </span>
+                      </div>
+
+                      <div
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: "50%",
+                          border: isSelected ? `2px solid ${FOREST}` : `2px solid #CFCFCF`,
+                          background: isSelected ? FOREST : "transparent",
+                          color: "#FFFFFF",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 800,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {isSelected ? "✓" : ""}
+                      </div>
+                    </button>
+
+                    {/* Hover Tooltip with Regional Info + Active Defaults */}
+                    {isHovered && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "calc(100% + 10px)",
+                          left: 0,
+                          right: 0,
+                          minWidth: 260,
+                          zIndex: 40,
+                          background: "#102417",
+                          color: "#FFFFFF",
+                          borderRadius: 12,
+                          padding: "14px 16px",
+                          boxShadow: "0 16px 36px rgba(0,0,0,0.24)",
+                          border: "1px solid rgba(197, 160, 89, 0.4)",
+                          pointerEvents: "none",
+                        }}
+                      >
                         {opt.tag && (
-                          <span
+                          <div
                             style={{
-                              background: FOREST,
-                              color: "#FFFFFF",
-                              fontSize: 10.5,
+                              display: "inline-block",
+                              background: "#C5A059",
+                              color: "#102417",
+                              fontSize: 10,
                               fontWeight: 800,
-                              padding: "2px 8px",
-                              borderRadius: 100,
                               textTransform: "uppercase",
-                              letterSpacing: 0.4,
+                              letterSpacing: 0.6,
+                              padding: "2px 7px",
+                              borderRadius: 4,
+                              marginBottom: 6,
                             }}
                           >
                             {opt.tag}
-                          </span>
+                          </div>
                         )}
                         {opt.regionHint && (
-                          <span
+                          <div
                             style={{
-                              background: "#EFECE4",
-                              color: "#5A625D",
                               fontSize: 11,
                               fontWeight: 700,
-                              padding: "2px 9px",
-                              borderRadius: 100,
+                              color: "#C5A059",
+                              marginBottom: 5,
                             }}
                           >
                             {opt.regionHint}
-                          </span>
+                          </div>
                         )}
+                        <div
+                          style={{
+                            fontSize: 12.5,
+                            color: "rgba(255,255,255,0.9)",
+                            lineHeight: 1.5,
+                            marginBottom: 10,
+                          }}
+                        >
+                          {opt.summary}
+                        </div>
+                        <div
+                          style={{
+                            borderTop: "1px solid rgba(255,255,255,0.14)",
+                            paddingTop: 8,
+                            fontSize: 11,
+                            lineHeight: 1.45,
+                            color: "rgba(255,255,255,0.7)",
+                          }}
+                        >
+                          <strong style={{ color: "#86EFAC" }}>Active Defaults: </strong>
+                          {opt.defaultsNote}
+                        </div>
                       </div>
-                      <div style={{ fontSize: 13, color: SUBTLE, lineHeight: 1.45 }}>
-                        {opt.summary}
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        border: isSelected ? `2px solid ${FOREST}` : `2px solid #CFCFCF`,
-                        background: isSelected ? FOREST : "transparent",
-                        color: "#FFFFFF",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 12,
-                        fontWeight: 800,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {isSelected ? "✓" : ""}
-                    </div>
-                  </button>
+                    )}
+                  </div>
                 );
               })}
-            </div>
-
-            <div
-              style={{
-                background: "#F7F5EF",
-                borderRadius: 8,
-                padding: "9px 12px",
-                fontSize: 12,
-                color: TEXT_DARK,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <span style={{ color: FOREST, fontWeight: 800 }}>Active Defaults:</span>
-              <span style={{ color: SUBTLE }}>{activeSchool.defaultsNote}</span>
             </div>
           </div>
 

@@ -131,14 +131,14 @@ export default function LandingPage() {
                 margin: '0 0 20px',
               }}
             >
-              Not Everything You Own Is Taxed at 2.5%.
+              Purify Your Wealth With Scholarly Precision.
             </h1>
 
             <p
               className="animate-hero-3"
               style={{ fontSize: 19, color: MUTED, lineHeight: 1.6, margin: '0 0 36px', maxWidth: 480 }}
             >
-              Index funds, 401(k)s, and jewelry each have their own scholarly rate. Calculate your exact Zakat privately in your browser.
+              Accurate Zakat guidance across cash, stocks, retirement, and gold—so you can fulfill your obligation with total peace of mind.
             </p>
 
             <div className="animate-hero-4" style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
@@ -207,15 +207,15 @@ export default function LandingPage() {
                     Sample $210,000 Portfolio
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: INK, marginTop: 2 }}>
-                    Generic Calculator: <span style={{ textDecoration: 'line-through', color: '#8A867E' }}>$5,250</span>
+                    Zakatable Net Base: <span style={{ color: FOREST }}>$114,400</span>
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 11.5, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, color: FOREST }}>
-                    True Scholarly Zakat
+                    Scholarly Zakat Due
                   </div>
                   <div style={{ fontSize: 26, fontWeight: 900, color: FOREST, lineHeight: 1.1 }}>
-                    $2,860 <span style={{ fontSize: 13, fontWeight: 700, color: MUTED }}>(1.36%)</span>
+                    $2,860 <span style={{ fontSize: 13, fontWeight: 700, color: MUTED }}>(2.5% of Net)</span>
                   </div>
                 </div>
               </div>
@@ -332,7 +332,7 @@ export default function LandingPage() {
                 Live Simulator
               </div>
               <h3 style={{ fontSize: 'clamp(26px, 3.2vw, 32px)', fontWeight: 800, margin: '0 0 24px', letterSpacing: '-0.8px' }}>
-                See How Much You Save From Overpaying
+                See How Each Asset Ruling Applies to Your Portfolio
               </h3>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -417,7 +417,7 @@ export default function LandingPage() {
               >
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 800, color: MUTED, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
-                    True Scholarly Zakat
+                    Scholarly Zakat Due
                   </div>
                   <div style={{ fontSize: 'clamp(38px, 5vw, 48px)', fontWeight: 900, color: FOREST, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>
                     {fmt(scholarlyZakat)}
@@ -425,17 +425,17 @@ export default function LandingPage() {
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: MUTED, textTransform: 'uppercase', marginBottom: 4 }}>
-                    Naive 2.5%
+                    Zakatable Net Base
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#8A867E', textDecoration: 'line-through', fontVariantNumeric: 'tabular-nums' }}>
-                    {fmt(naiveZakat)}
+                  <div style={{ fontSize: 24, fontWeight: 800, color: INK, fontVariantNumeric: 'tabular-nums' }}>
+                    {fmt(scholarlyZakatableBase)}
                   </div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 700 }}>
-                <span style={{ color: MUTED }}>Effective Rate on {fmt(grossPortfolio)}:</span>
-                <span style={{ color: INK }}>{effectiveRate.toFixed(2)}%</span>
+                <span style={{ color: MUTED }}>Total Gross Portfolio Held:</span>
+                <span style={{ color: INK }}>{fmt(grossPortfolio)}</span>
               </div>
 
               <button

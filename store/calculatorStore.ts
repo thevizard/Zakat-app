@@ -3,6 +3,7 @@ import {
   AssetInputs,
   NisabData,
   NisabStandard,
+  Madhhab,
   ZakatResult,
   InvestmentType,
   PassiveStockRate,
@@ -15,6 +16,8 @@ import { LogoVariant } from '@/components/ZakatlyLogo'
 
 interface CalculatorState {
   currentStep: number
+  madhhab: Madhhab
+  includeWornJewelry: boolean
   nisabStandard: NisabStandard
   passiveInvestmentRate: PassiveStockRate
   retirementRate: RetirementMethodRate
@@ -35,6 +38,8 @@ interface CalculatorState {
   logoVariant: LogoVariant
   setLogoVariant: (variant: LogoVariant) => void
   setStep: (step: number) => void
+  setMadhhab: (madhhab: Madhhab) => void
+  setIncludeWornJewelry: (val: boolean) => void
   setNisabStandard: (standard: NisabStandard) => void
   setPassiveInvestmentRate: (rate: PassiveStockRate) => void
   setRetirementRate: (rate: RetirementMethodRate) => void
@@ -74,7 +79,9 @@ const defaultMetalMeta: { gold: MetalInputMeta; silver: MetalInputMeta } = {
 
 export const useCalculatorStore = create<CalculatorState>((set) => ({
   currentStep: 1,
-  nisabStandard: 'gold',
+  madhhab: 'hanafi',
+  includeWornJewelry: true,
+  nisabStandard: 'silver',
   passiveInvestmentRate: 0.3,
   retirementRate: 0.6,
   assets: defaultAssets,
@@ -92,6 +99,15 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
   setLogoVariant: (variant) => set({ logoVariant: variant }),
   setPartnerMasjid: (masjid) => set({ partnerMasjid: masjid }),
   setStep: (step) => set({ currentStep: step }),
+  setMadhhab: (madhhab) =>
+    set({
+      madhhab,
+      nisabStandard: madhhab === 'hanafi' ? 'silver' : 'gold',
+      includeWornJewelry: madhhab === 'hanafi',
+      passiveInvestmentRate: 0.3,
+      retirementRate: 0.6,
+    }),
+  setIncludeWornJewelry: (val) => set({ includeWornJewelry: val }),
   setNisabStandard: (standard) => set({ nisabStandard: standard }),
   setPassiveInvestmentRate: (rate) => set({ passiveInvestmentRate: rate }),
   setRetirementRate: (rate) => set({ retirementRate: rate }),

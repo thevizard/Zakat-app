@@ -22,6 +22,8 @@ export type InvestmentType =
 
 export type NisabStandard = 'gold' | 'silver'
 
+export type Madhhab = 'hanafi' | 'shafii' | 'maliki_hanbali' | 'general'
+
 export type GoldKarat = 24 | 22 | 21 | 18 | 14
 
 export type PassiveStockRate = 0.3 | 1.0

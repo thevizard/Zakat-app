@@ -132,104 +132,206 @@ export function GoldSilverInput({
       : null;
 
   return (
-    <div className="mb-6">
-      <p className="text-base font-bold text-gray-800 mb-3">{label}</p>
+    <div
+      style={{
+        border: "1.5px solid #E2DFD5",
+        borderRadius: 16,
+        padding: 22,
+        background: "#FFFFFF",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 14,
+            flexWrap: "wrap",
+          }}
+        >
+          <span style={{ fontSize: 15.5, fontWeight: 800, color: "#121614" }}>
+            {id === "gold" ? "Gold Holdings" : "Silver Holdings"}
+          </span>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => switchMode("usd")}
-            className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors ${
-              mode === "usd"
-                ? "bg-black text-white"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-            }`}
-          >
-            USD Value
-          </button>
-          <button
-            type="button"
-            onClick={() => switchMode("grams")}
-            className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors ${
-              mode === "grams"
-                ? "bg-black text-white"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-            }`}
-          >
-            Weight (grams)
-          </button>
+          <div style={{ display: "flex", gap: 4 }}>
+            <button
+              type="button"
+              onClick={() => switchMode("usd")}
+              style={{
+                padding: "5px 11px",
+                fontSize: 11,
+                fontWeight: 800,
+                borderRadius: 6,
+                border: "none",
+                background: mode === "usd" ? "#16351F" : "#EAE6DC",
+                color: mode === "usd" ? "#FFFFFF" : "#121614",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+              }}
+            >
+              USD
+            </button>
+            <button
+              type="button"
+              onClick={() => switchMode("grams")}
+              style={{
+                padding: "5px 11px",
+                fontSize: 11,
+                fontWeight: 800,
+                borderRadius: 6,
+                border: "none",
+                background: mode === "grams" ? "#16351F" : "#EAE6DC",
+                color: mode === "grams" ? "#FFFFFF" : "#121614",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+              }}
+            >
+              GRAMS
+            </button>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            background: "#F7F5EF",
+            border: "1px solid #E2DFD5",
+            borderRadius: 12,
+            padding: "13px 16px",
+          }}
+        >
+          {mode === "usd" && (
+            <span
+              style={{
+                fontSize: 19,
+                fontWeight: 800,
+                color: "#5A625D",
+                marginRight: 8,
+              }}
+            >
+              $
+            </span>
+          )}
+          <input
+            id={id}
+            type="text"
+            inputMode="decimal"
+            value={display}
+            placeholder="0"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            style={{
+              width: "100%",
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontSize: 22,
+              fontWeight: 800,
+              color: "#121614",
+            }}
+          />
+          {mode === "grams" && (
+            <span
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: "#5A625D",
+                marginLeft: 8,
+                whiteSpace: "nowrap",
+              }}
+            >
+              g {id === "gold" ? `(${karat}K)` : ""}
+            </span>
+          )}
         </div>
 
         {id === "gold" && mode === "grams" && (
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs font-semibold text-gray-500 mr-1">
-              Purity:
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 6,
+              marginTop: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#5A625D" }}>
+              PURITY:
             </span>
-            {KARAT_OPTIONS.map((opt) => (
-              <button
-                key={opt.karat}
-                type="button"
-                onClick={() => handleKaratChange(opt.karat)}
-                title={opt.purity}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
-                  karat === opt.karat
-                    ? "bg-[#2d7a4f] text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+            <div style={{ display: "flex", gap: 4 }}>
+              {KARAT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.karat}
+                  type="button"
+                  onClick={() => handleKaratChange(opt.karat)}
+                  title={opt.purity}
+                  style={{
+                    padding: "3px 8px",
+                    borderRadius: 6,
+                    fontSize: 11,
+                    fontWeight: 800,
+                    border:
+                      karat === opt.karat
+                        ? "1px solid #C5A059"
+                        : "1px solid #E2DFD5",
+                    background: karat === opt.karat ? "#C5A059" : "#FFFFFF",
+                    color: karat === opt.karat ? "#102417" : "#5A625D",
+                    cursor: "pointer",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
+
+        {mode === "grams" &&
+          gramsEntered !== null &&
+          !isNaN(gramsEntered) &&
+          gramsEntered > 0 && (
+            <p
+              style={{
+                fontSize: 12.5,
+                color: "#5A625D",
+                marginTop: 10,
+                marginBottom: 0,
+              }}
+            >
+              ≈{" "}
+              <strong style={{ color: "#16351F" }}>
+                $
+                {(gramsEntered * effectivePricePerGram).toLocaleString("en-US", {
+                  maximumFractionDigits: 2,
+                })}
+              </strong>{" "}
+              USD
+              {id === "gold" && karat !== 24
+                ? ` (${karat}K purity)`
+                : ""}
+            </p>
+          )}
       </div>
 
-      <div className="flex items-center gap-3 bg-gray-100 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-[#2d7a4f] transition-all">
-        {mode === "usd" && (
-          <span className="text-xl font-medium text-gray-400">$</span>
-        )}
-        <input
-          id={id}
-          type="text"
-          inputMode="decimal"
-          value={display}
-          placeholder="0"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          className="flex-1 text-xl font-semibold text-gray-900 placeholder:text-gray-400 focus:outline-none bg-transparent"
-        />
-        {mode === "grams" && (
-          <span className="text-xl font-medium text-gray-400">
-            g {id === "gold" ? `(${karat}K)` : ""}
-          </span>
-        )}
-      </div>
-
-      {mode === "grams" &&
-        gramsEntered !== null &&
-        !isNaN(gramsEntered) &&
-        gramsEntered > 0 && (
-          <p className="text-sm text-gray-500 mt-2 ml-1">
-            ≈{" "}
-            <span className="text-[#2d7a4f] font-semibold">
-              $
-              {(gramsEntered * effectivePricePerGram).toLocaleString("en-US", {
-                maximumFractionDigits: 2,
-              })}
-            </span>{" "}
-            USD{" "}
-            {id === "gold" && karat !== 24
-              ? `(adjusted for ${karat}K purity — ${((karat / 24) * 100).toFixed(1)}% fine gold)`
-              : ""}
-          </p>
-        )}
-
-      <p className="text-xs text-gray-400 mt-2 ml-1">
-        Current 24K spot rate: ${pricePerGram.toFixed(2)} / gram
+      <p
+        style={{
+          fontSize: 11.5,
+          color: "#7A827D",
+          marginTop: 12,
+          marginBottom: 0,
+        }}
+      >
+        Spot rate: ${pricePerGram.toFixed(2)}/g
         {id === "gold" && mode === "grams" && karat !== 24
-          ? ` · ${karat}K rate: $${effectivePricePerGram.toFixed(2)} / gram`
+          ? ` · ${karat}K: $${effectivePricePerGram.toFixed(2)}/g`
           : ""}
       </p>
     </div>

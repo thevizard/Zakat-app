@@ -7,6 +7,7 @@ interface StepWrapperProps {
   totalSteps: number
   title: string
   description?: React.ReactNode
+  headerBadge?: React.ReactNode
   children: React.ReactNode
   onEnter?: () => void
 }
@@ -15,6 +16,7 @@ export function StepWrapper({
   children,
   title,
   description,
+  headerBadge,
   onEnter,
 }: StepWrapperProps) {
   useEffect(() => {
@@ -39,50 +41,56 @@ export function StepWrapper({
 
   return (
     <div
-      className="flex-1 flex flex-col overflow-y-auto"
-      style={{ background: '#F5F5F0' }}
+      className="w-full step-enter"
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: 'clamp(24px, 4.5vw, 44px)',
+        background: '#FFFFFF',
+      }}
     >
-      <div
-        className="flex-1 flex flex-col items-center justify-center px-6"
-        style={{ padding: '48px 24px' }}
-      >
+      <div>
         <div
-          className="w-full step-enter step-card"
           style={{
-            maxWidth: 680,
-            background: '#FFFFFF',
-            borderRadius: 14,
-            border: '1px solid #E2E2D8',
-            borderLeft: '4px solid #1E3F20',
-            boxShadow: '0 4px 24px rgba(20, 20, 20, 0.04)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: 12,
+            flexWrap: 'wrap',
+            marginBottom: 28,
           }}
         >
-          <h1
-            style={{
-              fontSize: 'clamp(1.35rem, 3.5vw, 1.85rem)',
-              fontWeight: 800,
-              color: '#141414',
-              marginBottom: 8,
-              letterSpacing: '-0.5px',
-              lineHeight: 1.2,
-            }}
-          >
-            {title}
-          </h1>
-          {description && (
-            <p
+          <div>
+            <h1
               style={{
-                fontSize: '0.95rem',
-                color: '#6E6E6E',
-                marginBottom: 28,
-                lineHeight: 1.6,
+                fontSize: 'clamp(1.45rem, 3.2vw, 1.85rem)',
+                fontWeight: 800,
+                color: '#121614',
+                margin: '0 0 6px',
+                letterSpacing: '-0.6px',
+                lineHeight: 1.2,
               }}
             >
-              {description}
-            </p>
-          )}
-          <div>{children}</div>
+              {title}
+            </h1>
+            {description && (
+              <p
+                style={{
+                  fontSize: '0.95rem',
+                  color: '#5A625D',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}
+              >
+                {description}
+              </p>
+            )}
+          </div>
+          {headerBadge && <div>{headerBadge}</div>}
         </div>
+        <div>{children}</div>
       </div>
     </div>
   )

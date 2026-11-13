@@ -10,7 +10,8 @@ import { GoldSilverInput } from "@/components/calculator/GoldSilverInput";
 import { ZakatTracker } from "@/components/calculator/ZakatTracker";
 import { StepTrail } from "@/components/calculator/StepTrail";
 import { TopNav } from "@/components/TopNav";
-import { NisabStandard, PassiveStockRate, RetirementMethodRate } from "@/types/zakat.types";
+import { NisabStandard, Madhhab, PassiveStockRate, RetirementMethodRate } from "@/types/zakat.types";
+import { useCalculatorStore } from "@/store/calculatorStore";
 
 const FOREST = "#1E3F20";
 const TEXT_DARK = "#141414";
@@ -18,6 +19,38 @@ const SUBTLE = "#6E6E6E";
 const BORDER = "#E2E2D8";
 const BG_LINEN = "#F5F5F0";
 const CARD_BG = "#FFFFFF";
+
+const MADHHAB_OPTIONS: {
+  id: Madhhab;
+  name: string;
+  summary: string;
+  defaultsNote: string;
+}[] = [
+  {
+    id: "hanafi",
+    name: "Hanafi",
+    summary: "Includes all gold & silver jewelry · Silver Nisab standard",
+    defaultsNote: "Jewelry Zakatable · Silver Nisab · 30% ETF Proxy · 60% Net 401(k)",
+  },
+  {
+    id: "shafii",
+    name: "Shafi'i",
+    summary: "Worn personal jewelry exempt · Gold Nisab standard",
+    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% ETF Proxy · 60% Net 401(k)",
+  },
+  {
+    id: "maliki_hanbali",
+    name: "Maliki & Hanbali",
+    summary: "Worn personal jewelry exempt · Gold Nisab standard",
+    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% ETF Proxy · 60% Net 401(k)",
+  },
+  {
+    id: "general",
+    name: "Standard / General (AMJA)",
+    summary: "Contemporary North American consensus (AMJA & AAOIFI)",
+    defaultsNote: "Worn Jewelry Exempt · Gold Nisab · 30% ETF Proxy · 60% Net 401(k)",
+  },
+];
 
 const items = [
   {
@@ -47,6 +80,10 @@ function IntroPage({
 }: {
   onStart: () => void;
 }) {
+  const madhhab = useCalculatorStore((s) => s.madhhab);
+  const setMadhhab = useCalculatorStore((s) => s.setMadhhab);
+  const activeSchool = MADHHAB_OPTIONS.find((m) => m.id === madhhab) ?? MADHHAB_OPTIONS[0];
+
   return (
     <>
       <TopNav />
@@ -62,7 +99,7 @@ function IntroPage({
         {/* ── HERO ── */}
         <div
           style={{
-            padding: "clamp(56px, 7vw, 84px) 24px clamp(32px, 4vw, 44px)",
+            padding: "clamp(44px, 6vw, 68px) 24px clamp(24px, 3vw, 32px)",
             maxWidth: 720,
             margin: "0 auto",
             textAlign: "center",
@@ -90,7 +127,7 @@ function IntroPage({
                 fontWeight: 800,
               }}
             >
-              Takes about 5 minutes
+              Personalized Scholarly Assessment
             </span>
           </div>
 
@@ -114,22 +151,143 @@ function IntroPage({
               fontSize: 16,
               color: SUBTLE,
               lineHeight: 1.7,
-              maxWidth: 520,
+              maxWidth: 540,
               margin: "0 auto",
             }}
           >
-            A few numbers is all it takes. Zakatly handles the calculation — built on contemporary scholarly guidance, not guesswork.
+            Select the school of thought you follow below. We&apos;ll pre-configure all rulings across jewelry, Nisab, stocks, and retirement automatically.
           </p>
         </div>
 
-        {/* ── CHECKLIST ── */}
+        {/* ── SCHOOL OF THOUGHT SELECTOR + CHECKLIST ── */}
         <div
           style={{
-            maxWidth: 640,
+            maxWidth: 660,
             margin: "0 auto",
             padding: "0 24px 72px",
           }}
         >
+          {/* Step 1: Choose School of Thought */}
+          <div
+            style={{
+              background: CARD_BG,
+              border: `1.5px solid ${BORDER}`,
+              borderRadius: 16,
+              padding: "22px 22px 18px",
+              marginBottom: 28,
+              boxShadow: "0 8px 24px rgba(20,20,20,0.03)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 14,
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 800,
+                  color: FOREST,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                1. Select Your School of Thought (Fiqh)
+              </span>
+              <span style={{ fontSize: 12, color: SUBTLE }}>
+                Auto-defaults all rulings (can be switched anytime)
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+                gap: 10,
+                marginBottom: 14,
+              }}
+            >
+              {MADHHAB_OPTIONS.map((opt) => {
+                const isSelected = madhhab === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setMadhhab(opt.id)}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      gap: 10,
+                      padding: "14px 16px",
+                      borderRadius: 12,
+                      border: isSelected ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                      background: isSelected ? "#F4F7F4" : "#FFFFFF",
+                      textAlign: "left",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 800,
+                          color: isSelected ? FOREST : TEXT_DARK,
+                          marginBottom: 3,
+                        }}
+                      >
+                        {opt.name}
+                      </div>
+                      <div style={{ fontSize: 12, color: SUBTLE, lineHeight: 1.45 }}>
+                        {opt.summary}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: "50%",
+                        border: isSelected ? `2px solid ${FOREST}` : `2px solid #CFCFCF`,
+                        background: isSelected ? FOREST : "transparent",
+                        color: "#FFFFFF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        fontWeight: 800,
+                        flexShrink: 0,
+                        marginTop: 2,
+                      }}
+                    >
+                      {isSelected ? "✓" : ""}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div
+              style={{
+                background: "#F7F5EF",
+                borderRadius: 8,
+                padding: "9px 12px",
+                fontSize: 12,
+                color: TEXT_DARK,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span style={{ color: FOREST, fontWeight: 800 }}>Active Defaults:</span>
+              <span style={{ color: SUBTLE }}>{activeSchool.defaultsNote}</span>
+            </div>
+          </div>
 
           {/* Section label */}
           <div
@@ -335,67 +493,123 @@ const liabilityCategories = [
 ];
 
 function JewelryExplainer() {
+  const madhhab = useCalculatorStore((s) => s.madhhab);
+  const includeWornJewelry = useCalculatorStore((s) => s.includeWornJewelry);
+  const setIncludeWornJewelry = useCalculatorStore((s) => s.setIncludeWornJewelry);
   const [open, setOpen] = useState(false);
+
+  const schoolName =
+    MADHHAB_OPTIONS.find((m) => m.id === madhhab)?.name ?? "Hanafi";
+
   return (
-    <div style={{ marginBottom: 12 }}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
+    <div
+      style={{
+        background: "#FAF9F5",
+        border: `1px solid ${BORDER}`,
+        borderRadius: 12,
+        padding: "13px 16px",
+        marginBottom: 8,
+      }}
+    >
+      <div
         style={{
-          background: "none",
-          border: "none",
-          padding: 0,
-          cursor: "pointer",
           display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
-          gap: 6,
-          color: FOREST,
-          fontSize: 13,
-          fontWeight: 700,
-          fontFamily: "Open Sans, sans-serif",
+          gap: 12,
+          flexWrap: "wrap",
         }}
       >
-        <span
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+          <span
+            style={{
+              background: "#EDF3EE",
+              color: FOREST,
+              fontWeight: 800,
+              fontSize: 11,
+              padding: "3px 8px",
+              borderRadius: 6,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+            }}
+          >
+            {schoolName} Default
+          </span>
+          <span style={{ color: TEXT_DARK, fontWeight: 600 }}>
+            {includeWornJewelry
+              ? "Include all gold & silver (including worn personal jewelry)"
+              : "Worn personal jewelry is exempt (enter only bullion/coins/savings)"}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
           style={{
-            display: "inline-block",
-            transition: "transform 0.2s",
-            transform: open ? "rotate(90deg)" : "rotate(0deg)",
-            fontSize: 11,
+            background: "none",
+            border: "none",
+            padding: 0,
+            color: FOREST,
+            fontSize: 12.5,
+            fontWeight: 700,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
           }}
         >
-          ▶
-        </span>
-        Is personal gold or silver jewelry zakatable?
-      </button>
+          {open ? "Hide ▲" : "Change / Details ▾"}
+        </button>
+      </div>
 
       {open && (
         <div
           style={{
-            marginTop: 10,
-            background: "#FFFFFF",
-            border: `1px solid ${BORDER}`,
-            borderRadius: 12,
-            padding: "16px 18px",
-            fontSize: 13,
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: `1px solid ${BORDER}`,
+            fontSize: 12.5,
             color: SUBTLE,
             lineHeight: 1.6,
           }}
         >
-          <p style={{ margin: "0 0 8px" }}>
-            <strong style={{ color: TEXT_DARK }}>
-              Hanafi School:
-            </strong>{" "}
-            All gold and silver jewelry is zakatable regardless of whether it is
-            worn regularly or stored.
-          </p>
+          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+            <button
+              type="button"
+              onClick={() => setIncludeWornJewelry(true)}
+              style={{
+                flex: 1,
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: includeWornJewelry ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                background: includeWornJewelry ? FOREST : "#FFFFFF",
+                color: includeWornJewelry ? "#FFFFFF" : TEXT_DARK,
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Include Worn Jewelry (Hanafi)
+            </button>
+            <button
+              type="button"
+              onClick={() => setIncludeWornJewelry(false)}
+              style={{
+                flex: 1,
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: !includeWornJewelry ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                background: !includeWornJewelry ? FOREST : "#FFFFFF",
+                color: !includeWornJewelry ? "#FFFFFF" : TEXT_DARK,
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Exempt Worn Jewelry (Shafi&apos;i / Majority)
+            </button>
+          </div>
           <p style={{ margin: 0 }}>
-            <strong style={{ color: TEXT_DARK }}>
-              Shafi&apos;i, Maliki &amp; Hanbali Schools:
-            </strong>{" "}
-            Permissible jewelry worn regularly for personal adornment is exempt;
-            however, gold/silver held for investment, savings, or beyond
-            customary personal use is zakatable. Exclude stone/gem weights and
-            enter only the gold/silver weight or value.
+            <strong>Hanafi:</strong> All gold &amp; silver jewelry is zakatable.{" "}
+            <strong>Shafi&apos;i, Maliki &amp; Hanbali:</strong> Permissible jewelry worn regularly for personal adornment is exempt; only bullion, coins, or investment jewelry is zakatable.
           </p>
         </div>
       )}
@@ -538,93 +752,126 @@ function PassiveInvestmentToggle({
   rate: PassiveStockRate;
   onChange: (rate: PassiveStockRate) => void;
 }) {
+  const madhhab = useCalculatorStore((s) => s.madhhab);
+  const [open, setOpen] = useState(false);
+  const schoolName =
+    MADHHAB_OPTIONS.find((m) => m.id === madhhab)?.name ?? "Hanafi";
+
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: "#FAF9F5",
         border: `1px solid ${BORDER}`,
-        borderRadius: 14,
-        padding: "16px 18px",
+        borderRadius: 12,
+        padding: "13px 16px",
         marginBottom: 8,
       }}
     >
-      <p
-        style={{
-          fontSize: 13,
-          color: SUBTLE,
-          lineHeight: 1.6,
-          marginBottom: 14,
-        }}
-      >
-        By default we apply <strong>30%</strong> of the market value as
-        zakatable for long-term index funds/ETFs — based on the methodology of{" "}
-        <a
-          href="https://joebradford.net/zakat-on-stocks-and-investments-a-complete-guide-for-brokerage-accounts/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            color: FOREST,
-            fontWeight: 700,
-            textDecoration: "underline",
-          }}
-        >
-          Sh. Joe Bradford
-        </a>{" "}
-        and AAOIFI, which taxes the liquid zakatable assets held by the
-        underlying companies.
-      </p>
-
       <div
         style={{
           display: "flex",
-          gap: 8,
-          marginBottom: rate === 1.0 ? 12 : 0,
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
         }}
       >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+          <span
+            style={{
+              background: "#EDF3EE",
+              color: FOREST,
+              fontWeight: 800,
+              fontSize: 11,
+              padding: "3px 8px",
+              borderRadius: 6,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+            }}
+          >
+            {schoolName} Default
+          </span>
+          <span style={{ color: TEXT_DARK, fontWeight: 600 }}>
+            {rate === 0.3
+              ? "30% Scholarly Liquid Asset Proxy applied to passive ETFs"
+              : "100% Full Market Value applied to passive ETFs"}
+          </span>
+        </div>
+
         <button
           type="button"
-          onClick={() => onChange(0.3)}
+          onClick={() => setOpen((v) => !v)}
           style={{
-            flex: 1,
-            padding: "10px 0",
-            borderRadius: 8,
-            border: rate === 0.3 ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
-            background: rate === 0.3 ? FOREST : "#FFFFFF",
-            color: rate === 0.3 ? "#FFFFFF" : TEXT_DARK,
-            fontSize: 13,
+            background: "none",
+            border: "none",
+            padding: 0,
+            color: FOREST,
+            fontSize: 12.5,
             fontWeight: 700,
             cursor: "pointer",
-            fontFamily: "Open Sans, sans-serif",
+            whiteSpace: "nowrap",
           }}
         >
-          30% — Scholar proxy
-        </button>
-        <button
-          type="button"
-          onClick={() => onChange(1.0)}
-          style={{
-            flex: 1,
-            padding: "10px 0",
-            borderRadius: 8,
-            border: rate === 1.0 ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
-            background: rate === 1.0 ? FOREST : "#FFFFFF",
-            color: rate === 1.0 ? "#FFFFFF" : TEXT_DARK,
-            fontSize: 13,
-            fontWeight: 700,
-            cursor: "pointer",
-            fontFamily: "Open Sans, sans-serif",
-          }}
-        >
-          100% — Full value
+          {open ? "Hide ▲" : "Change ▾"}
         </button>
       </div>
 
-      {rate === 1.0 && (
-        <p style={{ fontSize: 12, color: SUBTLE, lineHeight: 1.6, margin: 0 }}>
-          <strong>Note:</strong> Paying on 100% is the more cautious approach and is valid. However,
-          most contemporary scholars consider 30% sufficient for long-term
-          equity holdings.
-        </p>
+      {open && (
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: `1px solid ${BORDER}`,
+          }}
+        >
+          <p
+            style={{
+              fontSize: 12.5,
+              color: SUBTLE,
+              lineHeight: 1.6,
+              marginBottom: 12,
+            }}
+          >
+            By default we apply <strong>30%</strong> of the market value as zakatable for long-term index funds/ETFs (AAOIFI &amp; Sh. Joe Bradford consensus), which assesses the liquid assets held by the underlying companies.
+          </p>
+
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => onChange(0.3)}
+              style={{
+                flex: 1,
+                padding: "9px 12px",
+                borderRadius: 8,
+                border: rate === 0.3 ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                background: rate === 0.3 ? FOREST : "#FFFFFF",
+                color: rate === 0.3 ? "#FFFFFF" : TEXT_DARK,
+                fontSize: 12.5,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              30% — Scholar Proxy (Default)
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange(1.0)}
+              style={{
+                flex: 1,
+                padding: "9px 12px",
+                borderRadius: 8,
+                border: rate === 1.0 ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                background: rate === 1.0 ? FOREST : "#FFFFFF",
+                color: rate === 1.0 ? "#FFFFFF" : TEXT_DARK,
+                fontSize: 12.5,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              100% — Full Value
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -637,11 +884,16 @@ function RetirementMethodToggle({
   rate: RetirementMethodRate;
   onChange: (rate: RetirementMethodRate) => void;
 }) {
+  const madhhab = useCalculatorStore((s) => s.madhhab);
+  const [open, setOpen] = useState(false);
+  const schoolName =
+    MADHHAB_OPTIONS.find((m) => m.id === madhhab)?.name ?? "Hanafi";
+
   const options: { value: RetirementMethodRate; label: string; sub: string }[] =
     [
       {
         value: 0.6,
-        label: "60% — Net Accessible",
+        label: "60% — Net Accessible (Default)",
         sub: "Deducts ~30% income tax + 10% early withdrawal penalty",
       },
       {
@@ -659,89 +911,136 @@ function RetirementMethodToggle({
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: "#FAF9F5",
         border: `1px solid ${BORDER}`,
-        borderRadius: 14,
-        padding: "16px 18px",
+        borderRadius: 12,
+        padding: "13px 16px",
         marginBottom: 8,
       }}
     >
-      <p
+      <div
         style={{
-          fontSize: 13,
-          color: SUBTLE,
-          lineHeight: 1.6,
-          marginBottom: 12,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
         }}
       >
-        For employer-sponsored 401(k) and traditional IRA accounts, scholars
-        differ on how to account for early withdrawal penalties, taxes, and
-        underlying equity holdings:
-      </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+          <span
+            style={{
+              background: "#EDF3EE",
+              color: FOREST,
+              fontWeight: 800,
+              fontSize: 11,
+              padding: "3px 8px",
+              borderRadius: 6,
+              textTransform: "uppercase",
+              letterSpacing: 0.4,
+            }}
+          >
+            {schoolName} Default
+          </span>
+          <span style={{ color: TEXT_DARK, fontWeight: 600 }}>
+            {rate === 0.6
+              ? "60% Net Accessible (deducts estimated taxes & 10% early penalty)"
+              : rate === 0.3
+              ? "30% Underlying Equity Liquid Asset Proxy"
+              : "100% Full Gross Balance"}
+          </span>
+        </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {options.map((opt) => {
-          const active = rate === opt.value;
-          return (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => onChange(opt.value)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: active ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
-                background: active ? FOREST : "#FFFFFF",
-                color: active ? "#FFFFFF" : TEXT_DARK,
-                textAlign: "left",
-                cursor: "pointer",
-                fontFamily: "Open Sans, sans-serif",
-              }}
-            >
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700 }}>{opt.label}</div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: active ? "rgba(255,255,255,0.85)" : SUBTLE,
-                    marginTop: 2,
-                  }}
-                >
-                  {opt.sub}
-                </div>
-              </div>
-              <div
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            color: FOREST,
+            fontSize: 12.5,
+            fontWeight: 700,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {open ? "Hide ▲" : "Change ▾"}
+        </button>
+      </div>
+
+      {open && (
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: `1px solid ${BORDER}`,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          {options.map((opt) => {
+            const active = rate === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => onChange(opt.value)}
                 style={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: "50%",
-                  border: active
-                    ? "2px solid white"
-                    : `2px solid ${BORDER}`,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
+                  justifyContent: "space-between",
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: active ? `2px solid ${FOREST}` : `1px solid ${BORDER}`,
+                  background: active ? FOREST : "#FFFFFF",
+                  color: active ? "#FFFFFF" : TEXT_DARK,
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontFamily: "Open Sans, sans-serif",
                 }}
               >
-                {active && (
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700 }}>{opt.label}</div>
                   <div
                     style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "white",
+                      fontSize: 11,
+                      color: active ? "rgba(255,255,255,0.85)" : SUBTLE,
+                      marginTop: 2,
                     }}
-                  />
-                )}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+                  >
+                    {opt.sub}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    width: 18,
+                    height: 18,
+                    borderRadius: "50%",
+                    border: active ? "2px solid white" : `2px solid ${BORDER}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  {active && (
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "white",
+                      }}
+                    />
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -850,7 +1149,7 @@ export default function CalculatorPage() {
   }
 
   const navButtons = (onNext: () => void, isFirstStep = false) => (
-    <div className="mt-6">
+    <div style={{ marginTop: 28, borderTop: `1px solid ${BORDER}`, paddingTop: 22 }}>
       <div className="flex justify-between items-center gap-3 flex-wrap">
         {!isFirstStep ? (
           <button
@@ -916,92 +1215,124 @@ export default function CalculatorPage() {
       <TopNav />
       <div
         className="min-h-screen flex flex-col"
-        style={{ background: BG_LINEN, paddingTop: "clamp(75px, 8vw, 83px)" }}
+        style={{
+          background: BG_LINEN,
+          paddingTop: "clamp(92px, 10vw, 112px)",
+          paddingBottom: "clamp(48px, 6vw, 72px)",
+          paddingLeft: "clamp(14px, 3vw, 24px)",
+          paddingRight: "clamp(14px, 3vw, 24px)",
+        }}
       >
-        {/* Tracker bar — directly below TopNav */}
         <div
+          className="calc-rail-shell"
           style={{
-            background: TEXT_DARK,
-            borderBottom: "1px solid rgba(255,255,255,0.08)",
-            boxShadow: "0 2px 16px rgba(0,0,0,0.18)",
-            height: 68,
-            flexShrink: 0,
+            maxWidth: 1140,
+            width: "100%",
+            margin: "0 auto",
+            background: "#FFFFFF",
+            borderRadius: 22,
+            border: `1px solid ${BORDER}`,
+            overflow: "hidden",
+            boxShadow: "0 24px 60px rgba(18, 22, 20, 0.07)",
           }}
         >
-          <ZakatTracker
+          {/* Left Vertical Assessment Progress & Live Zakat Rail */}
+          <StepTrail
+            currentStepName={currentStepName}
+            visitedSteps={visitedSteps}
+            onGoToStep={goToStep}
             assets={assets}
             nisabData={nisabData ?? null}
             passiveInvestmentRate={passiveInvestmentRate}
             retirementRate={retirementRate}
           />
-        </div>
 
-        <StepTrail
-          currentStepName={currentStepName}
-          visitedSteps={visitedSteps}
-          onGoToStep={goToStep}
-        />
+          {/* Right Main Form Canvas */}
+          <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
+            <>
+              {currentStepName === "cash" && (
+                <StepWrapper
+                  currentStep={currentStep}
+                  totalSteps={totalSteps}
+                  title="Cash & Bank Accounts"
+                  description={
+                    <>
+                      Enter the total amount of money you have in{" "}
+                      <strong>cash</strong>, <strong>checking</strong>, and{" "}
+                      <strong>savings accounts</strong>.
+                    </>
+                  }
+                  onEnter={nextStep}
+                >
+                  <AssetInput
+                    id="cash"
+                    label="How much do you have in total?"
+                    tooltip="Include physical cash on hand and all personal checking/savings bank accounts."
+                    value={assets.cash}
+                    onChange={(val) => updateAssets({ cash: val })}
+                    onEnter={nextStep}
+                    itemPlaceholders={[
+                      "e.g. Checking account",
+                      "e.g. High-yield savings",
+                    ]}
+                  />
+                  {navButtons(nextStep, true)}
+                </StepWrapper>
+              )}
 
-        <div className="flex-1 flex flex-col">
-          <>
-            {currentStepName === "cash" && (
-              <StepWrapper
-                currentStep={currentStep}
-                totalSteps={totalSteps}
-                title="Cash & Bank Accounts"
-                description={
-                  <>
-                    Enter the total amount of money you have in{" "}
-                    <strong>cash</strong>, <strong>checking</strong>, and{" "}
-                    <strong>savings accounts</strong>.
-                  </>
-                }
-                onEnter={nextStep}
-              >
-                <AssetInput
-                  id="cash"
-                  label="How much do you have in total?"
-                  tooltip="Include physical cash on hand and all personal checking/savings bank accounts."
-                  value={assets.cash}
-                  onChange={(val) => updateAssets({ cash: val })}
+              {currentStepName === "goldsilver" && (
+                <StepWrapper
+                  currentStep={currentStep}
+                  totalSteps={totalSteps}
+                  title="Gold & Silver"
+                  description="Enter current value or weight in grams. Spot prices update automatically."
+                  headerBadge={
+                    <span
+                      style={{
+                        background: "#F4EFE4",
+                        color: "#8C6D2F",
+                        padding: "6px 12px",
+                        borderRadius: 8,
+                        fontSize: 12,
+                        fontWeight: 700,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      24K Spot: ${(nisabData?.goldPriceUSD ?? 161.9).toFixed(2)}/g
+                    </span>
+                  }
                   onEnter={nextStep}
-                  itemPlaceholders={[
-                    "e.g. Checking account",
-                    "e.g. High-yield savings",
-                  ]}
-                />
-                {navButtons(nextStep, true)}
-              </StepWrapper>
-            )}
-
-            {currentStepName === "goldsilver" && (
-              <StepWrapper
-                currentStep={currentStep}
-                totalSteps={totalSteps}
-                title="Gold & Silver"
-                description="Enter the current value or weight in grams of any gold or silver you own."
-                onEnter={nextStep}
-              >
-                <GoldSilverInput
-                  id="gold"
-                  label="How much gold do you own?"
-                  pricePerGram={nisabData?.goldPriceUSD ?? 161.9}
-                  value={assets.gold}
-                  onChange={(val) => updateAssets({ gold: val })}
-                  onEnter={nextStep}
-                />
-                <GoldSilverInput
-                  id="silver"
-                  label="How much silver do you own?"
-                  pricePerGram={nisabData?.silverPriceUSD ?? 2.68}
-                  value={assets.silver}
-                  onChange={(val) => updateAssets({ silver: val })}
-                  onEnter={nextStep}
-                />
-                <JewelryExplainer />
-                {navButtons(nextStep)}
-              </StepWrapper>
-            )}
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+                      gap: 20,
+                      marginBottom: 20,
+                    }}
+                  >
+                    <GoldSilverInput
+                      id="gold"
+                      label="Gold Holdings"
+                      pricePerGram={nisabData?.goldPriceUSD ?? 161.9}
+                      value={assets.gold}
+                      onChange={(val) => updateAssets({ gold: val })}
+                      onEnter={nextStep}
+                    />
+                    <GoldSilverInput
+                      id="silver"
+                      label="Silver Holdings"
+                      pricePerGram={nisabData?.silverPriceUSD ?? 2.68}
+                      value={assets.silver}
+                      onChange={(val) => updateAssets({ silver: val })}
+                      onEnter={nextStep}
+                    />
+                  </div>
+                  <JewelryExplainer />
+                  {navButtons(nextStep)}
+                </StepWrapper>
+              )}
 
             {currentStepName === "investment-selector" && (
               <StepWrapper
@@ -1214,6 +1545,7 @@ export default function CalculatorPage() {
               </StepWrapper>
             )}
           </>
+          </div>
         </div>
       </div>
     </>

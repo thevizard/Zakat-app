@@ -181,8 +181,18 @@ export function AssetInput({
       </div>
 
       {!isItemized ? (
-        <div className="flex items-center gap-3 bg-gray-100 rounded-2xl px-5 py-4 focus-within:ring-2 focus-within:ring-[#2d7a4f] transition-all">
-          <span className="text-xl font-medium text-gray-400">$</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "#F7F5EF",
+            border: "1.5px solid #E2DFD5",
+            borderRadius: 14,
+            padding: "14px 18px",
+          }}
+        >
+          <span style={{ fontSize: 20, fontWeight: 800, color: "#5A625D" }}>$</span>
           <input
             id={id}
             type="text"
@@ -192,8 +202,16 @@ export function AssetInput({
             onChange={handleChange}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            className="flex-1 text-xl font-semibold text-gray-900 placeholder:text-gray-300 focus:outline-none bg-transparent"
-            style={{ fontFamily: "var(--font-body), Open Sans, sans-serif" }}
+            style={{
+              flex: 1,
+              fontSize: 22,
+              fontWeight: 800,
+              color: "#121614",
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: "var(--font-body), Open Sans, sans-serif",
+            }}
           />
         </div>
       ) : (

@@ -126,12 +126,24 @@ export default function LandingPage() {
               style={{
                 fontSize: 'clamp(40px, 5.2vw, 64px)',
                 fontWeight: 800,
-                lineHeight: 1.05,
+                lineHeight: 1.08,
                 letterSpacing: '-1.8px',
                 margin: '0 0 20px',
               }}
             >
-              Purify Your Wealth With Scholarly Precision.
+              Purify Your Wealth With{' '}
+              <span
+                style={{
+                  color: FOREST,
+                  background: 'linear-gradient(180deg, transparent 65%, rgba(197, 160, 89, 0.35) 65%)',
+                  padding: '0 4px',
+                  borderRadius: 4,
+                  boxDecorationBreak: 'clone',
+                  WebkitBoxDecorationBreak: 'clone',
+                }}
+              >
+                Scholarly Precision.
+              </span>
             </h1>
 
             <p

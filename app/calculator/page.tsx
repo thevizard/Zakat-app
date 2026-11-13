@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useZakatCalculator } from "@/hooks/useZakatCalculator";
 import { StepWrapper } from "@/components/calculator/StepWrapper";
 import { AssetInput } from "@/components/calculator/AssetInput";
@@ -81,7 +81,19 @@ function IntroPage({
 }) {
   const madhhab = useCalculatorStore((s) => s.madhhab);
   const setMadhhab = useCalculatorStore((s) => s.setMadhhab);
-  const [hoveredId, setHoveredId] = useState<Madhhab | null>(null);
+  const [activeTooltipId, setActiveTooltipId] = useState<Madhhab | null>(null);
+
+  useEffect(() => {
+    if (!activeTooltipId) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest?.("[data-tooltip-container]")) {
+        setActiveTooltipId(null);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, [activeTooltipId]);
 
   return (
     <>
@@ -199,7 +211,7 @@ function IntroPage({
                 1. Choose Your Calculation Preference
               </span>
               <span style={{ fontSize: 12, color: SUBTLE }}>
-                Hover for details · Can be switched anytime
+                Click ⓘ for details · Can be switched anytime
               </span>
             </div>
 
@@ -212,13 +224,14 @@ function IntroPage({
             >
               {MADHHAB_OPTIONS.map((opt) => {
                 const isSelected = madhhab === opt.id;
-                const isHovered = hoveredId === opt.id;
+                const isTooltipOpen = activeTooltipId === opt.id;
+                const isRightCard = opt.id === "shafii_maliki_hanbali";
+
                 return (
                   <div
                     key={opt.id}
+                    data-tooltip-container="true"
                     style={{ position: "relative" }}
-                    onMouseEnter={() => setHoveredId(opt.id)}
-                    onMouseLeave={() => setHoveredId(null)}
                   >
                     <button
                       type="button"
@@ -252,18 +265,39 @@ function IntroPage({
                           {opt.name}
                         </span>
                         <span
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`View ${opt.name} calculation details`}
+                          title="Click for details"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveTooltipId((prev) => (prev === opt.id ? null : opt.id));
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setActiveTooltipId((prev) => (prev === opt.id ? null : opt.id));
+                            }
+                          }}
                           style={{
-                            width: 16,
-                            height: 16,
+                            width: 18,
+                            height: 18,
                             borderRadius: "50%",
-                            background: isSelected ? "rgba(30,63,32,0.12)" : "#EFECE4",
-                            color: isSelected ? FOREST : SUBTLE,
-                            fontSize: 10,
+                            background: isTooltipOpen
+                              ? FOREST
+                              : isSelected
+                              ? "rgba(30,63,32,0.14)"
+                              : "#EFECE4",
+                            color: isTooltipOpen ? "#FFFFFF" : isSelected ? FOREST : SUBTLE,
+                            fontSize: 11,
                             fontWeight: 800,
                             display: "inline-flex",
                             alignItems: "center",
                             justifyContent: "center",
                             flexShrink: 0,
+                            cursor: "pointer",
+                            transition: "all 0.15s ease",
                           }}
                         >
                           i
@@ -290,43 +324,75 @@ function IntroPage({
                       </div>
                     </button>
 
-                    {/* Hover Tooltip with Regional Info + Active Defaults */}
-                    {isHovered && (
+                    {/* Click-to-Open Tooltip with Regional Info + Active Defaults */}
+                    {isTooltipOpen && (
                       <div
                         style={{
                           position: "absolute",
                           bottom: "calc(100% + 10px)",
-                          left: 0,
-                          right: 0,
-                          minWidth: 260,
-                          zIndex: 40,
+                          left: isRightCard ? "auto" : 0,
+                          right: isRightCard ? 0 : "auto",
+                          width: "min(320px, calc(100vw - 56px))",
+                          zIndex: 50,
                           background: "#102417",
                           color: "#FFFFFF",
                           borderRadius: 12,
                           padding: "14px 16px",
-                          boxShadow: "0 16px 36px rgba(0,0,0,0.24)",
+                          boxShadow: "0 16px 36px rgba(0,0,0,0.28)",
                           border: "1px solid rgba(197, 160, 89, 0.4)",
-                          pointerEvents: "none",
+                          pointerEvents: "auto",
                         }}
                       >
-                        {opt.tag && (
-                          <div
-                            style={{
-                              display: "inline-block",
-                              background: "#C5A059",
-                              color: "#102417",
-                              fontSize: 10,
-                              fontWeight: 800,
-                              textTransform: "uppercase",
-                              letterSpacing: 0.6,
-                              padding: "2px 7px",
-                              borderRadius: 4,
-                              marginBottom: 6,
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                            marginBottom: 6,
+                            gap: 8,
+                          }}
+                        >
+                          {opt.tag ? (
+                            <div
+                              style={{
+                                display: "inline-block",
+                                background: "#C5A059",
+                                color: "#102417",
+                                fontSize: 10,
+                                fontWeight: 800,
+                                textTransform: "uppercase",
+                                letterSpacing: 0.6,
+                                padding: "2px 7px",
+                                borderRadius: 4,
+                              }}
+                            >
+                              {opt.tag}
+                            </div>
+                          ) : (
+                            <div />
+                          )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveTooltipId(null);
                             }}
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              color: "rgba(255,255,255,0.6)",
+                              fontSize: 18,
+                              lineHeight: 1,
+                              cursor: "pointer",
+                              padding: "0 4px",
+                              marginTop: -2,
+                            }}
+                            aria-label="Close details"
+                            title="Close"
                           >
-                            {opt.tag}
-                          </div>
-                        )}
+                            ×
+                          </button>
+                        </div>
                         {opt.regionHint && (
                           <div
                             style={{

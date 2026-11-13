@@ -53,7 +53,7 @@ function IntroPage({
       <div
         style={{
           minHeight: "100vh",
-          paddingTop: 64,
+          paddingTop: "clamp(75px, 8vw, 83px)",
           background: BG_LINEN,
           fontFamily: "Open Sans, -apple-system, BlinkMacSystemFont, sans-serif",
           color: TEXT_DARK,
@@ -791,8 +791,8 @@ export default function CalculatorPage() {
       <>
         <TopNav />
         <div
-          className="min-h-screen pt-[72px] flex items-center justify-center"
-          style={{ background: BG_LINEN }}
+          className="min-h-screen flex items-center justify-center"
+          style={{ background: BG_LINEN, paddingTop: "clamp(75px, 8vw, 83px)" }}
         >
           <p style={{ color: FOREST, fontSize: 16, fontWeight: 600 }}>
             Fetching current gold &amp; silver prices...
@@ -807,8 +807,8 @@ export default function CalculatorPage() {
       <>
         <TopNav />
         <div
-          className="min-h-screen pt-[72px] flex flex-col items-center justify-center gap-4"
-          style={{ background: BG_LINEN }}
+          className="min-h-screen flex flex-col items-center justify-center gap-4"
+          style={{ background: BG_LINEN, paddingTop: "clamp(75px, 8vw, 83px)" }}
         >
           <p style={{ color: SUBTLE, fontSize: 16 }}>
             Could not fetch live prices. Using fallback values.
@@ -837,7 +837,7 @@ export default function CalculatorPage() {
     return (
       <>
         <TopNav />
-        <div className="pt-[64px]">
+        <div style={{ paddingTop: "clamp(75px, 8vw, 83px)" }}>
           <ZakatSummary
             result={result}
             onReset={reset}
@@ -915,8 +915,8 @@ export default function CalculatorPage() {
     <>
       <TopNav />
       <div
-        className="min-h-screen pt-[64px] flex flex-col"
-        style={{ background: BG_LINEN }}
+        className="min-h-screen flex flex-col"
+        style={{ background: BG_LINEN, paddingTop: "clamp(75px, 8vw, 83px)" }}
       >
         {/* Tracker bar — directly below TopNav */}
         <div

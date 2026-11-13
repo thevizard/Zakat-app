@@ -1380,6 +1380,9 @@ export default function CalculatorPage() {
         <div
           className="calc-rail-shell"
           style={{
+            display: "grid",
+            gridTemplateColumns: "280px 1fr",
+            minHeight: 580,
             maxWidth: 1140,
             width: "100%",
             margin: "0 auto",
